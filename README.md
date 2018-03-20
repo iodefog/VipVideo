@@ -61,4 +61,4 @@
 如果你觉得还不错，可以给我赞助哦~。及时更新接口数据
 
 ![image](./snap/IMG_3085.png)
-![image](./snap/IMG_3083.JPG)
+![image](./snap/IMG_3083.png)
