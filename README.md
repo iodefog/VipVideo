@@ -58,9 +58,15 @@
 如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer,
 可能需要设置如下配置：
 
+* 1.
+
 ![image](./snap/WX20180321-102104.png)
 
+* 2.打开Safari->偏好设置->WebSites 一些配置如下
+
 ![image](./snap/WX20180321-102229.png)
+
+* flash配置环境比较久了，记不太清了。如果仍然不好使，就请google吧, 真的不难。
 
 ---
 
