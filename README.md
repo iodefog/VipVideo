@@ -55,10 +55,13 @@
 尽情享受吧。
 
 ### 其他：
-如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer,
-可能需要设置如下配置：
+### 如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer。
 
-* 1.
+此外可能需要设置如下配置：
+
+flash配置环境比较久了，记不太清了。如果仍然不好使，就请google吧, 真的不难。
+
+* 1.系统偏好设置
 
 ![image](./snap/WX20180321-102104.png)
 
@@ -66,7 +69,27 @@
 
 ![image](./snap/WX20180321-102229.png)
 
-* flash配置环境比较久了，记不太清了。如果仍然不好使，就请google吧, 真的不难。
+
+### 已知问题
+
+* 1.切换线路后中间显示Blocked Plug-in
+
+		1).系统偏好设置 > 其他 - Flash Player > 高级 > 全部删除
+		
+		按下“全部删除”按钮
+		
+		安装Adobe Flash Player
+		http://get.adobe.com/flashplayer/
+		
+		退出Safari。
+		
+		重新启动计算机。重新启动Safari。
+		
+		2).启用插件
+		
+		Safari>首选项>安全性
+		
+		互联网插件>“允许所有其他插件”
 
 ---
 
