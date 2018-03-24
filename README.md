@@ -101,5 +101,7 @@ flash配置环境比较久了，记不太清了。如果仍然不好使，就请
 
 别忘了点个star哦。
 
+如有疑问，请发邮件 [iodefog@gmail.com](mailto:iodefog@gmail.com)。
+
 ![image](./snap/IMG_3085.png)
 ![image](./snap/IMG_3083.png)
