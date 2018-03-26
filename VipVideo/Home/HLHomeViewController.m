@@ -95,9 +95,6 @@
     model = [VipUrlItem createTitle:@"优酷" url:@"http://vip.youku.com/"];
     [self.modelsArray addObject:model];
     
-    model = [VipUrlItem createTitle:@"搜狐" url:@"https://film.sohu.com/"];
-    [self.modelsArray addObject:model];
-    
     model = [VipUrlItem createTitle:@"芒果" url:@"https://www.mgtv.com/vip/"];
     [self.modelsArray addObject:model];
     
