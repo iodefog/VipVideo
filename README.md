@@ -110,7 +110,7 @@ flash配置环境比较久了，记不太清了。如果仍然不好使，就请
 
 ## 建议使用支付宝红包码
 
-![image](./snap/IMG_3123.png)
 -----
-![image](./snap/IMG_3085.png)
-![image](./snap/IMG_3083.png)
+
+![image](./snap/IMG_3123.png)
+
