@@ -106,7 +106,7 @@ flash配置环境比较久了，记不太清了。如果仍然不好使，就请
 
 别忘了点个star哦。
 
-如有疑问，请发邮件 [iodefog@gmail.com](mailto:iodefog@gmail.com)。
+如有疑问，或者侵权。请联系作者删除，邮件 [iodefog@gmail.com](mailto:iodefog@gmail.com)。
 
 ## 建议使用支付宝红包码
 
