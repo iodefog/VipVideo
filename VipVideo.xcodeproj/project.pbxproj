@@ -1,0 +1,399 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C7240AAB1FA177BD000684F1 /* viplist.json in Resources */ = {isa = PBXBuildFile; fileRef = C7240AAA1FA177BD000684F1 /* viplist.json */; };
+		C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C7240AAF1FA17AF7000684F1 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		C72BBE041F9DB2EC00C5141E /* iconStatus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */; };
+		C72BBE231F9DE8B000C5141E /* NSView+ZCAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE111F9DE8B000C5141E /* NSView+ZCAddition.m */; };
+		C72BBE241F9DE8B000C5141E /* MainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE141F9DE8B000C5141E /* MainMenu.m */; };
+		C72BBE261F9DE8B000C5141E /* VipURLManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE181F9DE8B000C5141E /* VipURLManager.m */; };
+		C72BBE271F9DE8B000C5141E /* HLHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE1B1F9DE8B000C5141E /* HLHomeViewController.m */; };
+		C72BBE281F9DE8B000C5141E /* HLHomeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE1D1F9DE8B000C5141E /* HLHomeWindowController.m */; };
+		C72BBE291F9DE8B000C5141E /* HLVipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE201F9DE8B000C5141E /* HLVipViewController.m */; };
+		C72BBE2A1F9DE8B000C5141E /* HLVipWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE221F9DE8B000C5141E /* HLVipWindowController.m */; };
+		C7D9E8401F9DA1BB00730A34 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7D9E83F1F9DA1BB00730A34 /* AppDelegate.m */; };
+		C7D9E8451F9DA1BB00730A34 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7D9E8441F9DA1BB00730A34 /* Assets.xcassets */; };
+		C7D9E8481F9DA1BB00730A34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7D9E8461F9DA1BB00730A34 /* Main.storyboard */; };
+		C7D9E84B1F9DA1BB00730A34 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C7D9E84A1F9DA1BB00730A34 /* main.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		C7240AAA1FA177BD000684F1 /* viplist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = viplist.json; sourceTree = "<group>"; };
+		C7240AAF1FA17AF7000684F1 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		C7240AB01FA17AF7000684F1 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iconStatus@2x.png"; sourceTree = "<group>"; };
+		C72BBE101F9DE8B000C5141E /* NSView+ZCAddition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+ZCAddition.h"; sourceTree = "<group>"; };
+		C72BBE111F9DE8B000C5141E /* NSView+ZCAddition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+ZCAddition.m"; sourceTree = "<group>"; };
+		C72BBE131F9DE8B000C5141E /* MainMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenu.h; sourceTree = "<group>"; };
+		C72BBE141F9DE8B000C5141E /* MainMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenu.m; sourceTree = "<group>"; };
+		C72BBE171F9DE8B000C5141E /* VipURLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VipURLManager.h; sourceTree = "<group>"; };
+		C72BBE181F9DE8B000C5141E /* VipURLManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VipURLManager.m; sourceTree = "<group>"; };
+		C72BBE1A1F9DE8B000C5141E /* HLHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLHomeViewController.h; sourceTree = "<group>"; };
+		C72BBE1B1F9DE8B000C5141E /* HLHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLHomeViewController.m; sourceTree = "<group>"; };
+		C72BBE1C1F9DE8B000C5141E /* HLHomeWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLHomeWindowController.h; sourceTree = "<group>"; };
+		C72BBE1D1F9DE8B000C5141E /* HLHomeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLHomeWindowController.m; sourceTree = "<group>"; };
+		C72BBE1F1F9DE8B000C5141E /* HLVipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLVipViewController.h; sourceTree = "<group>"; };
+		C72BBE201F9DE8B000C5141E /* HLVipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLVipViewController.m; sourceTree = "<group>"; };
+		C72BBE211F9DE8B000C5141E /* HLVipWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLVipWindowController.h; sourceTree = "<group>"; };
+		C72BBE221F9DE8B000C5141E /* HLVipWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLVipWindowController.m; sourceTree = "<group>"; };
+		C7D9E83B1F9DA1BB00730A34 /* VipVideo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VipVideo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7D9E83E1F9DA1BB00730A34 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		C7D9E83F1F9DA1BB00730A34 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		C7D9E8441F9DA1BB00730A34 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C7D9E8471F9DA1BB00730A34 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C7D9E8491F9DA1BB00730A34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C7D9E84A1F9DA1BB00730A34 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C7D9E8381F9DA1BB00730A34 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C72BBE0F1F9DE8B000C5141E /* Addition */ = {
+			isa = PBXGroup;
+			children = (
+				C72BBE101F9DE8B000C5141E /* NSView+ZCAddition.h */,
+				C72BBE111F9DE8B000C5141E /* NSView+ZCAddition.m */,
+			);
+			path = Addition;
+			sourceTree = "<group>";
+		};
+		C72BBE121F9DE8B000C5141E /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				C72BBE131F9DE8B000C5141E /* MainMenu.h */,
+				C72BBE141F9DE8B000C5141E /* MainMenu.m */,
+				C72BBE171F9DE8B000C5141E /* VipURLManager.h */,
+				C72BBE181F9DE8B000C5141E /* VipURLManager.m */,
+				C7240AB01FA17AF7000684F1 /* JSONKit.h */,
+				C7240AAF1FA17AF7000684F1 /* JSONKit.m */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		C72BBE191F9DE8B000C5141E /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				C72BBE1A1F9DE8B000C5141E /* HLHomeViewController.h */,
+				C72BBE1B1F9DE8B000C5141E /* HLHomeViewController.m */,
+				C72BBE1C1F9DE8B000C5141E /* HLHomeWindowController.h */,
+				C72BBE1D1F9DE8B000C5141E /* HLHomeWindowController.m */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		C72BBE1E1F9DE8B000C5141E /* VipPlay */ = {
+			isa = PBXGroup;
+			children = (
+				C72BBE1F1F9DE8B000C5141E /* HLVipViewController.h */,
+				C72BBE201F9DE8B000C5141E /* HLVipViewController.m */,
+				C72BBE211F9DE8B000C5141E /* HLVipWindowController.h */,
+				C72BBE221F9DE8B000C5141E /* HLVipWindowController.m */,
+			);
+			path = VipPlay;
+			sourceTree = "<group>";
+		};
+		C7D9E8321F9DA1BB00730A34 = {
+			isa = PBXGroup;
+			children = (
+				C7D9E83D1F9DA1BB00730A34 /* VipVideo */,
+				C7D9E83C1F9DA1BB00730A34 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C7D9E83C1F9DA1BB00730A34 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C7D9E83B1F9DA1BB00730A34 /* VipVideo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C7D9E83D1F9DA1BB00730A34 /* VipVideo */ = {
+			isa = PBXGroup;
+			children = (
+				C7D9E83E1F9DA1BB00730A34 /* AppDelegate.h */,
+				C7D9E83F1F9DA1BB00730A34 /* AppDelegate.m */,
+				C72BBE0F1F9DE8B000C5141E /* Addition */,
+				C72BBE121F9DE8B000C5141E /* Helper */,
+				C72BBE191F9DE8B000C5141E /* Home */,
+				C72BBE1E1F9DE8B000C5141E /* VipPlay */,
+				C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */,
+				C7D9E8441F9DA1BB00730A34 /* Assets.xcassets */,
+				C7D9E8461F9DA1BB00730A34 /* Main.storyboard */,
+				C7D9E8491F9DA1BB00730A34 /* Info.plist */,
+				C7240AAA1FA177BD000684F1 /* viplist.json */,
+				C7D9E84A1F9DA1BB00730A34 /* main.m */,
+			);
+			path = VipVideo;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C7D9E83A1F9DA1BB00730A34 /* VipVideo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C7D9E84F1F9DA1BB00730A34 /* Build configuration list for PBXNativeTarget "VipVideo" */;
+			buildPhases = (
+				C7D9E8371F9DA1BB00730A34 /* Sources */,
+				C7D9E8381F9DA1BB00730A34 /* Frameworks */,
+				C7D9E8391F9DA1BB00730A34 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VipVideo;
+			productName = VipVideo;
+			productReference = C7D9E83B1F9DA1BB00730A34 /* VipVideo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C7D9E8331F9DA1BB00730A34 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = HL;
+				LastUpgradeCheck = 0900;
+				ORGANIZATIONNAME = SV;
+				TargetAttributes = {
+					C7D9E83A1F9DA1BB00730A34 = {
+						CreatedOnToolsVersion = 9.0.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = C7D9E8361F9DA1BB00730A34 /* Build configuration list for PBXProject "VipVideo" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C7D9E8321F9DA1BB00730A34;
+			productRefGroup = C7D9E83C1F9DA1BB00730A34 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C7D9E83A1F9DA1BB00730A34 /* VipVideo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C7D9E8391F9DA1BB00730A34 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C7D9E8451F9DA1BB00730A34 /* Assets.xcassets in Resources */,
+				C7D9E8481F9DA1BB00730A34 /* Main.storyboard in Resources */,
+				C72BBE041F9DB2EC00C5141E /* iconStatus@2x.png in Resources */,
+				C7240AAB1FA177BD000684F1 /* viplist.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C7D9E8371F9DA1BB00730A34 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C72BBE2A1F9DE8B000C5141E /* HLVipWindowController.m in Sources */,
+				C7D9E84B1F9DA1BB00730A34 /* main.m in Sources */,
+				C7D9E8401F9DA1BB00730A34 /* AppDelegate.m in Sources */,
+				C72BBE231F9DE8B000C5141E /* NSView+ZCAddition.m in Sources */,
+				C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */,
+				C72BBE281F9DE8B000C5141E /* HLHomeWindowController.m in Sources */,
+				C72BBE291F9DE8B000C5141E /* HLVipViewController.m in Sources */,
+				C72BBE241F9DE8B000C5141E /* MainMenu.m in Sources */,
+				C72BBE261F9DE8B000C5141E /* VipURLManager.m in Sources */,
+				C72BBE271F9DE8B000C5141E /* HLHomeViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		C7D9E8461F9DA1BB00730A34 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C7D9E8471F9DA1BB00730A34 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C7D9E84D1F9DA1BB00730A34 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C7D9E84E1F9DA1BB00730A34 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		C7D9E8501F9DA1BB00730A34 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = VipVideo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sohu.VipVideo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C7D9E8511F9DA1BB00730A34 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = VipVideo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sohu.VipVideo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C7D9E8361F9DA1BB00730A34 /* Build configuration list for PBXProject "VipVideo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C7D9E84D1F9DA1BB00730A34 /* Debug */,
+				C7D9E84E1F9DA1BB00730A34 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C7D9E84F1F9DA1BB00730A34 /* Build configuration list for PBXNativeTarget "VipVideo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C7D9E8501F9DA1BB00730A34 /* Debug */,
+				C7D9E8511F9DA1BB00730A34 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C7D9E8331F9DA1BB00730A34 /* Project object */;
+}

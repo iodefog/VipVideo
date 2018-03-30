@@ -1,0 +1,76 @@
+{
+    "list": [
+        {
+            "name": "线路9(旋风动漫)",
+            "url": "http://api.xfsub.com/index.php?url="
+        },
+        {
+            "name": "万能接口1",
+            "url": "http://65yw.2m.vc/chaojikan.php?url="
+        },
+        {
+            "name": "万能接口2",
+            "url": "http://000o.cc/1023/222.php?url="
+        },
+        {
+            "name": "万能接口3",
+            "url": "http://vip.jlsprh.com/index.php?url="
+        },
+       {
+            "name": "万能接口4",
+            "url": "http://www.16891699.com/index.php?url="
+        },
+        {
+            "name": "万能接口5",
+            "url": "http://jx.vgoodapi.com/jx.php?url="
+        },
+        {
+            "name": "腾讯视频接口1",
+            "url": "http://www.52jiexi.com/tong.php?url="
+        },
+        {
+            "name": "芒果TV超清接口",
+            "url": "http://www.52jiexi.com/yun.php?url="
+        },
+        {
+            "name": "优酷接口",
+            "url": "http://v.rpsofts.com/v.php?url="
+        },
+        {
+            "name": "搜狐接口",
+            "url": "http://www.65yw.com/chaojikan.php?url="
+        },
+        {
+            "name": "优酷乐视搜狐爱奇艺腾讯(优酷1080P)",
+            "url": "https://api.47ks.com/webcloud/?v="
+        },
+        {
+            "name": "线路一(乐乐视频解析)",
+            "url": "http://www.662820.com/xnflv/index.php?url="
+        },
+        {
+            "name": "线路二(百域阁视频)",
+            "url": "http://api.baiyug.cn/vip/index.php?url="
+        },
+        {
+            "name": "线路三(云解析)",
+            "url": "http://jiexi.92fz.cn/player/vip.php?url="
+        },
+        {
+            "name": "线路四",
+            "url": "http://api.nepian.com/ckparse/?url="
+        },
+        {
+            "name": "线路五",
+            "url": "http://aikan-tv.com/?url="
+        },
+        {
+            "name": "花园影视",
+            "url": "http://j.zz22x.com/jx/?url="
+        },
+        {
+            "name": "无",
+            "url": ""
+        }
+    ]
+}
