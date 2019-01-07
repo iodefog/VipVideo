@@ -30,7 +30,7 @@
 
 ## dmg地址：
 
-https://iodefog.github.io/dmg/MVideo.dmg
+[https://iodefog.github.io/dmg/VipVideo.dmg](https://iodefog.github.io/dmg/VipVideo.dmg)
 
 ---
 
