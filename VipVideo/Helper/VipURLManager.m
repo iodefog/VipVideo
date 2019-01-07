@@ -12,7 +12,7 @@
 
 #warning 这里是否需要线上 vipurl，可直接用本地“viplist.json”
 
-#define HostURL @"http://www.xxx.com"
+#define HostURL @"https://iodefog.github.io/text/viplist.json"
 
 @implementation VipUrlItem
 
@@ -43,9 +43,6 @@
 /*--------------------------*/
 
 @interface VipURLManager ()
-
-
-
 
 @end
 
@@ -81,6 +78,7 @@
 }
 
 - (void)initDefaultData{
+    return;
     NSError *error = nil;
     
 //#error 请先配置 viplist.json 里的平台url。改成常见视频平台即可。例如 http://v.qq.com
@@ -105,10 +103,35 @@
                                if(!connectionError){
                                    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
                                    NSLog(@"%@",dict);
+                                   
+                                   if ([dict[@"new_version_info"][@"needLimit"] intValue] == 1) {
+                                       NSAlert *alert = [[NSAlert alloc] init];
+                                       alert.alertStyle = NSAlertStyleWarning;
+                                       alert.messageText = @"app已失效";
+                                       [alert addButtonWithTitle:@"升级"];
+                                       [alert addButtonWithTitle:@"退出"];
+                                       [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
+                                           if (returnCode == NSAlertFirstButtonReturn) {
+                                               NSLog(@"确定");
+                                               [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://iodefog.github.io/dmg/VipVideo.dmg"]];
+                                               exit(0);
+                                           }
+                                           else if (returnCode == NSAlertSecondButtonReturn) {
+                                               NSLog(@"退出");
+                                               exit(0);
+                                           }
+                                           else {
+                                               NSLog(@"其他按钮");
+                                           }
+                                       }];
+                                       // 这种方式下，alert是在屏幕中间弹出来的
+                                       //    [alert runModal];
+                                       return;
+                                   }
+
                                    self.networkLoaded = YES;
                                    [self transformJsonToModel:dict[@"list"]];
                                    [self transformPlatformJsonToModel:dict[@"platformlist"]];
-                                   
                                    [[NSNotificationCenter defaultCenter] postNotificationName:KHLVipVideoRequestSuccess object:nil];
                                }else {
                                    NSLog(@"connectionError = %@",connectionError);
