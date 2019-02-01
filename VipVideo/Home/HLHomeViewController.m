@@ -57,7 +57,7 @@
     }
     self.webView.frame = CGRectMake(0, tempButton.bottom, self.view.width, self.view.height - tempButton.bottom);
     
-    NSLog(@"ViewController  %@", NSStringFromRect(self.view.frame));
+//    NSLog(@"ViewController  %@", NSStringFromRect(self.view.frame));
 }
 
 
@@ -147,13 +147,13 @@
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         }
-        NSLog(@"request.URL.absoluteString = %@",requestUrl);
+//        NSLog(@"request.URL.absoluteString = %@",requestUrl);
     }
     decisionHandler(WKNavigationActionPolicyAllow);
 }
 
 -(WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
-    NSLog(@"createWebViewWithConfiguration  request     %@",navigationAction.request);
+//    NSLog(@"createWebViewWithConfiguration  request     %@",navigationAction.request);
     if (!navigationAction.targetFrame.isMainFrame) {
         [webView loadRequest:navigationAction.request];
     }
@@ -161,6 +161,16 @@
         [webView loadRequest:navigationAction.request];
     }
     return nil;
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
+{
+    [VipURLManager sharedInstance].finalUrl = webView.URL.absoluteString;
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
+{
+    [VipURLManager sharedInstance].finalUrl = webView.URL.absoluteString;
 }
 
 
@@ -175,7 +185,7 @@
         }
         
         NSString *finalUrl = [NSString stringWithFormat:@"%@%@", [[VipURLManager sharedInstance] currentVipApi]?:@"",originUrl?:@""];
-        NSLog(@"finalUrl = %@", finalUrl);
+//        NSLog(@"finalUrl = %@", finalUrl);
         
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:finalUrl]];
         [mySelf.webView loadRequest:request];

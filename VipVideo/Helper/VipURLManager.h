@@ -28,6 +28,9 @@
 
 @interface VipURLManager : NSObject
 
+// 最终的播放url
+@property (nonatomic, strong) NSString *finalUrl;
+
 // 网络数据已加载完毕
 @property (nonatomic, assign) BOOL networkLoaded;
 
@@ -53,6 +56,8 @@
 - (NSMenuItem *)configurationShowMenuItem:(NSMenu *)menu;
 - (NSMenuItem *)configurationCreateMenuItem:(NSMenu *)menu;
 - (NSMenuItem *)configurationCopyMenuItem:(NSMenu *)menu;
+- (NSMenuItem *)configurationOpenSafariItem:(NSMenu *)menu;
+- (NSMenuItem *)configurationNativePlayMenuItem:(NSMenu *)menu;
 
 + (NSMenuItem *)addShowMenuItemTitle:(NSString *)title key:(unichar)key target:(id)target action:(SEL)action;
 
