@@ -39,7 +39,7 @@
     [super viewDidLayout];
     self.webView.frame = self.view.bounds;
     [self.webView reload];
-    NSLog(@"HLVipViewController  %@", NSStringFromRect(self.view.frame));
+//    NSLog(@"HLVipViewController  %@", NSStringFromRect(self.view.frame));
 
 }
 
@@ -83,7 +83,7 @@
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         }
-        NSLog(@"request.URL.absoluteString = %@",requestUrl);
+//        NSLog(@"request.URL.absoluteString = %@",requestUrl);
     }
     decisionHandler(WKNavigationActionPolicyAllow);
 }

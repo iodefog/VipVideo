@@ -27,9 +27,7 @@
     
     // 新建按钮
     self.creatNewItem = [[VipURLManager sharedInstance] configurationCreateMenuItem:self];
-
-    [[VipURLManager sharedInstance] configurationCopyMenuItem:self];
-
+    
     [[VipURLManager sharedInstance] configurationGoBackMenuItem:self];
     [[VipURLManager sharedInstance] configurationGoForwardMenuItem:self];
 
@@ -49,6 +47,11 @@
     NSMenu *apiListMenu = [[NSMenu alloc] initWithTitle:@"切换接口"];
     [[VipURLManager sharedInstance] configurationVipMenu:apiListMenu];
     [self setSubmenu:apiListMenu forItem:apiListItem];
+    
+    [[VipURLManager sharedInstance] configurationOpenSafariItem:self];
+    [[VipURLManager sharedInstance] configurationCopyMenuItem:self];
+    [[VipURLManager sharedInstance] configurationNativePlayMenuItem:self];
+    
     [[VipURLManager sharedInstance] configurationChangeUpMenuItem:self];
     [[VipURLManager sharedInstance] configurationChangeNextMenuItem:self];
 

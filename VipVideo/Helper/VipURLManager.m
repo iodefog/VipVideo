@@ -78,15 +78,14 @@
 }
 
 - (void)initDefaultData{
-    return;
     NSError *error = nil;
     
 //#error 请先配置 viplist.json 里的平台url。改成常见视频平台即可。例如 http://v.qq.com
     
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"viplist" ofType:@"json"];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"vlist" ofType:@"json"];
     NSData *data = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-    NSLog(@"%@,error %@",dict, error);
+//    NSLog(@"%@,error %@",dict, error);
     [self transformJsonToModel:dict[@"list"]];
     [self transformPlatformJsonToModel:dict[@"platformlist"]];
 }
@@ -102,7 +101,7 @@
                                                NSError * _Nullable connectionError) {
                                if(!connectionError){
                                    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-                                   NSLog(@"%@",dict);
+//                                   NSLog(@"%@",dict);
                                    
                                    if ([dict[@"new_version_info"][@"needLimit"] intValue] == 1) {
                                        NSAlert *alert = [[NSAlert alloc] init];
@@ -129,10 +128,10 @@
                                        return;
                                    }
 
-                                   self.networkLoaded = YES;
-                                   [self transformJsonToModel:dict[@"list"]];
-                                   [self transformPlatformJsonToModel:dict[@"platformlist"]];
-                                   [[NSNotificationCenter defaultCenter] postNotificationName:KHLVipVideoRequestSuccess object:nil];
+//                                   self.networkLoaded = YES;
+//                                   [self transformJsonToModel:dict[@"list"]];
+//                                   [self transformPlatformJsonToModel:dict[@"platformlist"]];
+//                                   [[NSNotificationCenter defaultCenter] postNotificationName:KHLVipVideoRequestSuccess object:nil];
                                }else {
                                    NSLog(@"connectionError = %@",connectionError);
                                }
@@ -254,6 +253,19 @@
     return item;
 }
 
+- (NSMenuItem *)configurationOpenSafariItem:(NSMenu *)menu;
+{
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"Safari播放" key:'P' target:self action:@selector(safariPlay:)];
+    [menu addItem:item];
+    return item;
+}
+
+- (NSMenuItem *)configurationNativePlayMenuItem:(NSMenu *)menu{
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"启用本地播放" key:'P' target:self action:@selector(nativePlay:)];
+    [menu addItem:item];
+    return item;
+}
+
 - (void)openVip:(id)sender{
     [NSApp activateIgnoringOtherApps:YES];
     [[[NSApplication sharedApplication].windows firstObject] makeKeyAndOrderFront:self];
@@ -306,6 +318,25 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:KHLVipVideoGoForwardCurrentURL object:nil];
 }
 
+- (void)safariPlay:(id)sender{
+    [self runSystemCommand:[NSString stringWithFormat:@"open %@",self.finalUrl]];
+}
+
+- (void)nativePlay:(id)sender{
+//    [self runCommand:@"/bin/ls"];
+    
+    [self runSystemCommand:@"open ~/Desktop/"];
+}
+
+// NSTask使用显式路径和参数运行外部进程。
+- (void)runCommand:(NSString *)command{
+    [NSTask launchedTaskWithLaunchPath:command arguments:@[]];
+}
+
+// 调用系统命令
+- (void)runSystemCommand:(NSString *)command{
+    [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:@[@"-c", command]];
+}
 
 - (NSString *)currentVipApi{
     if (_currentVipApi) {
