@@ -34,42 +34,18 @@
 
 ---
 
-## 解析源（需要代码自行配置）
-
-1.VipURLManager.m
-
-```
-#import "VipURLManager.h"
-#import "AppDelegate.h"
-#import "JSONKit.h"
-
-#warning 这里是否需要线上 vipurl，可直接用本地“mviplist.json”
-
-#define OnlineVipUrl @"https://iodefog.github.io/text/viplist.json"
-
-@implementation VipUrlItem
-
-```
-
-2.线上配置json地址:(也可以使用本地包地址，有时间我就会更新)
-
-[https://iodefog.github.io/text/viplist.json](https://iodefog.github.io/text/viplist.json)
-
-
----
-
 ## 软件功能介绍：
-1. 展示窗口
-新建窗口
-GoBack
-GoFoward
-切换接口
-切换下一个接口（支持快捷键）
-切换上一个接口（支持快捷键）
-Safari中打开
-复制链接（用于分享或者浏览器播放）
-启用本地播放（TODO:）
-退出
+* 展示窗口
+* 新建窗口
+* GoBack
+* GoFoward
+* 切换接口
+* 切换下一个接口（支持快捷键）
+* 切换上一个接口（支持快捷键）
+* Safari中打开
+* 复制链接（用于分享或者浏览器播放）
+* 启用本地播放（TODO:）
+* 退出
 
 ---
 
@@ -126,6 +102,29 @@ flash 配置环境比较久了，记不了太清。如果仍然不好使，请�
 
 ---
 
+## 解析源（需要代码自行配置）
+
+1.VipURLManager.m
+
+```
+#import "VipURLManager.h"
+#import "AppDelegate.h"
+#import "JSONKit.h"
+
+#warning 这里是否需要线上 vipurl，可直接用本地“mviplist.json”
+
+#define OnlineVipUrl @"https://iodefog.github.io/text/viplist.json"
+
+@implementation VipUrlItem
+
+```
+
+2.线上配置json地址:(也可以使用本地包地址，有时间我就会更新)
+
+[https://iodefog.github.io/text/viplist.json](https://iodefog.github.io/text/viplist.json)
+
+
+---
 
 如需联系或者合作，请发送邮件 [iodefog@gmail.com](mailto:iodefog@gmail.com)
 
