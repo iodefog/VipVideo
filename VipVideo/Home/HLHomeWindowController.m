@@ -6,8 +6,9 @@
 //  Copyright © 2017年 SV. All rights reserved.
 //
 
-#import "HLHomeWindowController.h"
 #import "AppDelegate.h"
+#import "HLHomeWindowController.h"
+#import "HLHomeViewController.h"
 
 @interface HLHomeWindowController ()<NSWindowDelegate>
 
@@ -29,11 +30,13 @@
 }
 
 - (void)windowWillExitFullScreen:(NSNotification *)notification {
-    
+    HLHomeViewController *vipVC = (id)self.contentViewController;
+    vipVC.isFullScreen = NO;
 }
 
 - (void)windowWillEnterFullScreen:(NSNotification *)notification {
-    
+    HLHomeViewController *vipVC = (id)self.contentViewController;
+    vipVC.isFullScreen = YES;
 }
 
 - (BOOL)windowShouldClose:(NSWindow *)sender{

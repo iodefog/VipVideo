@@ -10,5 +10,7 @@
 
 @interface HLHomeViewController : NSViewController
 
+@property (nonatomic, assign) BOOL isFullScreen;
+
 @end
 
