@@ -47,13 +47,12 @@
     NSMenu *apiListMenu = [[NSMenu alloc] initWithTitle:@"切换接口"];
     [[VipURLManager sharedInstance] configurationVipMenu:apiListMenu];
     [self setSubmenu:apiListMenu forItem:apiListItem];
-    
+    [[VipURLManager sharedInstance] configurationChangeUpMenuItem:self];
+    [[VipURLManager sharedInstance] configurationChangeNextMenuItem:self];
+
     [[VipURLManager sharedInstance] configurationOpenSafariItem:self];
     [[VipURLManager sharedInstance] configurationCopyMenuItem:self];
     [[VipURLManager sharedInstance] configurationNativePlayMenuItem:self];
-    
-    [[VipURLManager sharedInstance] configurationChangeUpMenuItem:self];
-    [[VipURLManager sharedInstance] configurationChangeNextMenuItem:self];
 
     // 退出按钮
     self.quitItem = [[VipURLManager sharedInstance] configurationQuitMenuItem:self];

@@ -224,13 +224,13 @@
 }
 
 - (NSMenuItem *)configurationChangeUpMenuItem:(NSMenu *)menu{
-    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"切换上一个" key:'I' target:self action:@selector(upChange:)];
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"切换上一个接口" key:'I' target:self action:@selector(upChange:)];
     [menu addItem:item];
     return item;
 }
 
 - (NSMenuItem *)configurationChangeNextMenuItem:(NSMenu *)menu{
-    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"切换下一个" key:'J' target:self action:@selector(nextChange:)];
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"切换下一个接口" key:'J' target:self action:@selector(nextChange:)];
     [menu addItem:item];
     return item;
 }
@@ -255,7 +255,7 @@
 
 - (NSMenuItem *)configurationOpenSafariItem:(NSMenu *)menu;
 {
-    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"Safari播放" key:'P' target:self action:@selector(safariPlay:)];
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"Safari打开" key:'P' target:self action:@selector(safariPlay:)];
     [menu addItem:item];
     return item;
 }

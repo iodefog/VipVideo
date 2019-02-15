@@ -52,14 +52,17 @@
     CGFloat width = (CGRectGetWidth(self.view.bounds) - (self.buttonsArray.count+2)*10)/self.buttonsArray.count;
     NSButton *tempButton = nil;
     for (NSButton *button in self.buttonsArray) {
-        button.frame = CGRectMake(tempButton.right+10, 5, width, 50);
+        button.frame = CGRectMake(tempButton.right+10, 5, width, self.isFullScreen ? 0 : 50);
         tempButton = button;
     }
     self.webView.frame = CGRectMake(0, tempButton.bottom, self.view.width, self.view.height - tempButton.bottom);
-    
-//    NSLog(@"ViewController  %@", NSStringFromRect(self.view.frame));
 }
 
+- (void)setIsFullScreen:(BOOL)isFullScreen{
+    _isFullScreen = isFullScreen;
+    
+    [self.view setNeedsLayout:YES];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
