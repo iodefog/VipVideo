@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4F5260452203DBF10028DB62 /* vlist.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F5260442203DBF10028DB62 /* vlist.json */; };
 		4FBF02DB2216B1C5007DB801 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4FBF02DA2216B1C5007DB801 /* README.md */; };
+		4FDC5B08221D95E300AE0D3E /* vlist.json in Resources */ = {isa = PBXBuildFile; fileRef = 4FDC5B07221D95E300AE0D3E /* vlist.json */; };
 		C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C7240AAF1FA17AF7000684F1 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C72BBE041F9DB2EC00C5141E /* iconStatus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */; };
 		C72BBE231F9DE8B000C5141E /* NSView+ZCAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE111F9DE8B000C5141E /* NSView+ZCAddition.m */; };
@@ -25,8 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4F5260442203DBF10028DB62 /* vlist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = vlist.json; path = ../../../../../../Hexo/source/text/vlist.json; sourceTree = "<group>"; };
 		4FBF02DA2216B1C5007DB801 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		4FDC5B07221D95E300AE0D3E /* vlist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = vlist.json; path = ../../../../../Hexo/source/text/vlist.json; sourceTree = "<group>"; };
 		C7240AAF1FA17AF7000684F1 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		C7240AB01FA17AF7000684F1 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iconStatus@2x.png"; sourceTree = "<group>"; };
@@ -134,7 +134,7 @@
 				C72BBE191F9DE8B000C5141E /* Home */,
 				C72BBE1E1F9DE8B000C5141E /* VipPlay */,
 				C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */,
-				4F5260442203DBF10028DB62 /* vlist.json */,
+				4FDC5B07221D95E300AE0D3E /* vlist.json */,
 				C7D9E8441F9DA1BB00730A34 /* Assets.xcassets */,
 				C7D9E8461F9DA1BB00730A34 /* Main.storyboard */,
 				C7D9E8491F9DA1BB00730A34 /* Info.plist */,
@@ -203,8 +203,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4F5260452203DBF10028DB62 /* vlist.json in Resources */,
 				C7D9E8451F9DA1BB00730A34 /* Assets.xcassets in Resources */,
+				4FDC5B08221D95E300AE0D3E /* vlist.json in Resources */,
 				4FBF02DB2216B1C5007DB801 /* README.md in Resources */,
 				C7D9E8481F9DA1BB00730A34 /* Main.storyboard in Resources */,
 				C72BBE041F9DB2EC00C5141E /* iconStatus@2x.png in Resources */,

@@ -86,7 +86,7 @@
     
     if (![VipURLManager sharedInstance].networkLoaded) {
         [self configurationDefaultData];
-    }else {
+    } else {
         [[NSNotificationCenter defaultCenter] postNotificationName:KHLVipVideoRequestSuccess object:nil];
     }
     
@@ -144,19 +144,21 @@
             [requestUrl containsString:@"ylbdtg.com"] ||
             [requestUrl containsString:@"662820.com"] ||
             [requestUrl containsString:@"api.vparse.org"] ||
-            [requestUrl containsString:@"hyysvip.duapp.com"]||
-            [requestUrl containsString:@"f.qcwzx.net.cn"]
+            [requestUrl containsString:@"hyysvip.duapp.com"] ||
+            [requestUrl containsString:@"f.qcwzx.net.cn"] ||
+            [requestUrl containsString:@"adx.dlads.cn"] ||
+            [requestUrl containsString:@"dlads.cn"]
             ) {
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         }
-//        NSLog(@"request.URL.absoluteString = %@",requestUrl);
+        NSLog(@"request.URL.absoluteString = %@",requestUrl);
     }
     decisionHandler(WKNavigationActionPolicyAllow);
 }
 
--(WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
-//    NSLog(@"createWebViewWithConfiguration  request     %@",navigationAction.request);
+- (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
+    NSLog(@"createWebViewWithConfiguration  request     %@",navigationAction.request);
     if (!navigationAction.targetFrame.isMainFrame) {
         [webView loadRequest:navigationAction.request];
     }
