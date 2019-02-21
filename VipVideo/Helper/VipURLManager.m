@@ -10,8 +10,6 @@
 #import "AppDelegate.h"
 #import "JSONKit.h"
 
-#warning 这里是否需要线上 vipurl，可直接用本地“viplist.json”
-
 #define HostURL @"https://iodefog.github.io/text/viplist.json"
 
 @implementation VipUrlItem
