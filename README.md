@@ -1,9 +1,14 @@
 
-# VipVideo
+# VIP视频破解
 
 ----
+本软件不做破解，只是破解地址的搬运工
+1. 支持各大网站vip视频免费观看。
+2. 集合自用视频或者电影URL
+3. 集合自用音乐破解URL
+4. 集合CCTV等电视播放URL。
 
-各大网站vip视频免费观看
+
 
 * 本软件仅供学习参考，切勿商业使用。接口数据均来源于互联网。如有侵权，请联系删除。
 
@@ -73,58 +78,15 @@
 
 ---
 
-### 源码需配置
-
-* VipURLManager.m 中，设置平台信息及解析url。格式参考viplist.json 文件。也可以直接配置viplist.json，不走网络。
-
-
----
-
 ### 其他：
 如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer及允许。
 
 此外可能需要设置如下配置：
-flash 配置环境比较久了，记不了太清。如果仍然不好使，请自行查找原因及解决问题。
-
 
 ![](./images/peizhi.png)
 ![](./images/peizhi2.jpg)
-![](./images/erweima.png)
 
----
-
-* 应大家的要求，放出源码，仅供交流使用。
-* 这里仅仅给出源码，接口已经移除。有需要的请自行配置url路径。
-* 如果有需要我这边出接口的，请适当给一些赞助。赞助后，定期下发给vip转换url或者dmg。
-
-
----
-
-## 解析源（需要代码自行配置）
-
-1.VipURLManager.m
-
-```
-#import "VipURLManager.h"
-#import "AppDelegate.h"
-#import "JSONKit.h"
-
-#warning 这里是否需要线上 vipurl，可直接用本地“mviplist.json”
-
-#define OnlineVipUrl @"https://iodefog.github.io/text/viplist.json"
-
-@implementation VipUrlItem
-
-```
-
-2.线上配置json地址:(也可以使用本地包地址，有时间我就会更新)
-
-[https://iodefog.github.io/text/viplist.json](https://iodefog.github.io/text/viplist.json)
-
-
----
-
-如需联系或者合作，请发送邮件 [iodefog@gmail.com](mailto:iodefog@gmail.com)
+如有其他问题，请发送邮件 [iodefog@gmail.com](mailto:iodefog@gmail.com)
 
 QQ群：567503018
 QQ: 592658688
