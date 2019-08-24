@@ -40,6 +40,11 @@
         "icon": "",
         "url": "http://tv.cctv.com/live/cctv5/"
     }
+    , {
+        "name": "音乐破解",
+        "icon": "",
+        "url": "https://music.sonimei.cn/?name=赵雷&type=netease"
+    }
     ],
 
     "list": [
