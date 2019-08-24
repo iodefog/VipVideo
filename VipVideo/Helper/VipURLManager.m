@@ -165,8 +165,8 @@
         }
         
         AppDelegate *delegate = (id)[NSApplication sharedApplication].delegate;
-        NSMenuItem *listStatusItem = [delegate.statusItem.menu itemWithTitle:@"切换接口"];;
-        NSMenuItem *listMainItem = [[NSApplication sharedApplication].mainMenu itemWithTitle:@"切换接口"];
+        NSMenuItem *listStatusItem = [delegate.statusItem.menu itemWithTitle:@"破解接口"];;
+        NSMenuItem *listMainItem = [[NSApplication sharedApplication].mainMenu itemWithTitle:@"破解接口"];
         [listStatusItem.submenu removeAllItems];
         [listMainItem.submenu removeAllItems];
         [self.itemsArray removeAllObjects];
@@ -374,8 +374,8 @@
         self.currentVipApi = item.url;
         
         AppDelegate *delegate = (id)[NSApplication sharedApplication].delegate;
-        NSMenuItem *listStatusItem = [delegate.statusItem.menu itemWithTitle:@"切换接口"];;
-        NSMenuItem *listMainItem = [[NSApplication sharedApplication].mainMenu itemWithTitle:@"切换接口"];
+        NSMenuItem *listStatusItem = [delegate.statusItem.menu itemWithTitle:@"破解接口"];;
+        NSMenuItem *listMainItem = [[NSApplication sharedApplication].mainMenu itemWithTitle:@"破解接口"];
         
         NSMenuItem *oldItem1 = nil;
         if (_currentIndex < listStatusItem.submenu.itemArray.count) {

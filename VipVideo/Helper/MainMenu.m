@@ -22,6 +22,13 @@
 }
 
 - (void)createStatusBarItems{
+    //添加vip解析列表
+    NSMenuItem * apiListItem = [[NSMenuItem alloc] initWithTitle:@"破解接口" action:Nil keyEquivalent:@""];
+    [self addItem:apiListItem];
+    NSMenu *apiListMenu = [[NSMenu alloc] initWithTitle:@"破解接口"];
+    [[VipURLManager sharedInstance] configurationVipMenu:apiListMenu];
+    [self setSubmenu:apiListMenu forItem:apiListItem];
+
     // 展示窗口
     self.showItem = [[VipURLManager sharedInstance] configurationShowMenuItem:self];
     
@@ -41,12 +48,6 @@
     
     //        [self setSubmenu:appMenu forItem:appItem];
     
-    //添加vip解析列表
-    NSMenuItem * apiListItem = [[NSMenuItem alloc] initWithTitle:@"切换接口" action:Nil keyEquivalent:@""];
-    [self addItem:apiListItem];
-    NSMenu *apiListMenu = [[NSMenu alloc] initWithTitle:@"切换接口"];
-    [[VipURLManager sharedInstance] configurationVipMenu:apiListMenu];
-    [self setSubmenu:apiListMenu forItem:apiListItem];
     [[VipURLManager sharedInstance] configurationChangeUpMenuItem:self];
     [[VipURLManager sharedInstance] configurationChangeNextMenuItem:self];
 
@@ -69,8 +70,8 @@
     [[VipURLManager sharedInstance] configurationChangeUpMenuItem:manager];
     [[VipURLManager sharedInstance] configurationChangeNextMenuItem:manager];
 
-    NSMenuItem * apiListItem = [[NSMenuItem alloc] initWithTitle:@"切换接口" action:Nil keyEquivalent:@""];
-    NSMenu *apiListMenu = [[NSMenu alloc] initWithTitle:@"切换接口"];
+    NSMenuItem * apiListItem = [[NSMenuItem alloc] initWithTitle:@"破解接口" action:Nil keyEquivalent:@""];
+    NSMenu *apiListMenu = [[NSMenu alloc] initWithTitle:@"破解接口"];
     [[VipURLManager sharedInstance] configurationVipMenu:apiListMenu];
     [menu setSubmenu:apiListMenu forItem:apiListItem];
 
