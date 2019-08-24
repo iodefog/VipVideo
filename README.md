@@ -8,9 +8,13 @@
 3. 集合自用音乐破解URL
 4. 集合CCTV等电视播放URL。
 
-
-
 * 本软件仅供学习参考，切勿商业使用。接口数据均来源于互联网。如有侵权，请联系删除。
+
+---
+
+## 下载安装地址：
+[https://iodefog.github.io/dmg/VipVideo.dmg](https://iodefog.github.io/dmg/VipVideo.dmg)
+
 
 ---
 
@@ -28,13 +32,9 @@
     
 
 ---
-## VipVideo For iPhone
+## VIP视频破解 For iPhone
 
 [https://github.com/iodefog/VipVideo-iPhone.git](https://github.com/iodefog/VipVideo-iPhone.git)
-
-## dmg地址：
-
-[https://iodefog.github.io/dmg/VipVideo.dmg](https://iodefog.github.io/dmg/VipVideo.dmg)
 
 ---
 
