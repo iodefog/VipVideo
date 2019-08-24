@@ -46,7 +46,8 @@
 - (void)setVideoUrl:(NSString *)videoUrl{
     _videoUrl = videoUrl;
     NSString *finalUrl = [NSString stringWithFormat:@"%@%@", [[VipURLManager sharedInstance] currentVipApi]?:@"",videoUrl?:@""];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:finalUrl]];
+    NSString * encodingString = [finalUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:encodingString]];
     [self.webView loadRequest:request];
 }
 

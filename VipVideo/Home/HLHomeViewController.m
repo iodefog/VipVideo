@@ -191,8 +191,8 @@
         
         NSString *finalUrl = [NSString stringWithFormat:@"%@%@", [[VipURLManager sharedInstance] currentVipApi]?:@"",originUrl?:@""];
 //        NSLog(@"finalUrl = %@", finalUrl);
-        
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:finalUrl]];
+        NSString * encodingString = [finalUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:encodingString]];
         [mySelf.webView loadRequest:request];
     }];
 }
@@ -219,7 +219,9 @@
 #pragma mark - Notification
 
 - (void)refreshVideoModel:(VipUrlItem *)model{
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:model.url]];
+    NSString * encodingString = [model.url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:encodingString]];
+
     [self.webView loadRequest:request];
 }
 
