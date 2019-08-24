@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4F83BE93221E7AD90077A780 /* vlist.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F83BE92221E7AD90077A780 /* vlist.json */; };
+		4F2DDCAB2311275E00A105C5 /* vlist.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F2DDCAA2311275E00A105C5 /* vlist.json */; };
 		4FBF02DB2216B1C5007DB801 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4FBF02DA2216B1C5007DB801 /* README.md */; };
 		C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C7240AAF1FA17AF7000684F1 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C72BBE041F9DB2EC00C5141E /* iconStatus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */; };
@@ -25,7 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4F83BE92221E7AD90077A780 /* vlist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = vlist.json; path = ../../../../../../Hexo/source/text/vlist.json; sourceTree = "<group>"; };
+		4F2DDCAA2311275E00A105C5 /* vlist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = vlist.json; sourceTree = "<group>"; };
 		4FBF02DA2216B1C5007DB801 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		C7240AAF1FA17AF7000684F1 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		C7240AB01FA17AF7000684F1 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
@@ -44,7 +44,7 @@
 		C72BBE201F9DE8B000C5141E /* HLVipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLVipViewController.m; sourceTree = "<group>"; };
 		C72BBE211F9DE8B000C5141E /* HLVipWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLVipWindowController.h; sourceTree = "<group>"; };
 		C72BBE221F9DE8B000C5141E /* HLVipWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLVipWindowController.m; sourceTree = "<group>"; };
-		C7D9E83B1F9DA1BB00730A34 /* VipVideo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VipVideo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7D9E83B1F9DA1BB00730A34 /* VIP视频破解.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VIP视频破解.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7D9E83E1F9DA1BB00730A34 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C7D9E83F1F9DA1BB00730A34 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C7D9E8441F9DA1BB00730A34 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -76,6 +76,7 @@
 		C72BBE121F9DE8B000C5141E /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				4F2DDCAA2311275E00A105C5 /* vlist.json */,
 				C72BBE131F9DE8B000C5141E /* MainMenu.h */,
 				C72BBE141F9DE8B000C5141E /* MainMenu.m */,
 				C72BBE171F9DE8B000C5141E /* VipURLManager.h */,
@@ -119,7 +120,7 @@
 		C7D9E83C1F9DA1BB00730A34 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C7D9E83B1F9DA1BB00730A34 /* VipVideo.app */,
+				C7D9E83B1F9DA1BB00730A34 /* VIP视频破解.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -134,7 +135,6 @@
 				C72BBE191F9DE8B000C5141E /* Home */,
 				C72BBE1E1F9DE8B000C5141E /* VipPlay */,
 				C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */,
-				4F83BE92221E7AD90077A780 /* vlist.json */,
 				C7D9E8441F9DA1BB00730A34 /* Assets.xcassets */,
 				C7D9E8461F9DA1BB00730A34 /* Main.storyboard */,
 				C7D9E8491F9DA1BB00730A34 /* Info.plist */,
@@ -161,7 +161,7 @@
 			);
 			name = VipVideo;
 			productName = VipVideo;
-			productReference = C7D9E83B1F9DA1BB00730A34 /* VipVideo.app */;
+			productReference = C7D9E83B1F9DA1BB00730A34 /* VIP视频破解.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -204,10 +204,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7D9E8451F9DA1BB00730A34 /* Assets.xcassets in Resources */,
-				4F83BE93221E7AD90077A780 /* vlist.json in Resources */,
 				4FBF02DB2216B1C5007DB801 /* README.md in Resources */,
 				C7D9E8481F9DA1BB00730A34 /* Main.storyboard in Resources */,
 				C72BBE041F9DB2EC00C5141E /* iconStatus@2x.png in Resources */,
+				4F2DDCAB2311275E00A105C5 /* vlist.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,7 +362,7 @@
 				INFOPLIST_FILE = VipVideo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sohu.VipVideo;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "VIP视频破解";
 			};
 			name = Debug;
 		};
@@ -376,7 +376,7 @@
 				INFOPLIST_FILE = VipVideo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sohu.VipVideo;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "VIP视频破解";
 			};
 			name = Release;
 		};
