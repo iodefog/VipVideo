@@ -80,12 +80,22 @@
 ---
 
 ### 其他：
-如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer及允许。
 
-此外可能需要设置如下配置：
+1. 如果双击dmg出现提示"文件已损坏，打不开"等提示。原因：mac不支持未在AppStore上架的软件。（提示：本软件未获取任何隐私信息，源码可查，可放心使用）
+
+	解决方法：请在终端输入以下代码，并输入电脑密码，再次打开dmg文件即可。
+
+	```
+	sudo spctl --master-disable
+	```
+
+2. 如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer及允许。此外可能需要设置如下配置：
 
 ![](./images/peizhi.png)
 ![](./images/peizhi2.jpg)
+
+
+----------------------
 
 如有其他问题，请发送邮件 [iodefog@gmail.com](mailto:iodefog@gmail.com)
 
