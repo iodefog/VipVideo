@@ -322,8 +322,41 @@
 
 - (void)nativePlay:(id)sender{
 //    [self runCommand:@"/bin/ls"];
+//    [self runSystemCommand:[NSString stringWithFormat:@"/usr/local/bin/mpv %@",self.m3u8Url]];
+    if (self.m3u8Url.length == 0) {
+        [VipURLManager showAlert:@"未获取到当前源的m3u8地址"];
+        return;
+    }
     
-    [self runSystemCommand:@"open ~/Desktop/"];
+    BOOL haveFFPlay = [[NSUserDefaults standardUserDefaults] boolForKey:@"HaveFFPlay"];
+    BOOL haveMPV = [[NSUserDefaults standardUserDefaults] boolForKey:@"HaveMPV"];
+
+    if (haveMPV) {
+        [self runSystemCommand:[NSString stringWithFormat:@"/usr/local/bin/mpv %@",self.m3u8Url]];
+    } else if (haveFFPlay) {
+        [self runSystemCommand:[NSString stringWithFormat:@"/usr/local/bin/ffplay %@",self.m3u8Url]];
+    }
+    
+    if (!haveFFPlay && !haveMPV) {
+        haveMPV = [self isCanRunSystemCommand:[NSString stringWithFormat:@"/usr/local/bin/brew %@",@"search mpv"]];
+        if (haveMPV) {
+            [self runSystemCommand:[NSString stringWithFormat:@"/usr/local/bin/mpv %@",self.m3u8Url]];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HaveMPV"];
+        }
+        else {
+            haveFFPlay = [self isCanRunSystemCommand:[NSString stringWithFormat:@"/usr/local/bin/brew %@",@"search ffmpeg"]];
+
+            if (haveFFPlay) {
+                [self runSystemCommand:[NSString stringWithFormat:@"/usr/local/bin/ffplay %@",self.m3u8Url]];
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HaveFFPlay"];
+            }
+            else {
+                [VipURLManager showAlert:@"请先安装ffplay或mpv"];
+            }
+        }
+    }
+   
+//    [self runSystemCommand:@"open ~/Desktop/"];
 }
 
 // NSTask使用显式路径和参数运行外部进程。
@@ -331,9 +364,32 @@
     [NSTask launchedTaskWithLaunchPath:command arguments:@[]];
 }
 
-// 调用系统命令
+// 运行shell命令
 - (void)runSystemCommand:(NSString *)command{
     [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:@[@"-c", command]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:KHLVipVideoStopPlay object:nil];
+}
+
+// 检查是否安装某个命令
+- (BOOL)isCanRunSystemCommand:(NSString *)command{
+    // 获取命令返回值
+    NSTask *task = [[NSTask alloc] init];
+    [task setLaunchPath:@"/bin/sh"];
+    
+    NSArray *arguments = @[@"-c", command];
+    [task setArguments: arguments];
+    
+    NSPipe *pipe = [NSPipe pipe];
+    [task setStandardOutput:pipe];
+    
+    NSFileHandle *file = [pipe fileHandleForReading];
+    [task launch];
+
+    NSData *data = [file readDataToEndOfFile];
+     
+    NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog (@"got\n%@", string);
+    return (string.length > 0);
 }
 
 - (NSString *)currentVipApi{
@@ -412,5 +468,16 @@
     return showItem;
 }
 
+#pragma mark - private
++ (void)showAlert:(NSString *)msg{
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.alertStyle = NSAlertStyleWarning;
+    alert.messageText = msg;
+    [alert addButtonWithTitle:@"确定"];
+    
+    [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
+        
+    }];
+}
 
 @end

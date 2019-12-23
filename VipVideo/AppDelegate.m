@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "MainMenu.h"
 #import "VipURLManager.h"
+#import "NSURLProtocol+WKWebVIew.h"
 
 @interface AppDelegate ()
 
@@ -24,6 +25,9 @@
     [self configStatusBar];
     [self configMainMenu];
     self.windonwArray = [NSMutableArray array];
+    
+    [NSURLProtocol wk_registerScheme:@"http"];
+    [NSURLProtocol wk_registerScheme:@"https"];
 }
 
 

@@ -101,6 +101,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoDidCopyCurrentURL:) name:KHLVipVideoDidCopyCurrentURL object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoBackCurrentURL:) name:KHLVipVideoGoBackCurrentURL object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoForwardCurrentURL:) name:KHLVipVideoGoForwardCurrentURL object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoStopPlay:) name:KHLVipVideoStopPlay object:nil];
 }
 
 - (void)configurationDefaultData{
@@ -151,6 +152,13 @@
             ) {
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
+        }
+        if ([requestUrl hasSuffix:@".m3u8"]) {
+            NSArray *urls = [requestUrl componentsSeparatedByString:@"url="];
+            [VipURLManager sharedInstance].m3u8Url = urls.lastObject;
+        }
+        else {
+            [VipURLManager sharedInstance].m3u8Url = nil;
         }
         NSLog(@"request.URL.absoluteString = %@",requestUrl);
     }
@@ -215,6 +223,17 @@
         [self.webView goForward];
     }
 }
+
+- (void)vipVideoStopPlay:(NSNotification *)notification{
+    NSString *javaScript = @"var videos = document.getElementsByTagName('video');\
+    for (var i=0;i < videos.length;i++){\
+        videos[i].stop();\
+    }";
+    [self.webView evaluateJavaScript:javaScript completionHandler:^(id _Nullable object, NSError * _Nullable error) {
+        
+    }];
+}
+
 
 #pragma mark - Notification
 
