@@ -7,7 +7,7 @@
 
 | 更新日期 | 更新内容 |
 | ---- | --- |
-| 2019-12-23  |  1. 新增VIP解析源  </br> 2. 完成调用本地播放器进行播放视频  </br>3. 增加一列"更新日志”  </br>4. dmg文件更新 |
+| 2019-12-23  |  1. 新增VIP解析源  </br> 2. 完成调用本地播放器进行播放视频(利用<font color='red'>MPV</font>软件和<font color='red'>FFPlay</font>软件)  </br>3. 增加一列"更新日志”  </br>4. dmg文件更新 |
 | 2019-8-24 |  1. 试部分源，失效源优先级挪低。</div> 2. 更新icon </div> 3. "转换接口"改为"破解接口" </div> 4. 新增音乐破解地址</div>
 | 2019-2-21 | 新增2个电视直播源 |
 | 2019-2-15 | 全屏时隐藏底部按钮 |
@@ -93,6 +93,31 @@
 
 ![](./images/peizhi.png)
 ![](./images/peizhi2.jpg)
+
+## 依赖软件安装指南：
+### MPV 安装介绍
+
+简单安装命令：
+```
+// 首先安装brew
+gem install brew
+
+// 安装mpv
+brew install mpv
+```
+详细安装指南，请参考[https://iodefog.github.io/2019/01/28/mpv/](https://iodefog.github.io/2019/01/28/mpv/)
+
+
+### FFPlay 安装介绍
+```
+// 首先安装brew
+gem install brew
+
+// 安装ffmpeg和ffplay
+brew install ffmpeg --with-sdl2
+
+```
+注意 ``` brew install ffmpeg --with-ffplay ``` 已被启用。
 
 
 ----------------------
