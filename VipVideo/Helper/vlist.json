@@ -43,7 +43,12 @@
     , {
         "name": "音乐破解",
         "icon": "",
-        "url": "https://music.sonimei.cn/?name=赵雷&type=netease"
+        "url": "https://music.sonimei.cn/"
+    }
+    , {
+        "name": "更新日志",
+        "icon": "",
+        "url": "https://github.com/iodefog/VipVideo/blob/master/README.md"
     }
     ],
 
@@ -52,6 +57,36 @@
             "name": "原地址-（提示：本软件免费无广告,不要花钱购买）",
             "url": ""
         },
+        {
+            "name": "1223-1",
+            "url": "http://v.d9y.net/vip/?url="
+        },
+        {
+            "name": "1223-2",
+            "url": "http://mimijiexi.top/?url="
+        },
+        {
+            "name": "1223-3",
+            "url": "http://55jx.top/?url="
+        },
+        {
+            "name": "1223-4",
+            "url": "http://playx.top/?url="
+        },
+        {
+            "name": "1223-5",
+            "url": "http://nitian9.com/?url="
+        },
+        {
+            "name": "1223-6",
+            "url": "http://19g.top/?url="
+        },
+        {
+            "name": "1223-7",
+            "url": "http://52088.online/?url="
+        },
+        
+        
         {
             "name": "5月-21",
             "url": "http://jiexi.071811.cc/jx2.php?url="

@@ -14,6 +14,7 @@
 #define KHLVipVideoDidCopyCurrentURL    @"KHLVipVideoDidCopyCurrentURL"
 #define KHLVipVideoGoBackCurrentURL     @"KHLVipVideoGoBackCurrentURL"
 #define KHLVipVideoGoForwardCurrentURL  @"KHLVipVideoGoForwardCurrentURL"
+#define KHLVipVideoStopPlay             @"KHLVipVideoStopPlay"
 
 @interface VipUrlItem:NSObject
 
@@ -30,6 +31,7 @@
 
 // 最终的播放url
 @property (nonatomic, strong) NSString *finalUrl;
+@property (nonatomic, strong) NSString *m3u8Url;
 
 // 网络数据已加载完毕
 @property (nonatomic, assign) BOOL networkLoaded;
