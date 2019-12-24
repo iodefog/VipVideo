@@ -37,7 +37,7 @@ DMG下载地址(如果提示dmg已损坏，请使用app下载地址)：
 
 app下载地址：
 
-[https://iodefog.github.io/dmg/VIPVideo.zip](https://iodefog.github.io/dmg/VIPVideo.zip)
+[https://iodefog.github.io/dmg/VIP.zip](https://iodefog.github.io/dmg/VIP.zip)
 
 
 ---
