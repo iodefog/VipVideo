@@ -31,13 +31,13 @@
 
 ## 下载安装地址：
 
-DMG下载地址：
+DMG下载地址(如果提示dmg已损坏，请使用app下载地址)：
 
 [https://iodefog.github.io/dmg/VipVideo.dmg](https://iodefog.github.io/dmg/VipVideo.dmg)
 
 app下载地址：
 
-[https://iodefog.github.io/dmg/VipVideo.dmg](https://iodefog.github.io/dmg/VipVideo.zip)
+[https://iodefog.github.io/dmg/VIPVideo.zip](https://iodefog.github.io/dmg/VIPVideo.zip)
 
 
 ---
