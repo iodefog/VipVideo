@@ -15,7 +15,11 @@
 | 2018-7-26 | 更新解析接口 |
 
 ----
+
+## 概述
+
 本软件不做破解，只是破解地址的搬运工
+
 1. 支持各大网站vip视频免费观看。
 2. 集合自用视频或者电影URL
 3. 集合自用音乐破解URL
@@ -26,7 +30,14 @@
 ---
 
 ## 下载安装地址：
+
+DMG下载地址：
+
 [https://iodefog.github.io/dmg/VipVideo.dmg](https://iodefog.github.io/dmg/VipVideo.dmg)
+
+app下载地址：
+
+[https://iodefog.github.io/dmg/VipVideo.dmg](https://iodefog.github.io/dmg/VipVideo.zip)
 
 
 ---
