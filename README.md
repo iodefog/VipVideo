@@ -46,13 +46,11 @@ app下载地址：
 在Mac OS Sierra上，应该进行以下操作：
 
 1. 打开终端（Terminal），输入以下命令后回车，输入密码 </br>
-<font color ='red'>
 
 ``` 
 sudo spctl --master-disable 
 ```
 
-</font>
 2. 重新运行下载的应用程序
 
 <b>解决方法二：</b>
@@ -62,14 +60,12 @@ sudo spctl --master-disable
 格式：tr -r -d com.apple.quarantine <path>
 <path> 是你下载的应用程序的路径，一般在/Applications/应用程序名字 </br>
 示例：
-<font color ='red'>
 
 ```
 xattr -r -d com.apple.quarantine /Applications/VIP视频破解.app
 ```
-
-</font>
 </br>
+
 2. 重新运行下载的应用程序。
 
 ---
