@@ -47,9 +47,9 @@ app下载地址：
 
 1. 打开终端（Terminal），输入以下命令后回车，输入密码 </br>
 
-``` 
-sudo spctl --master-disable 
-```
+	``` 
+	sudo spctl --master-disable 
+	```
 
 2. 重新运行下载的应用程序
 
@@ -57,13 +57,13 @@ sudo spctl --master-disable
 移除这个应用的安全隔离属性，操作如下：
 
 1. 打开终端（Terminal），输入以下命令后回车，如需要，请输入密码</br>
-格式：tr -r -d com.apple.quarantine <path>
+格式：``` tr -r -d com.apple.quarantine <path> ``` </br>
 <path> 是你下载的应用程序的路径，一般在/Applications/应用程序名字 </br>
 示例：
 
-```
-xattr -r -d com.apple.quarantine /Applications/VIP视频破解.app
-```
+	```
+	xattr -r -d com.apple.quarantine /Applications/VIP视频破解.app
+	```
 </br>
 
 2. 重新运行下载的应用程序。
