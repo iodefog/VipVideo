@@ -9,7 +9,6 @@
 #import "HLHomeViewController.h"
 #import "NSView+ZCAddition.h"
 #import <WebKit/WebKit.h>
-#import "HLVipWindowController.h"
 #import "VipURLManager.h"
 
 
@@ -36,7 +35,6 @@
 @property (nonatomic, strong) NSMutableArray *modelsArray;
 @property (nonatomic, strong) NSMutableArray *buttonsArray;
 @property (nonatomic, strong) NSVideoButton *selectedButton;
-@property (nonatomic, strong) HLVipWindowController *newsWindow;
 @property (nonatomic, strong) NSString       *currentUrl;
 
 @end;
