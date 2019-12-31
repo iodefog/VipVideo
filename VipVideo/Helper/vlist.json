@@ -2,26 +2,32 @@
     "platformlist": [{
         "name": "爱奇艺",
         "icon": "爱奇艺",
+        "canvip": 1,
         "url": "http://www.iqiyi.com/"
     }, {
         "name": "腾讯视频",
         "icon": "腾讯",
+        "canvip": 1,
         "url": "https://v.qq.com/"
     }, {
         "name": "芒果",
         "icon": "芒果",
+        "canvip": 1,
         "url": "https://www.mgtv.com/"
     }, {
         "name": "优酷",
         "icon": "优酷",
+        "canvip": 1,
         "url": "https://www.youku.com/"
     }, {
         "name": "搜狐视频",
         "icon": "搜狐",
+        "canvip": 1,
         "url": "https://tv.sohu.com/"
     }, {
         "name": "乐视视频",
         "icon": "乐视",
+        "canvip": 1,
         "url": "https://www.le.com/"
     }, {
         "name": "电影天堂",
@@ -44,6 +50,11 @@
         "name": "音乐破解",
         "icon": "",
         "url": "https://music.sonimei.cn/"
+    }
+    , {
+        "name": "历史记录",
+        "icon": "",
+        "url": ""
     }
     , {
         "name": "更新日志",

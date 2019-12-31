@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		4F2DDCAB2311275E00A105C5 /* vlist.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F2DDCAA2311275E00A105C5 /* vlist.json */; };
 		4FBF02DB2216B1C5007DB801 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4FBF02DA2216B1C5007DB801 /* README.md */; };
-		4FD0D11723B0BD42000A9748 /* HybridNSURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD0D11123B0BD41000A9748 /* HybridNSURLProtocol.m */; };
-		4FD0D11823B0BD42000A9748 /* NSURLProtocol+WKWebVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD0D11223B0BD41000A9748 /* NSURLProtocol+WKWebVIew.m */; };
 		C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C7240AAF1FA17AF7000684F1 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C72BBE041F9DB2EC00C5141E /* iconStatus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */; };
 		C72BBE231F9DE8B000C5141E /* NSView+ZCAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE111F9DE8B000C5141E /* NSView+ZCAddition.m */; };
@@ -18,8 +16,6 @@
 		C72BBE261F9DE8B000C5141E /* VipURLManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE181F9DE8B000C5141E /* VipURLManager.m */; };
 		C72BBE271F9DE8B000C5141E /* HLHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE1B1F9DE8B000C5141E /* HLHomeViewController.m */; };
 		C72BBE281F9DE8B000C5141E /* HLHomeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE1D1F9DE8B000C5141E /* HLHomeWindowController.m */; };
-		C72BBE291F9DE8B000C5141E /* HLVipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE201F9DE8B000C5141E /* HLVipViewController.m */; };
-		C72BBE2A1F9DE8B000C5141E /* HLVipWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE221F9DE8B000C5141E /* HLVipWindowController.m */; };
 		C7D9E8401F9DA1BB00730A34 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7D9E83F1F9DA1BB00730A34 /* AppDelegate.m */; };
 		C7D9E8451F9DA1BB00730A34 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7D9E8441F9DA1BB00730A34 /* Assets.xcassets */; };
 		C7D9E8481F9DA1BB00730A34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7D9E8461F9DA1BB00730A34 /* Main.storyboard */; };
@@ -29,10 +25,6 @@
 /* Begin PBXFileReference section */
 		4F2DDCAA2311275E00A105C5 /* vlist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = vlist.json; sourceTree = "<group>"; };
 		4FBF02DA2216B1C5007DB801 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
-		4FD0D11123B0BD41000A9748 /* HybridNSURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HybridNSURLProtocol.m; sourceTree = "<group>"; };
-		4FD0D11223B0BD41000A9748 /* NSURLProtocol+WKWebVIew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLProtocol+WKWebVIew.m"; sourceTree = "<group>"; };
-		4FD0D11423B0BD41000A9748 /* HybridNSURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HybridNSURLProtocol.h; sourceTree = "<group>"; };
-		4FD0D11523B0BD41000A9748 /* NSURLProtocol+WKWebVIew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLProtocol+WKWebVIew.h"; sourceTree = "<group>"; };
 		C7240AAF1FA17AF7000684F1 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		C7240AB01FA17AF7000684F1 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iconStatus@2x.png"; sourceTree = "<group>"; };
@@ -46,10 +38,6 @@
 		C72BBE1B1F9DE8B000C5141E /* HLHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLHomeViewController.m; sourceTree = "<group>"; };
 		C72BBE1C1F9DE8B000C5141E /* HLHomeWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLHomeWindowController.h; sourceTree = "<group>"; };
 		C72BBE1D1F9DE8B000C5141E /* HLHomeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLHomeWindowController.m; sourceTree = "<group>"; };
-		C72BBE1F1F9DE8B000C5141E /* HLVipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLVipViewController.h; sourceTree = "<group>"; };
-		C72BBE201F9DE8B000C5141E /* HLVipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLVipViewController.m; sourceTree = "<group>"; };
-		C72BBE211F9DE8B000C5141E /* HLVipWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLVipWindowController.h; sourceTree = "<group>"; };
-		C72BBE221F9DE8B000C5141E /* HLVipWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLVipWindowController.m; sourceTree = "<group>"; };
 		C7D9E83B1F9DA1BB00730A34 /* VIP视频破解.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VIP视频破解.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7D9E83E1F9DA1BB00730A34 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C7D9E83F1F9DA1BB00730A34 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -70,17 +58,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4FD0D11023B0BD41000A9748 /* NSURLProtocol */ = {
-			isa = PBXGroup;
-			children = (
-				4FD0D11423B0BD41000A9748 /* HybridNSURLProtocol.h */,
-				4FD0D11123B0BD41000A9748 /* HybridNSURLProtocol.m */,
-				4FD0D11523B0BD41000A9748 /* NSURLProtocol+WKWebVIew.h */,
-				4FD0D11223B0BD41000A9748 /* NSURLProtocol+WKWebVIew.m */,
-			);
-			path = NSURLProtocol;
-			sourceTree = "<group>";
-		};
 		C72BBE0F1F9DE8B000C5141E /* Addition */ = {
 			isa = PBXGroup;
 			children = (
@@ -115,17 +92,6 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
-		C72BBE1E1F9DE8B000C5141E /* VipPlay */ = {
-			isa = PBXGroup;
-			children = (
-				C72BBE1F1F9DE8B000C5141E /* HLVipViewController.h */,
-				C72BBE201F9DE8B000C5141E /* HLVipViewController.m */,
-				C72BBE211F9DE8B000C5141E /* HLVipWindowController.h */,
-				C72BBE221F9DE8B000C5141E /* HLVipWindowController.m */,
-			);
-			path = VipPlay;
-			sourceTree = "<group>";
-		};
 		C7D9E8321F9DA1BB00730A34 = {
 			isa = PBXGroup;
 			children = (
@@ -147,11 +113,9 @@
 			children = (
 				C7D9E83E1F9DA1BB00730A34 /* AppDelegate.h */,
 				C7D9E83F1F9DA1BB00730A34 /* AppDelegate.m */,
-				4FD0D11023B0BD41000A9748 /* NSURLProtocol */,
 				C72BBE0F1F9DE8B000C5141E /* Addition */,
 				C72BBE121F9DE8B000C5141E /* Helper */,
 				C72BBE191F9DE8B000C5141E /* Home */,
-				C72BBE1E1F9DE8B000C5141E /* VipPlay */,
 				C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */,
 				C7D9E8441F9DA1BB00730A34 /* Assets.xcassets */,
 				C7D9E8461F9DA1BB00730A34 /* Main.storyboard */,
@@ -236,15 +200,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C72BBE2A1F9DE8B000C5141E /* HLVipWindowController.m in Sources */,
 				C7D9E84B1F9DA1BB00730A34 /* main.m in Sources */,
 				C7D9E8401F9DA1BB00730A34 /* AppDelegate.m in Sources */,
 				C72BBE231F9DE8B000C5141E /* NSView+ZCAddition.m in Sources */,
-				4FD0D11823B0BD42000A9748 /* NSURLProtocol+WKWebVIew.m in Sources */,
-				4FD0D11723B0BD42000A9748 /* HybridNSURLProtocol.m in Sources */,
 				C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */,
 				C72BBE281F9DE8B000C5141E /* HLHomeWindowController.m in Sources */,
-				C72BBE291F9DE8B000C5141E /* HLVipViewController.m in Sources */,
 				C72BBE241F9DE8B000C5141E /* MainMenu.m in Sources */,
 				C72BBE261F9DE8B000C5141E /* VipURLManager.m in Sources */,
 				C72BBE271F9DE8B000C5141E /* HLHomeViewController.m in Sources */,
