@@ -54,7 +54,7 @@
     , {
         "name": "历史记录",
         "icon": "",
-        "url": ""
+        "url": "history"
     }
     , {
         "name": "更新日志",
