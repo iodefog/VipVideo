@@ -10,7 +10,7 @@
 #import "NSView+ZCAddition.h"
 #import <WebKit/WebKit.h>
 #import "VipURLManager.h"
-
+#import "NSString+HLAddition.h"
 
 @interface NSVideoButton:NSButton
 
@@ -34,8 +34,9 @@
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, strong) NSMutableArray *modelsArray;
 @property (nonatomic, strong) NSMutableArray *buttonsArray;
-@property (nonatomic, strong) NSVideoButton *selectedButton;
+@property (nonatomic, strong) NSVideoButton  *selectedButton;
 @property (nonatomic, strong) NSString       *currentUrl;
+@property (nonatomic, strong) NSMutableArray *historyList;
 
 @end;
 
@@ -67,11 +68,21 @@
     
     self.modelsArray = [NSMutableArray array];
     self.buttonsArray = [NSMutableArray array];
-    
+            
     WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
     // 启动驱动，否则flash不可播
     configuration.preferences.plugInsEnabled = YES;
     configuration.preferences.javaEnabled = YES;
+    if (@available(macOS 10.12, *)) {
+        configuration.userInterfaceDirectionPolicy = WKUserInterfaceDirectionPolicySystem;
+    } else {
+        // Fallback on earlier versions
+    }
+    if (@available(macOS 10.11, *)) {
+        configuration.allowsAirPlayForMediaPlayback = YES;
+    } else {
+        // Fallback on earlier versions
+    }
     configuration.preferences.javaScriptCanOpenWindowsAutomatically = YES;
     
     self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
@@ -159,6 +170,9 @@
             [VipURLManager sharedInstance].m3u8Url = nil;
         }
         NSLog(@"request.URL.absoluteString = %@",requestUrl);
+        if ([[requestUrl URLDecodedString] hasSuffix:@"clearAllHistory"]) {
+            [self clearAllHistory];
+        }
     }
     decisionHandler(WKNavigationActionPolicyAllow);
 }
@@ -177,6 +191,7 @@
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
     [VipURLManager sharedInstance].finalUrl = webView.URL.absoluteString;
+    [self saveHistoryUrl:webView.URL.absoluteString title:webView.title];
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
@@ -236,10 +251,16 @@
 #pragma mark - Notification
 
 - (void)refreshVideoModel:(VipUrlItem *)model{
-    NSString * encodingString = [model.url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:encodingString]];
-
-    [self.webView loadRequest:request];
+    
+    if ([model.url isEqualToString:@"history"]) {
+        [self.webView loadHTMLString:self.getHistoryHtml baseURL:nil];
+    }
+    else{
+        NSString * encodingString = [model.url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:encodingString]];
+        
+        [self.webView loadRequest:request];
+    }
 }
 
 - (void)videoRequestSuccess:(NSNotification *)notification{
@@ -268,7 +289,55 @@
     }
 }
 
+#pragma mark - history
+- (NSString *)getHistoryHtml{
+    
+    NSArray *historyList = self.getHistoryList;
+    NSString *history = nil; //@"我是历史记录。 <a href='http://www.baidu.com'> http://www.baidu.com </a>";
 
+    if (historyList.count > 0) {
+        NSMutableString *string = [NSMutableString string];
+        [string appendString:@"<a href=#clearAllHistory> 点击清理历史记录 </a></br></br>"];
+        for (NSDictionary *dict in historyList) {
+            [string appendFormat:@"%@ <a href = %@> %@ </a></br>", [NSString compareCurrentTime:[NSDate dateWithTimeIntervalSince1970:[dict[@"timestamp"] integerValue]]] ,dict[@"url"], dict[@"title"]];
+        }
+        history = string;
+    }else {
+        history = @"暂无历史记录";
+    }
+    
+    NSString *string = [NSString stringWithFormat:@"<html>\
+                        <title> 历史记录 </title>\
+                        <body>\
+                        %@\
+                        </body>\
+                        </html>", history];
+    
+    return string;
+}
+
+- (void)saveHistoryUrl:(NSString *)url title:(NSString *)title{
+    if (url.length > 0 && title.length > 0 && [url hasPrefix:@"http"]) {
+        NSArray *old_history = [[NSUserDefaults standardUserDefaults] objectForKey:@"HLWebViewHistroy"];
+        NSMutableArray *new_histroy = [NSMutableArray arrayWithArray:old_history];
+        NSDictionary *dict = @{@"url":url,
+                               @"title":title,
+                               @"timestamp": @(time(NULL))
+        };
+        [new_histroy addObject:dict];
+        [[NSUserDefaults standardUserDefaults] setObject:new_histroy forKey:@"HLWebViewHistroy"];
+    }
+}
+
+- (NSArray *)getHistoryList{
+    NSArray *old_history = [[NSUserDefaults standardUserDefaults] objectForKey:@"HLWebViewHistroy"];
+    return old_history;
+}
+
+- (void)clearAllHistory{
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"HLWebViewHistroy"];
+    [self.webView loadHTMLString:self.getHistoryHtml baseURL:nil];
+}
 
 #pragma mark - Method
 - (void)buttonClicked:(NSVideoButton *)sender{
