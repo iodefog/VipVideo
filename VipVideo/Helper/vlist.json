@@ -20,6 +20,11 @@
         "canvip": 1,
         "url": "https://www.youku.com/"
     }, {
+        "name": "bilibili",
+        "icon": "bilibili",
+        "canvip": 0,
+        "url": "https://www.bilibili.com/"
+    }, {
         "name": "搜狐视频",
         "icon": "搜狐",
         "canvip": 1,
