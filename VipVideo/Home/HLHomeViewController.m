@@ -324,7 +324,7 @@
                                @"title":title,
                                @"timestamp": @(time(NULL))
         };
-        [new_histroy addObject:dict];
+        [new_histroy insertObject:dict atIndex:0];
         [[NSUserDefaults standardUserDefaults] setObject:new_histroy forKey:@"HLWebViewHistroy"];
     }
 }
