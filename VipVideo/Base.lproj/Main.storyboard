@@ -710,28 +710,45 @@
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
                         <rect key="frame" x="0.0" y="0.0" width="950" height="700"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Url-vJ-Xqf">
+                                <rect key="frame" x="0.0" y="0.0" width="950" height="50"/>
+                                <clipView key="contentView" id="xSD-LB-9U5">
+                                    <rect key="frame" x="1" y="1" width="948" height="48"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <collectionView id="ddz-U1-X1C">
+                                            <rect key="frame" x="0.0" y="0.0" width="948" height="158"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                            <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="2rQ-kb-QZJ">
+                                                <size key="itemSize" width="50" height="50"/>
+                                            </collectionViewFlowLayout>
+                                            <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </collectionView>
+                                    </subviews>
+                                </clipView>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="7Nr-YN-nlb"/>
+                                </constraints>
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="gLV-W5-jrH">
+                                    <rect key="frame" x="1" y="33" width="908" height="16"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="tbO-PI-V0a">
+                                    <rect key="frame" x="933" y="1" width="16" height="48"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Url-vJ-Xqf" secondAttribute="trailing" id="P5v-4k-7fM"/>
+                            <constraint firstItem="Url-vJ-Xqf" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="f3J-Vx-2wW"/>
+                            <constraint firstAttribute="bottom" secondItem="Url-vJ-Xqf" secondAttribute="bottom" id="nAe-W2-Gbh"/>
+                        </constraints>
                     </view>
                 </viewController>
             </objects>
             <point key="canvasLocation" x="55" y="657"/>
-        </scene>
-        <!--Window Controller-->
-        <scene sceneID="45O-S6-Lni">
-            <objects>
-                <windowController storyboardIdentifier="HLVipWindowController" id="e59-QD-xyI" customClass="HLVipWindowController" sceneMemberID="viewController">
-                    <window key="window" title="播放中" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="hZQ-pM-yKJ">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="1734" y="397" width="950" height="700"/>
-                        <rect key="screenRect" x="1440" y="68" width="1920" height="1057"/>
-                        <connections>
-                            <outlet property="delegate" destination="e59-QD-xyI" id="TxE-FN-Jws"/>
-                        </connections>
-                    </window>
-                </windowController>
-                <customObject id="3td-CA-9Eg" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="75" y="1470"/>
         </scene>
     </scenes>
 </document>
