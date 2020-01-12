@@ -11,6 +11,7 @@
 #import <WebKit/WebKit.h>
 #import "VipURLManager.h"
 #import "NSString+HLAddition.h"
+#import "HLCollectionViewItem.h"
 
 @interface NSVideoButton:NSButton
 
@@ -26,7 +27,7 @@
 
 //http://www.5ifxw.com/vip/
 
-@interface HLHomeViewController()<WKNavigationDelegate, WKUIDelegate>{
+@interface HLHomeViewController()<WKNavigationDelegate, WKUIDelegate, NSCollectionViewDataSource>{
     BOOL isLoading;
     BOOL isChanged;
 }
@@ -37,6 +38,8 @@
 @property (nonatomic, strong) NSVideoButton  *selectedButton;
 @property (nonatomic, strong) NSString       *currentUrl;
 @property (nonatomic, strong) NSMutableArray *historyList;
+//@property (nonatomic, strong) NSCollectionView *collectionView;
+@property (weak) IBOutlet NSCollectionView *myCollectionView;
 
 @end;
 
@@ -55,6 +58,7 @@
         tempButton = button;
     }
     self.webView.frame = CGRectMake(0, tempButton.bottom, self.view.width, self.view.height - tempButton.bottom);
+//    self.collectionView.frame = CGRectMake(0, CGRectGetHeight(self.view.bounds)-50, CGRectGetWidth(self.view.bounds), 50);
 }
 
 - (void)setIsFullScreen:(BOOL)isFullScreen{
@@ -100,7 +104,29 @@
     }
     
     [self refreshVideoModel:_selectedButton.model];
+    [self creatgeCollectionView];
+}
+
+- (void)creatgeCollectionView{
+    CGRect frame = CGRectMake(0, CGRectGetHeight(self.view.bounds)-50, CGRectGetWidth(self.view.bounds), 50);
+    NSCollectionView *collectionView = [[NSCollectionView alloc] initWithFrame:frame];
+    NSCollectionViewFlowLayout *layout = [[NSCollectionViewFlowLayout alloc] init];
+    layout.minimumLineSpacing = 0;
+    layout.minimumInteritemSpacing = 0;
+    layout.itemSize = CGSizeMake(60, 60);
+    collectionView.collectionViewLayout = layout;
+    collectionView.dataSource = self;
+    [collectionView registerClass:[HLCollectionViewItem class] forItemWithIdentifier:@"item"];
     
+    NSClipView *clip = [[NSClipView alloc] initWithFrame:frame];
+    clip.documentView = collectionView;
+    
+    NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:frame];
+    scrollView.contentView = clip;
+    
+    [self.view addSubview:scrollView];
+
+    self.collectionView = collectionView;
 }
 
 - (void)registerNotification{
@@ -119,6 +145,9 @@
 }
 
 - (void)createButtonsForData{
+    [self.collectionView reloadData];
+    
+    
     for (NSButton *button in self.buttonsArray) {
         [button removeFromSuperview];
     }
@@ -338,6 +367,18 @@
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"HLWebViewHistroy"];
     [self.webView loadHTMLString:self.getHistoryHtml baseURL:nil];
 }
+
+#pragma mark - CollectionView
+- (NSInteger)collectionView:(NSCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return self.modelsArray.count;
+}
+
+- (NSCollectionViewItem *)collectionView:(NSCollectionView *)collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *)indexPath {
+    HLCollectionViewItem *item = [collectionView makeItemWithIdentifier:@"item" forIndexPath:indexPath];
+    item.textLabel.stringValue = [NSString stringWithFormat:@"第%zi个", indexPath.item];
+    return item;
+}
+
 
 #pragma mark - Method
 - (void)buttonClicked:(NSVideoButton *)sender{

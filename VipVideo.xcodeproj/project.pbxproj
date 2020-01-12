@@ -10,6 +10,8 @@
 		4F03FC9123C05BFE00292A72 /* NSString+HLAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F03FC9023C05BFE00292A72 /* NSString+HLAddition.m */; };
 		4F2DDCAB2311275E00A105C5 /* vlist.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F2DDCAA2311275E00A105C5 /* vlist.json */; };
 		4FBF02DB2216B1C5007DB801 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4FBF02DA2216B1C5007DB801 /* README.md */; };
+		4FC0FB0623C824F200ADD778 /* HLCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FC0FB0423C824F200ADD778 /* HLCollectionViewItem.m */; };
+		4FC0FB0723C824F200ADD778 /* HLCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4FC0FB0523C824F200ADD778 /* HLCollectionViewItem.xib */; };
 		C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C7240AAF1FA17AF7000684F1 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C72BBE041F9DB2EC00C5141E /* iconStatus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */; };
 		C72BBE231F9DE8B000C5141E /* NSView+ZCAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = C72BBE111F9DE8B000C5141E /* NSView+ZCAddition.m */; };
@@ -28,6 +30,9 @@
 		4F03FC9023C05BFE00292A72 /* NSString+HLAddition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+HLAddition.m"; sourceTree = "<group>"; };
 		4F2DDCAA2311275E00A105C5 /* vlist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = vlist.json; sourceTree = "<group>"; };
 		4FBF02DA2216B1C5007DB801 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		4FC0FB0323C824F200ADD778 /* HLCollectionViewItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLCollectionViewItem.h; sourceTree = "<group>"; };
+		4FC0FB0423C824F200ADD778 /* HLCollectionViewItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLCollectionViewItem.m; sourceTree = "<group>"; };
+		4FC0FB0523C824F200ADD778 /* HLCollectionViewItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HLCollectionViewItem.xib; sourceTree = "<group>"; };
 		C7240AAF1FA17AF7000684F1 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		C7240AB01FA17AF7000684F1 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		C72BBE031F9DB2EC00C5141E /* iconStatus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iconStatus@2x.png"; sourceTree = "<group>"; };
@@ -93,6 +98,9 @@
 				C72BBE1B1F9DE8B000C5141E /* HLHomeViewController.m */,
 				C72BBE1C1F9DE8B000C5141E /* HLHomeWindowController.h */,
 				C72BBE1D1F9DE8B000C5141E /* HLHomeWindowController.m */,
+				4FC0FB0323C824F200ADD778 /* HLCollectionViewItem.h */,
+				4FC0FB0423C824F200ADD778 /* HLCollectionViewItem.m */,
+				4FC0FB0523C824F200ADD778 /* HLCollectionViewItem.xib */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -193,6 +201,7 @@
 				C7D9E8451F9DA1BB00730A34 /* Assets.xcassets in Resources */,
 				4FBF02DB2216B1C5007DB801 /* README.md in Resources */,
 				C7D9E8481F9DA1BB00730A34 /* Main.storyboard in Resources */,
+				4FC0FB0723C824F200ADD778 /* HLCollectionViewItem.xib in Resources */,
 				C72BBE041F9DB2EC00C5141E /* iconStatus@2x.png in Resources */,
 				4F2DDCAB2311275E00A105C5 /* vlist.json in Resources */,
 			);
@@ -212,6 +221,7 @@
 				C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */,
 				C72BBE281F9DE8B000C5141E /* HLHomeWindowController.m in Sources */,
 				C72BBE241F9DE8B000C5141E /* MainMenu.m in Sources */,
+				4FC0FB0623C824F200ADD778 /* HLCollectionViewItem.m in Sources */,
 				C72BBE261F9DE8B000C5141E /* VipURLManager.m in Sources */,
 				C72BBE271F9DE8B000C5141E /* HLHomeViewController.m in Sources */,
 			);
@@ -281,7 +291,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -332,7 +342,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
