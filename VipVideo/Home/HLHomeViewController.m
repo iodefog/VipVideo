@@ -13,21 +13,13 @@
 #import "NSString+HLAddition.h"
 #import "HLCollectionViewItem.h"
 
-@interface NSVideoButton:NSButton
-
-@property (nonatomic, strong) VipUrlItem *model;
-
-@end
-
-@implementation NSVideoButton
-
-@end
-
 #pragma mark ----
 
 //http://www.5ifxw.com/vip/
 
-@interface HLHomeViewController()<WKNavigationDelegate, WKUIDelegate, NSCollectionViewDataSource>{
+#define NSCollectionViewHeight  60
+
+@interface HLHomeViewController()<WKNavigationDelegate, WKUIDelegate, NSCollectionViewDataSource, NSCollectionViewDelegate>{
     BOOL isLoading;
     BOOL isChanged;
 }
@@ -38,8 +30,8 @@
 @property (nonatomic, strong) NSVideoButton  *selectedButton;
 @property (nonatomic, strong) NSString       *currentUrl;
 @property (nonatomic, strong) NSMutableArray *historyList;
-//@property (nonatomic, strong) NSCollectionView *collectionView;
-@property (weak) IBOutlet NSCollectionView *myCollectionView;
+@property (nonatomic, strong) NSCollectionView *collectionView;
+@property (nonatomic, strong) NSScrollView   *scrollView;
 
 @end;
 
@@ -54,11 +46,11 @@
     CGFloat width = (CGRectGetWidth(self.view.bounds) - (self.buttonsArray.count+2)*10)/self.buttonsArray.count;
     NSButton *tempButton = nil;
     for (NSButton *button in self.buttonsArray) {
-        button.frame = CGRectMake(tempButton.right+10, 5, width, self.isFullScreen ? 0 : 50);
+        button.frame = CGRectMake(tempButton.right+10, 105, width, self.isFullScreen ? 0 : 50);
         tempButton = button;
     }
     self.webView.frame = CGRectMake(0, tempButton.bottom, self.view.width, self.view.height - tempButton.bottom);
-//    self.collectionView.frame = CGRectMake(0, CGRectGetHeight(self.view.bounds)-50, CGRectGetWidth(self.view.bounds), 50);
+    self.scrollView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), NSCollectionViewHeight);
 }
 
 - (void)setIsFullScreen:(BOOL)isFullScreen{
@@ -108,17 +100,20 @@
 }
 
 - (void)creatgeCollectionView{
-    CGRect frame = CGRectMake(0, CGRectGetHeight(self.view.bounds)-50, CGRectGetWidth(self.view.bounds), 50);
-    NSCollectionView *collectionView = [[NSCollectionView alloc] initWithFrame:frame];
+    CGRect frame = CGRectMake(0, CGRectGetHeight(self.view.bounds)-50, CGRectGetWidth(self.view.bounds), NSCollectionViewHeight);
+    CGRect bound = CGRectZero;;
+
+    NSCollectionView *collectionView = [[NSCollectionView alloc] initWithFrame:bound];
     NSCollectionViewFlowLayout *layout = [[NSCollectionViewFlowLayout alloc] init];
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 0;
-    layout.itemSize = CGSizeMake(60, 60);
+    layout.itemSize = CGSizeMake(100, NSCollectionViewHeight);
     collectionView.collectionViewLayout = layout;
     collectionView.dataSource = self;
-    [collectionView registerClass:[HLCollectionViewItem class] forItemWithIdentifier:@"item"];
+    collectionView.delegate = self;
+    [collectionView registerClass:[HLCollectionViewItem class] forItemWithIdentifier:@"HLCollectionViewItemID"];
     
-    NSClipView *clip = [[NSClipView alloc] initWithFrame:frame];
+    NSClipView *clip = [[NSClipView alloc] initWithFrame:bound];
     clip.documentView = collectionView;
     
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:frame];
@@ -126,6 +121,7 @@
     
     [self.view addSubview:scrollView];
 
+    self.scrollView = scrollView;
     self.collectionView = collectionView;
 }
 
@@ -374,11 +370,13 @@
 }
 
 - (NSCollectionViewItem *)collectionView:(NSCollectionView *)collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *)indexPath {
-    HLCollectionViewItem *item = [collectionView makeItemWithIdentifier:@"item" forIndexPath:indexPath];
-    item.textLabel.stringValue = [NSString stringWithFormat:@"第%zi个", indexPath.item];
+    HLCollectionViewItem *item = [collectionView makeItemWithIdentifier:@"HLCollectionViewItemID" forIndexPath:indexPath];
+    if (indexPath.item < self.modelsArray.count) {
+        item.object = self.modelsArray[indexPath.item];
+    }
+
     return item;
 }
-
 
 #pragma mark - Method
 - (void)buttonClicked:(NSVideoButton *)sender{
