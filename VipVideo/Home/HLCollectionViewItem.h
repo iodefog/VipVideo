@@ -7,11 +7,25 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "VipURLManager.h"
+
+@interface NSVideoButton:NSButton
+
+@property (nonatomic, strong) VipUrlItem * _Nullable model;
+
+@end
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void(^ItemClicked)(VipUrlItem *object);
+
 @interface HLCollectionViewItem : NSCollectionViewItem
+
 @property (weak) IBOutlet NSTextField *textLabel;
+@property (nonatomic, strong) NSVideoButton *button;
+@property (nonatomic, strong) VipUrlItem *object;
+@property (nonatomic, strong) ItemClicked itemBlock;
+
 
 @end
 
