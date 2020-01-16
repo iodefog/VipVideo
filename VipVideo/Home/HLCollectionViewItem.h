@@ -17,7 +17,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void(^ItemClicked)(VipUrlItem *object);
+typedef void(^ItemClicked)(VipUrlItem *object, NSIndexPath *indexPath);
 
 @interface HLCollectionViewItem : NSCollectionViewItem
 
@@ -25,7 +25,7 @@ typedef void(^ItemClicked)(VipUrlItem *object);
 @property (nonatomic, strong) NSVideoButton *button;
 @property (nonatomic, strong) VipUrlItem *object;
 @property (nonatomic, strong) ItemClicked itemBlock;
-
+@property (nonatomic, strong) NSIndexPath *indexPath;
 
 @end
 

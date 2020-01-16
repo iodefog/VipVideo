@@ -42,22 +42,21 @@
 }
 
 - (void)setObject:(VipUrlItem *)object{
-    self.button.title = object.title;
+    _object = object;
+    
+    [self.button setTitle:object.title];
+
     if (object.selected) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 *NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.button.highlighted = YES;
-        });
+        self.button.highlighted = YES;
     }else {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 *NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.button.highlighted = NO;
-        });
+        self.button.highlighted = NO;
     }
 }
 
 - (void)buttonClicked:(NSVideoButton *)sender{
     if (self.itemBlock) {
         self.object.selected = YES;
-        self.itemBlock(self.object);
+        self.itemBlock(self.object, self.indexPath);
     }
 }
 
