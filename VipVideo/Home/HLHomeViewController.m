@@ -24,14 +24,14 @@
     BOOL isChanged;
 }
 
-@property (nonatomic, strong) WKWebView *webView;
-@property (nonatomic, strong) NSMutableArray *modelsArray;
-@property (nonatomic, strong) NSMutableArray *buttonsArray;
-@property (nonatomic, strong) NSVideoButton  *selectedButton;
-@property (nonatomic, strong) NSString       *currentUrl;
-@property (nonatomic, strong) NSMutableArray *historyList;
-@property (nonatomic, strong) NSCollectionView *collectionView;
-@property (nonatomic, strong) NSScrollView   *scrollView;
+@property (nonatomic, strong) WKWebView         *webView;
+@property (nonatomic, strong) NSMutableArray    *modelsArray;
+@property (nonatomic, strong) NSMutableArray    *buttonsArray;
+@property (nonatomic, strong) NSString          *currentUrl;
+@property (nonatomic, strong) NSMutableArray    *historyList;
+@property (nonatomic, strong) NSCollectionView  *collectionView;
+@property (nonatomic, strong) NSScrollView      *scrollView;
+@property (nonatomic, strong) VipUrlItem        *selectedObject;
 
 @end;
 
@@ -95,7 +95,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:KHLVipVideoRequestSuccess object:nil];
     }
     
-    [self refreshVideoModel:_selectedButton.model];
+    [self refreshVideoModel:self.selectedObject];
     [self creatgeCollectionView];
 }
 
@@ -154,13 +154,15 @@
         [button setBezelStyle:NSBezelStyleShadowlessSquare];
         [button setTarget:self];
         [button setTitle:item.title];
-        [button setAction:@selector(buttonClicked:)];
+//        [button setAction:@selector(buttonClicked:)];
         button.model = item;
         [self.view addSubview:button];
         [self.buttonsArray addObject:button];
         if (i==0) {
-            _selectedButton = button;
-            _selectedButton.highlighted = YES;
+            self.selectedObject = item;
+            self.selectedObject.selected = YES;
+//            _selectedButton = button;
+//            _selectedButton.highlighted = YES;
         }
     }
     [self.view setNeedsLayout:YES];
@@ -304,7 +306,7 @@
     
     [self createButtonsForData];
     
-    [self refreshVideoModel:_selectedButton.model];
+    [self refreshVideoModel:self.selectedObject];
 }
 
 - (void)vipVideoCurrentApiWillChange:(NSNotification *)notification{
@@ -375,25 +377,38 @@
         item.object = self.modelsArray[indexPath.item];
     }
 
+    __weak typeof(self) weakSelf = self;
+    [item setItemBlock:^(VipUrlItem * _Nonnull object) {
+        __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.selectedObject.selected = NO;
+       
+        [VipURLManager sharedInstance].currentIndex = 0;
+        [strongSelf refreshVideoModel:object];
+        
+        strongSelf.selectedObject = object;
+        strongSelf.selectedObject.selected = YES;
+        [strongSelf.collectionView reloadData];
+
+    }];
     return item;
 }
 
 #pragma mark - Method
-- (void)buttonClicked:(NSVideoButton *)sender{
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 *NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        sender.highlighted = YES;
-    });
-    if (sender == _selectedButton) {
-        return;
-    }
-    
-    _selectedButton.highlighted = NO;
-    self.selectedButton = sender;
-    
-    [VipURLManager sharedInstance].currentIndex = 0;
-    
-    [self refreshVideoModel:_selectedButton.model];
-    
-}
+//- (void)buttonClicked:(NSVideoButton *)sender{
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 *NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        sender.highlighted = YES;
+//    });
+//    if (sender == _selectedButton) {
+//        return;
+//    }
+//
+//    _selectedButton.highlighted = NO;
+//    self.selectedButton = sender;
+//
+//    [VipURLManager sharedInstance].currentIndex = 0;
+//
+//    [self refreshVideoModel:_selectedButton.model];
+//
+//}
 
 @end
