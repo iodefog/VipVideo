@@ -17,7 +17,7 @@
 
 //http://www.5ifxw.com/vip/
 
-#define NSCollectionViewHeight  60
+#define NSCollectionViewHeight  50
 
 @interface HLHomeViewController()<WKNavigationDelegate, WKUIDelegate, NSCollectionViewDataSource, NSCollectionViewDelegate>{
     BOOL isLoading;
