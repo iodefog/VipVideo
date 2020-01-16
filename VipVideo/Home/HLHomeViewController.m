@@ -43,14 +43,8 @@
 
 - (void)viewDidLayout{
     [super viewDidLayout];
-    CGFloat width = (CGRectGetWidth(self.view.bounds) - (self.buttonsArray.count+2)*10)/self.buttonsArray.count;
-    NSButton *tempButton = nil;
-    for (NSButton *button in self.buttonsArray) {
-        button.frame = CGRectMake(tempButton.right+10, 105, width, self.isFullScreen ? 0 : 50);
-        tempButton = button;
-    }
-    self.webView.frame = CGRectMake(0, tempButton.bottom, self.view.width, self.view.height - tempButton.bottom);
     self.scrollView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), NSCollectionViewHeight);
+    self.webView.frame = CGRectMake(0, self.scrollView.bottom+1, self.view.width, self.view.height - self.scrollView.bottom-1);
 }
 
 - (void)setIsFullScreen:(BOOL)isFullScreen{
@@ -61,6 +55,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.view.layer.backgroundColor = NSColor.lightGrayColor.CGColor;
+    [self.view setNeedsDisplay:YES];
     
     self.modelsArray = [NSMutableArray array];
     self.buttonsArray = [NSMutableArray array];
@@ -107,6 +104,7 @@
     NSCollectionViewFlowLayout *layout = [[NSCollectionViewFlowLayout alloc] init];
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 0;
+    layout.scrollDirection = NSCollectionViewScrollDirectionHorizontal;
     layout.itemSize = CGSizeMake(100, NSCollectionViewHeight);
     collectionView.collectionViewLayout = layout;
     collectionView.dataSource = self;
@@ -132,7 +130,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoDidCopyCurrentURL:) name:KHLVipVideoDidCopyCurrentURL object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoBackCurrentURL:) name:KHLVipVideoGoBackCurrentURL object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoForwardCurrentURL:) name:KHLVipVideoGoForwardCurrentURL object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoStopPlay:) name:KHLVipVideoStopPlay object:nil];
 }
 
 - (void)configurationDefaultData{
@@ -198,7 +195,16 @@
         }
         NSLog(@"request.URL.absoluteString = %@",requestUrl);
         if ([[requestUrl URLDecodedString] hasSuffix:@"clearAllHistory"]) {
-            [self clearAllHistory];
+            NSAlert *alert = [[NSAlert alloc] init];
+            alert.alertStyle = NSAlertStyleWarning;
+            alert.messageText = @"是否清空所有历史记录";
+            [alert addButtonWithTitle:@"清空"];
+            [alert addButtonWithTitle:@"取消"];
+            [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
+                if (returnCode == NSAlertFirstButtonReturn) {
+                    [self clearAllHistory];
+                }
+            }];
         }
     }
     decisionHandler(WKNavigationActionPolicyAllow);
@@ -263,17 +269,6 @@
         [self.webView goForward];
     }
 }
-
-- (void)vipVideoStopPlay:(NSNotification *)notification{
-    NSString *javaScript = @"var videos = document.getElementsByTagName('video');\
-    for (var i=0;i < videos.length;i++){\
-        videos[i].stop();\
-    }";
-    [self.webView evaluateJavaScript:javaScript completionHandler:^(id _Nullable object, NSError * _Nullable error) {
-        
-    }];
-}
-
 
 #pragma mark - Notification
 
@@ -378,37 +373,22 @@
     }
 
     __weak typeof(self) weakSelf = self;
-    [item setItemBlock:^(VipUrlItem * _Nonnull object) {
+        
+    [item setItemBlock:^(VipUrlItem * _Nonnull object, NSIndexPath *mIndex) {
         __strong typeof(self) strongSelf = weakSelf;
+        
         strongSelf.selectedObject.selected = NO;
-       
+        
         [VipURLManager sharedInstance].currentIndex = 0;
         [strongSelf refreshVideoModel:object];
         
         strongSelf.selectedObject = object;
         strongSelf.selectedObject.selected = YES;
-        [strongSelf.collectionView reloadData];
+        NSIndexSet *set = [NSIndexSet indexSetWithIndex:mIndex.item];
+        [strongSelf.collectionView reloadSections:set];
 
     }];
     return item;
 }
-
-#pragma mark - Method
-//- (void)buttonClicked:(NSVideoButton *)sender{
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 *NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        sender.highlighted = YES;
-//    });
-//    if (sender == _selectedButton) {
-//        return;
-//    }
-//
-//    _selectedButton.highlighted = NO;
-//    self.selectedButton = sender;
-//
-//    [VipURLManager sharedInstance].currentIndex = 0;
-//
-//    [self refreshVideoModel:_selectedButton.model];
-//
-//}
 
 @end
