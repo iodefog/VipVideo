@@ -20,6 +20,7 @@
 
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *url;
+@property (nonatomic, assign) BOOL selected;
 
 + (instancetype)createTitle:(NSString *)title url:(NSString *)url;
 

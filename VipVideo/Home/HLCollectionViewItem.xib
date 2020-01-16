@@ -23,7 +23,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="5Ov-iw-veP"/>
                     </constraints>
-                    <textFieldCell key="cell" lineBreakMode="clipping" borderStyle="bezel" alignment="center" title="Label" bezelStyle="round" id="krE-1j-h8d">
+                    <textFieldCell key="cell" lineBreakMode="clipping" borderStyle="bezel" alignment="center" bezelStyle="round" id="krE-1j-h8d">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
