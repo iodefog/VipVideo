@@ -46,7 +46,7 @@
 		C72BBE1B1F9DE8B000C5141E /* HLHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLHomeViewController.m; sourceTree = "<group>"; };
 		C72BBE1C1F9DE8B000C5141E /* HLHomeWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLHomeWindowController.h; sourceTree = "<group>"; };
 		C72BBE1D1F9DE8B000C5141E /* HLHomeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLHomeWindowController.m; sourceTree = "<group>"; };
-		C7D9E83B1F9DA1BB00730A34 /* VIP视频破解.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VIP视频破解.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7D9E83B1F9DA1BB00730A34 /* VIPVideo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VIPVideo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7D9E83E1F9DA1BB00730A34 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C7D9E83F1F9DA1BB00730A34 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C7D9E8441F9DA1BB00730A34 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -116,7 +116,7 @@
 		C7D9E83C1F9DA1BB00730A34 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C7D9E83B1F9DA1BB00730A34 /* VIP视频破解.app */,
+				C7D9E83B1F9DA1BB00730A34 /* VIPVideo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -156,7 +156,7 @@
 			);
 			name = VipVideo;
 			productName = VipVideo;
-			productReference = C7D9E83B1F9DA1BB00730A34 /* VIP视频破解.app */;
+			productReference = C7D9E83B1F9DA1BB00730A34 /* VIPVideo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -359,8 +359,9 @@
 				DEVELOPMENT_TEAM = M675EFBDE2;
 				INFOPLIST_FILE = VipVideo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sohu.VipVideo;
-				PRODUCT_NAME = "VIP视频破解";
+				PRODUCT_BUNDLE_IDENTIFIER = com.lhl.macvipvideo;
+				PRODUCT_NAME = VIPVideo;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -375,8 +376,9 @@
 				DEVELOPMENT_TEAM = M675EFBDE2;
 				INFOPLIST_FILE = VipVideo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sohu.VipVideo;
-				PRODUCT_NAME = "VIP视频破解";
+				PRODUCT_BUNDLE_IDENTIFIER = com.lhl.macvipvideo;
+				PRODUCT_NAME = VIPVideo;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
