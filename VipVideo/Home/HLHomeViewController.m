@@ -17,6 +17,7 @@
 
 //http://www.5ifxw.com/vip/
 
+#define NSCollectionViewWidth   75
 #define NSCollectionViewHeight  50
 
 @interface HLHomeViewController()<WKNavigationDelegate, WKUIDelegate, NSCollectionViewDataSource, NSCollectionViewDelegate>{
@@ -105,7 +106,7 @@
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 0;
     layout.scrollDirection = NSCollectionViewScrollDirectionHorizontal;
-    layout.itemSize = CGSizeMake(100, NSCollectionViewHeight);
+    layout.itemSize = CGSizeMake(NSCollectionViewWidth, NSCollectionViewHeight);
     collectionView.collectionViewLayout = layout;
     collectionView.dataSource = self;
     collectionView.delegate = self;
@@ -116,7 +117,7 @@
     
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:frame];
     scrollView.contentView = clip;
-    
+
     [self.view addSubview:scrollView];
 
     self.scrollView = scrollView;

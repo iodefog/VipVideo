@@ -65,7 +65,7 @@ app下载地址：
 示例：
 
 	```
-	xattr -r -d com.apple.quarantine /Applications/VIP视频破解.app
+	xattr -r -d com.apple.quarantine /Applications/VIPVideo.app
 	```
 </br>
 
