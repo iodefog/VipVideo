@@ -44,8 +44,8 @@
 
 - (void)viewDidLayout{
     [super viewDidLayout];
-    self.scrollView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), NSCollectionViewHeight);
-    self.webView.frame = CGRectMake(0, self.scrollView.bottom+1, self.view.width, self.view.height - self.scrollView.bottom-1);
+    self.scrollView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), self.isFullScreen ? 0 : NSCollectionViewHeight);
+    self.webView.frame = CGRectMake(0, self.scrollView.bottom+0.5, self.view.width, self.view.height - self.scrollView.bottom-0.5);
 }
 
 - (void)setIsFullScreen:(BOOL)isFullScreen{
