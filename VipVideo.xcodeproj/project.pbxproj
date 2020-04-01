@@ -359,6 +359,7 @@
 				DEVELOPMENT_TEAM = M675EFBDE2;
 				INFOPLIST_FILE = VipVideo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lhl.macvipvideo;
 				PRODUCT_NAME = VIPVideo;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -376,6 +377,7 @@
 				DEVELOPMENT_TEAM = M675EFBDE2;
 				INFOPLIST_FILE = VipVideo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lhl.macvipvideo;
 				PRODUCT_NAME = VIPVideo;
 				PROVISIONING_PROFILE_SPECIFIER = "";
