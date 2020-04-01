@@ -39,7 +39,7 @@ DMG下载地址
 
 app下载地址：
 
-[https://iodefog.github.io/dmg/VipVideo1.0.5.zip](https://iodefog.github.io/dmg/VipVideo1.0.5.zip)
+[https://iodefog.github.io/dmg/VIPVideo1.0.5.zip](https://iodefog.github.io/dmg/VIPVideo1.0.5.zip)
 
 <b>如果MAC软件提示已损坏，需要移到废纸篓的解决方法</br></b>
 
