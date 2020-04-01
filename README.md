@@ -35,11 +35,11 @@
 
 DMG下载地址
 
-[https://iodefog.github.io/dmg/Videos.dmg](https://iodefog.github.io/dmg/Videos.dmg)
+[https://iodefog.github.io/dmg/Videos1.0.4.dmg](https://iodefog.github.io/dmg/Videos1.0.4.dmg)
 
 app下载地址：
 
-[https://iodefog.github.io/dmg/Videos.zip](https://iodefog.github.io/dmg/Videos.zip)
+[https://iodefog.github.io/dmg/Videos1.0.4.zip](https://iodefog.github.io/dmg/Videos1.0.4.zip)
 
 <b>如果MAC软件提示已损坏，需要移到废纸篓的解决方法</br></b>
 
