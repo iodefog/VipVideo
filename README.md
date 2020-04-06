@@ -7,6 +7,7 @@
 
 | 更新日期 | 更新内容 |
 | ---- | --- |
+|2020-04-02|  修改证书问题 |
 |2020-04-01| 1. 修复某些网站点击出现空白页面问题 </br> 2. 增加一个数据源 </br>3.CCTV直播放入第一位|
 | 2020-01 |  1. 视频网站入口改为CollectionView显示</br> 2. 优化UI </br>3. 增加历史记录功能 </br> 4.历史记录存储顺序调整 |
 | 2019-12-23  |  1. 新增VIP解析源  </br> 2. 完成调用本地播放器进行播放视频(利用<font color='red'>MPV</font>软件和<font color='red'>FFPlay</font>软件)  </br>3. 增加一列"更新日志”  </br>4. dmg文件更新 |
@@ -33,13 +34,9 @@
 
 ## 下载安装地址：
 
-DMG下载地址
-
-[https://iodefog.github.io/dmg/VipVideo1.0.5.dmg](https://iodefog.github.io/dmg/VipVideo1.0.5.dmg)
-
 app下载地址：
 
-[https://iodefog.github.io/dmg/VIPVideo1.0.5.zip](https://iodefog.github.io/dmg/VIPVideo1.0.5.zip)
+[https://iodefog.github.io/dmg/VIPVideo1.0.6.zip](https://iodefog.github.io/dmg/VIPVideo1.0.6.zip)
 
 <b>如果MAC软件提示已损坏，需要移到废纸篓的解决方法</br></b>
 
