@@ -33,32 +33,23 @@
             "canvip": 0,
             "url": "https://www.bilibili.com/"
         }, {
-            "name": "搜狐视频",
-            "icon": "搜狐",
-            "canvip": 1,
-            "url": "https://tv.sohu.com/"
-        }, {
-            "name": "乐视视频",
-            "icon": "乐视",
-            "canvip": 1,
-            "url": "https://www.le.com/"
-        },{
             "name": "第9影院",
             "icon": "第9影院",
             "url": "http://v.d9y.net/"
         },
         {
+            "name": "影院",
+            "icon": "影院",
+            "url": "https://www.j8dy.com/"
+        },
+        {
             "name": "电影天堂",
             "icon": "电影天堂",
-            "url": "http://www.btbtdy.net/"
+            "url": "http://btbtdy1.com/btfl/dy1.html"
         }, {
             "name": "新视觉影院",
             "icon": "4080",
-            "url": "http://www.yy3080.com/vod-type-id-1-pg-1.html/"
-        }, {
-            "name": "达达兔",
-            "icon": "4080",
-            "url": "https://www.dadatu.co/"
+            "url": "http://www.yy3080.com/label-new-pg-1.html"
         },{
             "name": "音乐破解",
             "icon": "",
