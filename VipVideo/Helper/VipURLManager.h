@@ -64,4 +64,7 @@
 
 + (NSMenuItem *)addShowMenuItemTitle:(NSString *)title key:(unichar)key target:(id)target action:(SEL)action;
 
+// 调起本地MPV或者FFMPEG
+- (void)nativePlay:(id)sender;
+
 @end
