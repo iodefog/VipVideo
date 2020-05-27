@@ -351,7 +351,7 @@
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HaveFFPlay"];
             }
             else {
-                [VipURLManager showAlert:@"请先安装ffplay或mpv"];
+                [VipURLManager showAlert:@"请先安装ffplay或mpv，README有安装教程"];
             }
         }
     }

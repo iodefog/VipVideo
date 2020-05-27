@@ -198,6 +198,14 @@
             [VipURLManager sharedInstance].m3u8Url = nil;
         }
         NSLog(@"request.URL.absoluteString = %@",requestUrl);
+        
+        if ([requestUrl hasPrefix:@"https://aweme.snssdk.co"] || [requestUrl hasPrefix:@"http://aweme.snssdk.co"]) {
+            decisionHandler(WKNavigationActionPolicyCancel);
+            [VipURLManager sharedInstance].m3u8Url = requestUrl;
+            [[VipURLManager sharedInstance] nativePlay:nil];
+            return;
+        }
+        
         if ([[requestUrl URLDecodedString] hasSuffix:@"clearAllHistory"]) {
             NSAlert *alert = [[NSAlert alloc] init];
             alert.alertStyle = NSAlertStyleWarning;
