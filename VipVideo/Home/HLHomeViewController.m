@@ -185,7 +185,8 @@
             [requestUrl containsString:@"hyysvip.duapp.com"] ||
             [requestUrl containsString:@"f.qcwzx.net.cn"] ||
             [requestUrl containsString:@"adx.dlads.cn"] ||
-            [requestUrl containsString:@"dlads.cn"]
+            [requestUrl containsString:@"dlads.cn"] ||
+            [requestUrl containsString:@"wuo.8h2x.com"]
             ) {
             decisionHandler(WKNavigationActionPolicyCancel);
             return;

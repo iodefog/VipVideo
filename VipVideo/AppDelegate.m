@@ -24,6 +24,8 @@
     [self configStatusBar];
     [self configMainMenu];
     self.windonwArray = [NSMutableArray array];
+    
+    NSURLProtocol *pr
 }
 
 
