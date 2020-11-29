@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		4F03FC9123C05BFE00292A72 /* NSString+HLAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F03FC9023C05BFE00292A72 /* NSString+HLAddition.m */; };
 		4F2DDCAB2311275E00A105C5 /* vlist.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F2DDCAA2311275E00A105C5 /* vlist.json */; };
+		4FA3209B248B579C00DEA984 /* HybridNSURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA3209A248B579C00DEA984 /* HybridNSURLProtocol.m */; };
+		4FA3209E248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA3209D248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m */; };
 		4FBF02DB2216B1C5007DB801 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4FBF02DA2216B1C5007DB801 /* README.md */; };
 		4FC0FB0623C824F200ADD778 /* HLCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FC0FB0423C824F200ADD778 /* HLCollectionViewItem.m */; };
 		4FC0FB0723C824F200ADD778 /* HLCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4FC0FB0523C824F200ADD778 /* HLCollectionViewItem.xib */; };
@@ -29,6 +31,10 @@
 		4F03FC8F23C05BFE00292A72 /* NSString+HLAddition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+HLAddition.h"; sourceTree = "<group>"; };
 		4F03FC9023C05BFE00292A72 /* NSString+HLAddition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+HLAddition.m"; sourceTree = "<group>"; };
 		4F2DDCAA2311275E00A105C5 /* vlist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = vlist.json; sourceTree = "<group>"; };
+		4FA32099248B579C00DEA984 /* HybridNSURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HybridNSURLProtocol.h; sourceTree = "<group>"; };
+		4FA3209A248B579C00DEA984 /* HybridNSURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HybridNSURLProtocol.m; sourceTree = "<group>"; };
+		4FA3209C248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLProtocol+WKWebVIew.h"; sourceTree = "<group>"; };
+		4FA3209D248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLProtocol+WKWebVIew.m"; sourceTree = "<group>"; };
 		4FBF02DA2216B1C5007DB801 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		4FC0FB0323C824F200ADD778 /* HLCollectionViewItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLCollectionViewItem.h; sourceTree = "<group>"; };
 		4FC0FB0423C824F200ADD778 /* HLCollectionViewItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLCollectionViewItem.m; sourceTree = "<group>"; };
@@ -73,6 +79,10 @@
 				C72BBE111F9DE8B000C5141E /* NSView+ZCAddition.m */,
 				4F03FC8F23C05BFE00292A72 /* NSString+HLAddition.h */,
 				4F03FC9023C05BFE00292A72 /* NSString+HLAddition.m */,
+				4FA32099248B579C00DEA984 /* HybridNSURLProtocol.h */,
+				4FA3209A248B579C00DEA984 /* HybridNSURLProtocol.m */,
+				4FA3209C248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.h */,
+				4FA3209D248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m */,
 			);
 			path = Addition;
 			sourceTree = "<group>";
@@ -218,6 +228,8 @@
 				C7D9E8401F9DA1BB00730A34 /* AppDelegate.m in Sources */,
 				C72BBE231F9DE8B000C5141E /* NSView+ZCAddition.m in Sources */,
 				4F03FC9123C05BFE00292A72 /* NSString+HLAddition.m in Sources */,
+				4FA3209E248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m in Sources */,
+				4FA3209B248B579C00DEA984 /* HybridNSURLProtocol.m in Sources */,
 				C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */,
 				C72BBE281F9DE8B000C5141E /* HLHomeWindowController.m in Sources */,
 				C72BBE241F9DE8B000C5141E /* MainMenu.m in Sources */,
