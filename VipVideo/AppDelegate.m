@@ -9,10 +9,9 @@
 #import "AppDelegate.h"
 #import "MainMenu.h"
 #import "VipURLManager.h"
+#import "NSURLProtocol+WKWebVIew.h"
 
 @interface AppDelegate ()
-
-
 
 @end
 
@@ -21,11 +20,13 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
 //    [self configMenu];
+    [NSURLProtocol wk_registerScheme:@"http"];
+    [NSURLProtocol wk_registerScheme:@"https"];
+
     [self configStatusBar];
     [self configMainMenu];
     self.windonwArray = [NSMutableArray array];
-    
-   
+
 }
 
 

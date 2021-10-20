@@ -13,6 +13,7 @@
 #import "NSString+HLAddition.h"
 #import "HLCollectionViewItem.h"
 #import "AppDelegate.h"
+
 #pragma mark ----
 
 //http://www.5ifxw.com/vip/
@@ -58,7 +59,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+   
     self.view.layer.backgroundColor = NSColor.lightGrayColor.CGColor;
     [self.view setNeedsDisplay:YES];
     
@@ -186,7 +187,8 @@
             [requestUrl containsString:@"f.qcwzx.net.cn"] ||
             [requestUrl containsString:@"adx.dlads.cn"] ||
             [requestUrl containsString:@"dlads.cn"] ||
-            [requestUrl containsString:@"wuo.8h2x.com"]
+            [requestUrl containsString:@"wuo.8h2x.com"]||
+            [requestUrl containsString:@"strip.alicdn.com"]
             ) {
             decisionHandler(WKNavigationActionPolicyCancel);
             return;

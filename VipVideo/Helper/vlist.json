@@ -27,11 +27,6 @@
             "icon": "优酷",
             "canvip": 1,
             "url": "https://www.youku.com/"
-        }, {
-            "name": "抖音网页版",
-            "icon": "抖音网页版",
-            "canvip": 0,
-            "url": "http://douyin.bm8.com.cn/"
         }
         , {
             "name": "bilibili",
@@ -39,27 +34,31 @@
             "canvip": 0,
             "url": "https://www.bilibili.com/"
         }, {
-            "name": "第9影院",
-            "icon": "第9影院",
-            "url": "http://v.d9y.net/"
+            "name": "黑猫动漫",
+            "icon": "黑猫动漫",
+            "url": "https://www.heimao.tv/"
         }, {
             "name": "美剧网",
             "icon": "美剧网",
             "url": "https://91mjw.com/"
         },
         {
-            "name": "影院",
-            "icon": "影院",
-            "url": "https://www.j8dy.com/"
+            "name": "黑鹰",
+            "icon": "黑鹰",
+            "url": "https://www.heiyingcn.com/"
         },
         {
             "name": "电影天堂",
             "icon": "电影天堂",
-            "url": "http://btbtdy1.com/btfl/dy1.html"
+            "url": "http://btbtdy1.com/"
         }, {
             "name": "新视觉影院",
             "icon": "4080",
-            "url": "http://www.yy3080.com/label-new-pg-1.html"
+            "url": "http://www.yy3080.com/"
+        }, {
+            "name": "第一影院",
+            "icon": "4080",
+            "url": "http://www.d1dy.com/"
         },{
             "name": "音乐破解",
             "icon": "",

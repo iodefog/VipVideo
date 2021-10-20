@@ -92,48 +92,42 @@
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@", HostURL]];
     NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15];
-    [NSURLConnection sendAsynchronousRequest:urlRequest
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse * _Nullable response,
-                                               NSData * _Nullable data,
-                                               NSError * _Nullable connectionError) {
-                               if(!connectionError){
-                                   NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-//                                   NSLog(@"%@",dict);
-                                   
-                                   if ([dict[@"new_version_info"][@"needLimit"] intValue] == 1) {
-                                       NSAlert *alert = [[NSAlert alloc] init];
-                                       alert.alertStyle = NSAlertStyleWarning;
-                                       alert.messageText = @"app已失效";
-                                       [alert addButtonWithTitle:@"升级"];
-                                       [alert addButtonWithTitle:@"退出"];
-                                       [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
-                                           if (returnCode == NSAlertFirstButtonReturn) {
-                                               NSLog(@"确定");
-                                               [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://iodefog.github.io/dmg/VipVideo.dmg"]];
-                                               exit(0);
-                                           }
-                                           else if (returnCode == NSAlertSecondButtonReturn) {
-                                               NSLog(@"退出");
-                                               exit(0);
-                                           }
-                                           else {
-                                               NSLog(@"其他按钮");
-                                           }
-                                       }];
-                                       // 这种方式下，alert是在屏幕中间弹出来的
-                                       //    [alert runModal];
-                                       return;
-                                   }
-
-//                                   self.networkLoaded = YES;
-//                                   [self transformJsonToModel:dict[@"list"]];
-//                                   [self transformPlatformJsonToModel:dict[@"platformlist"]];
-//                                   [[NSNotificationCenter defaultCenter] postNotificationName:KHLVipVideoRequestSuccess object:nil];
-                               }else {
-                                   NSLog(@"connectionError = %@",connectionError);
-                               }
-                           }];
+    
+    NSURLSessionConfiguration *defaultConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfig];
+    [session dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if(!error){
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            //                                   NSLog(@"%@",dict);
+            
+            if ([dict[@"new_version_info"][@"needLimit"] intValue] == 1) {
+                NSAlert *alert = [[NSAlert alloc] init];
+                alert.alertStyle = NSAlertStyleWarning;
+                alert.messageText = @"app已失效";
+                [alert addButtonWithTitle:@"升级"];
+                [alert addButtonWithTitle:@"退出"];
+                [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
+                    if (returnCode == NSAlertFirstButtonReturn) {
+                        NSLog(@"确定");
+                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://iodefog.github.io/dmg/VipVideo.dmg"]];
+                        exit(0);
+                    }
+                    else if (returnCode == NSAlertSecondButtonReturn) {
+                        NSLog(@"退出");
+                        exit(0);
+                    }
+                    else {
+                        NSLog(@"其他按钮");
+                    }
+                }];
+                // 这种方式下，alert是在屏幕中间弹出来的
+                //    [alert runModal];
+                return;
+            }
+        }else {
+            NSLog(@"connectionError = %@",error);
+        }
+    }];
 }
 
 - (void)transformPlatformJsonToModel:(NSArray *)jsonArray
