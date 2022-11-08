@@ -38,7 +38,8 @@
 
 app下载地址：
 
-[http://www.filedropper.com/vipvideo1010](http://www.filedropper.com/vipvideo1010)
+[VIPVideo.zip](https://iodefog.github.io/dmg/VIPVideo.zip)
+[VIPVideo.dmg](https://iodefog.github.io/dmg/VIPVideo.dmg)
 
 <b>如果MAC软件提示已损坏，需要移到废纸篓的解决方法</br></b>
 
