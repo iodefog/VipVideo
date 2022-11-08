@@ -17,9 +17,12 @@
 #pragma mark ----
 
 //http://www.5ifxw.com/vip/
+// 查询地址：https://soujiz.com/vip/
 
 #define NSCollectionViewWidth   75
 #define NSCollectionViewHeight  50
+
+#define ChromeUserAgent @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
 
 @interface HLHomeViewController()<WKNavigationDelegate, WKUIDelegate, NSCollectionViewDataSource, NSCollectionViewDelegate>{
     BOOL isLoading;
@@ -35,8 +38,8 @@
 @property (nonatomic, strong) NSCollectionView  *collectionView;
 @property (nonatomic, strong) NSScrollView      *scrollView;
 @property (nonatomic, strong) VipUrlItem        *selectedObject;
-//@property (nonatomic, strong) NSWindow          *secondWindow; // 第二弹窗
-//@property (nonatomic, strong) WKWebView         *secondWebView;// 第二个弹窗的webview
+@property (nonatomic, strong) NSWindow          *secondWindow; // 第二弹窗
+@property (nonatomic, strong) WKWebView         *secondWebView;// 第二个弹窗的webview
 @end;
 
 @implementation HLHomeViewController
@@ -81,12 +84,9 @@
         // Fallback on earlier versions
     }
     configuration.preferences.javaScriptCanOpenWindowsAutomatically = YES;
+    configuration.applicationNameForUserAgent = ChromeUserAgent;
     
-    self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
-    self.webView.UIDelegate = self;
-    self.webView.allowsBackForwardNavigationGestures = YES;
-    self.webView.navigationDelegate = self;
-    
+    self.webView = [self createWebViewWithConfiguration:configuration];
     [self.view addSubview:self.webView];
     
     [self registerNotification];
@@ -99,6 +99,197 @@
     
     [self refreshVideoModel:self.selectedObject];
     [self creatgeCollectionView];
+}
+
+- (void)registerNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoCurrentApiWillChange:) name:KHLVipVideoWillChangeCurrentApi object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoCurrentApiDidChange:) name:KHLVipVideoDidChangeCurrentApi object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoRequestSuccess:) name:KHLVipVideoRequestSuccess object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoDidCopyCurrentURL:) name:KHLVipVideoDidCopyCurrentURL object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoBackCurrentURL:) name:KHLVipVideoGoBackCurrentURL object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoForwardCurrentURL:) name:KHLVipVideoGoForwardCurrentURL object:nil];
+}
+
+- (void)configurationDefaultData{
+    [self createButtonsForData];
+}
+
+- (void)createButtonsForData{
+    [self.collectionView reloadData];
+    
+    for (NSButton *button in self.buttonsArray) {
+        [button removeFromSuperview];
+    }
+    
+    for (NSInteger i=0; i< self.modelsArray.count; i++) {
+        VipUrlItem *item = self.modelsArray[i];
+        NSVideoButton *button = [[NSVideoButton alloc] init];
+        [button setBezelStyle:NSBezelStyleShadowlessSquare];
+        [button setTarget:self];
+        [button setTitle:item.title];
+        button.model = item;
+        [self.view addSubview:button];
+        [self.buttonsArray addObject:button];
+        if (i==0) {
+            self.selectedObject = item;
+            self.selectedObject.selected = YES;
+        }
+    }
+    [self.view setNeedsLayout:YES];
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSString *requestUrl = navigationAction.request.URL.absoluteString;
+    //如果是跳转一个新页面
+    if (navigationAction.targetFrame == nil) {
+        [webView loadRequest:navigationAction.request];
+    }
+    if (navigationAction.request.URL.absoluteString.length > 0) {
+        
+        // 拦截广告
+        if ([requestUrl containsString:@"ynjczy.net"] ||
+            [requestUrl containsString:@"ylbdtg.com"] ||
+            [requestUrl containsString:@"662820.com"] ||
+            [requestUrl containsString:@"api.vparse.org"] ||
+            [requestUrl containsString:@"hyysvip.duapp.com"] ||
+            [requestUrl containsString:@"f.qcwzx.net.cn"] ||
+            [requestUrl containsString:@"adx.dlads.cn"] ||
+            [requestUrl containsString:@"dlads.cn"] ||
+            [requestUrl containsString:@"wuo.8h2x.com"]||
+            [requestUrl containsString:@"strip.alicdn.com"]
+            ) {
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+        
+        NSArray *vipDomains = @[@"www.iqiyi.com",
+                                @"video.qq.com",
+                                @"www.mgtv.com",
+                                @"www.bilibili.com"];
+        NSString *host = navigationAction.request.URL.host;
+        if([vipDomains containsObject:host]) {
+            self.currentUrl = navigationAction.request.URL.absoluteString;
+        }
+        
+        if ([requestUrl hasSuffix:@".m3u8"]) {
+            NSArray *urls = [requestUrl componentsSeparatedByString:@"url="];
+            [VipURLManager sharedInstance].m3u8Url = urls.lastObject;
+        }
+        else {
+            [VipURLManager sharedInstance].m3u8Url = nil;
+        }
+        
+        NSLog(@"request.URL.absoluteString = %@",requestUrl);
+        
+        if ([requestUrl hasPrefix:@"https://aweme.snssdk.co"] || [requestUrl hasPrefix:@"http://aweme.snssdk.co"]) {
+            decisionHandler(WKNavigationActionPolicyCancel);
+            [VipURLManager sharedInstance].m3u8Url = requestUrl;
+            [[VipURLManager sharedInstance] nativePlay:nil];
+            return;
+        }
+        
+        if ([[requestUrl URLDecodedString] hasSuffix:@"clearAllHistory"]) {
+            NSAlert *alert = [[NSAlert alloc] init];
+            alert.alertStyle = NSAlertStyleWarning;
+            alert.messageText = @"是否清空所有历史记录";
+            [alert addButtonWithTitle:@"清空"];
+            [alert addButtonWithTitle:@"取消"];
+            [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
+                if (returnCode == NSAlertFirstButtonReturn) {
+                    [self clearAllHistory];
+                }
+            }];
+        }
+    }
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+- (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
+    
+    if([navigationAction.request.URL.absoluteString isEqualToString:@"about:blank"]) {
+        return nil;
+    }
+    
+    secondConfiguration = configuration;
+    [self.secondWindow close];
+    
+    NSUInteger windowStyleMask = NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask | NSTitledWindowMask;
+    NSWindow *keyWindow = NSApplication.sharedApplication.keyWindow;
+    NSWindow *secondWindow = [[NSWindow alloc] initWithContentRect:keyWindow.frame styleMask:windowStyleMask backing:NSBackingStoreBuffered defer:NO];
+    
+    WKWebView *secondWebView = [self createWebViewWithConfiguration:configuration];
+    [secondWindow setContentView:secondWebView];
+    [secondWindow makeKeyAndOrderFront:self];
+
+    AppDelegate *delegate = (id)[NSApplication sharedApplication].delegate;
+    [delegate.windonwArray addObject:secondWindow];
+    
+    [secondWebView loadRequest:navigationAction.request];
+    self.secondWebView = secondWebView;
+    self.secondWindow = secondWindow;
+    
+    NSLog(@"navigationAction.request =%@",navigationAction.request);
+    
+    return secondWebView;
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
+{
+    [VipURLManager sharedInstance].finalUrl = webView.URL.absoluteString;
+    [self saveHistoryUrl:webView.URL.absoluteString title:webView.title];
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
+{
+    [VipURLManager sharedInstance].finalUrl = webView.URL.absoluteString;
+}
+
+
+- (void)vipVideoCurrentApiDidChange:(NSNotification *)notification{
+    __weak typeof(self) mySelf = self;
+    [self.webView evaluateJavaScript:@"document.location.href" completionHandler:^(id _Nullable url, NSError * _Nullable error) {
+        NSString *finalUrl = [NSString stringWithFormat:@"%@%@", [[VipURLManager sharedInstance] currentVipApi]?:@"",self.currentUrl?:@""];
+//        NSLog(@"finalUrl = %@", finalUrl);
+        NSString * encodingString = [finalUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:encodingString]];
+        
+        if(mySelf.secondWindow.isVisible) {
+            [mySelf.secondWebView loadRequest:request];
+        } else {
+            [mySelf.webView loadRequest:request];
+        }
+    }];
+}
+
+
+- (void)vipVideoDidCopyCurrentURL:(NSNotification *)notification{
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+    [pasteboard clearContents];
+    [pasteboard setString:self.webView.URL.absoluteString forType:NSPasteboardTypeString];
+}
+
+- (void)vipVideoGoBackCurrentURL:(NSNotification *)notification{
+    if ([self.webView canGoBack]) {
+        [self.webView goBack];
+    }
+}
+
+- (void)vipVideoGoForwardCurrentURL:(NSNotification *)notification{
+    if ([self.webView canGoForward]) {
+        [self.webView goForward];
+    }
+}
+
+#pragma mark - Create
+
+- (WKWebView *)createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration {
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
+    webView.UIDelegate = self;
+    webView.allowsBackForwardNavigationGestures = YES;
+    webView.navigationDelegate = self;
+    [webView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+
+    return webView;
 }
 
 - (void)creatgeCollectionView{
@@ -128,174 +319,6 @@
     self.collectionView = collectionView;
 }
 
-- (void)registerNotification{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoCurrentApiWillChange:) name:KHLVipVideoWillChangeCurrentApi object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoCurrentApiDidChange:) name:KHLVipVideoDidChangeCurrentApi object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoRequestSuccess:) name:KHLVipVideoRequestSuccess object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoDidCopyCurrentURL:) name:KHLVipVideoDidCopyCurrentURL object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoBackCurrentURL:) name:KHLVipVideoGoBackCurrentURL object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoForwardCurrentURL:) name:KHLVipVideoGoForwardCurrentURL object:nil];
-}
-
-- (void)configurationDefaultData{
-        
-    [self createButtonsForData];
-}
-
-- (void)createButtonsForData{
-    [self.collectionView reloadData];
-    
-    
-    for (NSButton *button in self.buttonsArray) {
-        [button removeFromSuperview];
-    }
-    
-    for (NSInteger i=0; i< self.modelsArray.count; i++) {
-        VipUrlItem *item = self.modelsArray[i];
-        NSVideoButton *button = [[NSVideoButton alloc] init];
-        [button setBezelStyle:NSBezelStyleShadowlessSquare];
-        [button setTarget:self];
-        [button setTitle:item.title];
-//        [button setAction:@selector(buttonClicked:)];
-        button.model = item;
-        [self.view addSubview:button];
-        [self.buttonsArray addObject:button];
-        if (i==0) {
-            self.selectedObject = item;
-            self.selectedObject.selected = YES;
-//            _selectedButton = button;
-//            _selectedButton.highlighted = YES;
-        }
-    }
-    [self.view setNeedsLayout:YES];
-}
-
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    NSString *requestUrl = navigationAction.request.URL.absoluteString;
-    //如果是跳转一个新页面
-    if (navigationAction.targetFrame == nil) {
-        [webView loadRequest:navigationAction.request];
-    }
-    if (navigationAction.request.URL.absoluteString.length > 0) {
-        
-        // 拦截广告
-        if ([requestUrl containsString:@"ynjczy.net"] ||
-            [requestUrl containsString:@"ylbdtg.com"] ||
-            [requestUrl containsString:@"662820.com"] ||
-            [requestUrl containsString:@"api.vparse.org"] ||
-            [requestUrl containsString:@"hyysvip.duapp.com"] ||
-            [requestUrl containsString:@"f.qcwzx.net.cn"] ||
-            [requestUrl containsString:@"adx.dlads.cn"] ||
-            [requestUrl containsString:@"dlads.cn"] ||
-            [requestUrl containsString:@"wuo.8h2x.com"]||
-            [requestUrl containsString:@"strip.alicdn.com"]
-            ) {
-            decisionHandler(WKNavigationActionPolicyCancel);
-            return;
-        }
-        if ([requestUrl hasSuffix:@".m3u8"]) {
-            NSArray *urls = [requestUrl componentsSeparatedByString:@"url="];
-            [VipURLManager sharedInstance].m3u8Url = urls.lastObject;
-        }
-        else {
-            [VipURLManager sharedInstance].m3u8Url = nil;
-        }
-        NSLog(@"request.URL.absoluteString = %@",requestUrl);
-        
-        if ([requestUrl hasPrefix:@"https://aweme.snssdk.co"] || [requestUrl hasPrefix:@"http://aweme.snssdk.co"]) {
-            decisionHandler(WKNavigationActionPolicyCancel);
-            [VipURLManager sharedInstance].m3u8Url = requestUrl;
-            [[VipURLManager sharedInstance] nativePlay:nil];
-            return;
-        }
-        
-        if ([[requestUrl URLDecodedString] hasSuffix:@"clearAllHistory"]) {
-            NSAlert *alert = [[NSAlert alloc] init];
-            alert.alertStyle = NSAlertStyleWarning;
-            alert.messageText = @"是否清空所有历史记录";
-            [alert addButtonWithTitle:@"清空"];
-            [alert addButtonWithTitle:@"取消"];
-            [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
-                if (returnCode == NSAlertFirstButtonReturn) {
-                    [self clearAllHistory];
-                }
-            }];
-        }
-    }
-    decisionHandler(WKNavigationActionPolicyAllow);
-}
-
-- (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
-    secondConfiguration = configuration;
-   
-    NSUInteger windowStyleMask = NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask | NSTitledWindowMask;
-    NSWindow *secondWindow = [[NSWindow alloc] initWithContentRect:CGRectMake(0, 0, 800, 600) styleMask:windowStyleMask backing:NSBackingStoreBuffered defer:NO];
-    
-    WKWebView *secondWebView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:secondConfiguration];
-    
-    [secondWebView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-
-    [secondWindow setContentView:secondWebView];
-
-    [secondWindow makeKeyAndOrderFront:self];
-
-    AppDelegate *delegate = (id)[NSApplication sharedApplication].delegate;
-    [delegate.windonwArray addObject:secondWindow];
-    
-    [secondWebView loadRequest:navigationAction.request];
-
-    return secondWebView;
-}
-
-- (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
-{
-    [VipURLManager sharedInstance].finalUrl = webView.URL.absoluteString;
-    [self saveHistoryUrl:webView.URL.absoluteString title:webView.title];
-}
-
-- (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
-{
-    [VipURLManager sharedInstance].finalUrl = webView.URL.absoluteString;
-}
-
-
-- (void)vipVideoCurrentApiDidChange:(NSNotification *)notification{
-    
-    __weak typeof(self) mySelf = self;
-    [self.webView evaluateJavaScript:@"document.location.href" completionHandler:^(id _Nullable url, NSError * _Nullable error) {
-        NSString *originUrl = [[url componentsSeparatedByString:@"url="] lastObject];
-        
-        if (![url hasPrefix:@"http"]) {
-            return ;
-        }
-        
-        NSString *finalUrl = [NSString stringWithFormat:@"%@%@", [[VipURLManager sharedInstance] currentVipApi]?:@"",originUrl?:@""];
-//        NSLog(@"finalUrl = %@", finalUrl);
-        NSString * encodingString = [finalUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:encodingString]];
-        [mySelf.webView loadRequest:request];
-    }];
-}
-
-
-- (void)vipVideoDidCopyCurrentURL:(NSNotification *)notification{
-    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-    [pasteboard clearContents];
-    [pasteboard setString:self.webView.URL.absoluteString forType:NSPasteboardTypeString];
-}
-
-- (void)vipVideoGoBackCurrentURL:(NSNotification *)notification{
-    if ([self.webView canGoBack]) {
-        [self.webView goBack];
-    }
-}
-
-- (void)vipVideoGoForwardCurrentURL:(NSNotification *)notification{
-    if ([self.webView canGoForward]) {
-        [self.webView goForward];
-    }
-}
-
 #pragma mark - Notification
 
 - (void)refreshVideoModel:(VipUrlItem *)model{
@@ -304,10 +327,17 @@
         [self.webView loadHTMLString:self.getHistoryHtml baseURL:nil];
     }
     else{
-        NSString * encodingString = [model.url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *encodingString = [model.url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:encodingString]];
         
-        [self.webView loadRequest:request];
+        NSApplication.sharedApplication.windows.firstObject.title = [NSString stringWithFormat:@"VipVideo-%@",model.title];
+        NSApplication.sharedApplication.windows.firstObject.titlebarAppearsTransparent = YES;
+
+        if(self.secondWindow.isVisible) {
+            [self.secondWebView loadRequest:request];
+        } else {
+            [self.webView loadRequest:request];
+        }
     }
 }
 
@@ -331,10 +361,10 @@
 }
 
 - (void)vipVideoCurrentApiWillChange:(NSNotification *)notification{
-    NSString *url = [[_currentUrl componentsSeparatedByString:@"url="] lastObject];
-    if ([url hasPrefix:@"http"]) {
-        _currentUrl = url;
-    }
+//    NSString *url = [[_currentUrl componentsSeparatedByString:@"url="] lastObject];
+//    if ([url hasPrefix:@"http"]) {
+//        _currentUrl = url;
+//    }
 }
 
 #pragma mark - history

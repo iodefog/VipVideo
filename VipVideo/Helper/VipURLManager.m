@@ -109,7 +109,7 @@
                 [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
                     if (returnCode == NSAlertFirstButtonReturn) {
                         NSLog(@"确定");
-                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://iodefog.github.io/dmg/VipVideo.dmg"]];
+                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://iodefog.github.io/dmg/VIPVideo.zip"]];
                         exit(0);
                     }
                     else if (returnCode == NSAlertSecondButtonReturn) {
@@ -159,8 +159,8 @@
         }
         
         AppDelegate *delegate = (id)[NSApplication sharedApplication].delegate;
-        NSMenuItem *listStatusItem = [delegate.statusItem.menu itemWithTitle:@"破解接口"];;
-        NSMenuItem *listMainItem = [[NSApplication sharedApplication].mainMenu itemWithTitle:@"破解接口"];
+        NSMenuItem *listStatusItem = [delegate.statusItem.menu itemWithTitle:@"VIP"];;
+        NSMenuItem *listMainItem = [[NSApplication sharedApplication].mainMenu itemWithTitle:@"VIP"];
         [listStatusItem.submenu removeAllItems];
         [listMainItem.submenu removeAllItems];
         [self.itemsArray removeAllObjects];
@@ -210,44 +210,44 @@
 }
 
 - (NSMenuItem *)configurationQuitMenuItem:(NSMenu *)menu{
-    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"退出" key:'Q' target:self action:@selector(quit:)];
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"Quit" key:'Q' target:self action:@selector(quit:)];
     [menu addItem:item];
     return item;
 }
 
 - (NSMenuItem *)configurationChangeUpMenuItem:(NSMenu *)menu{
-    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"切换上一个接口" key:'I' target:self action:@selector(upChange:)];
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"Previous vip" key:'I' target:self action:@selector(upChange:)];
     [menu addItem:item];
     return item;
 }
 
 - (NSMenuItem *)configurationChangeNextMenuItem:(NSMenu *)menu{
-    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"切换下一个接口" key:'J' target:self action:@selector(nextChange:)];
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"Next vip" key:'J' target:self action:@selector(nextChange:)];
     [menu addItem:item];
     return item;
 }
 
 - (NSMenuItem *)configurationShowMenuItem:(NSMenu *)menu{
-    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"展示窗口" key:'D' target:self action:@selector(openVip:)];
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"Show Panel" key:'D' target:self action:@selector(openVip:)];
     [menu addItem:item];
     return item;
 }
 
 - (NSMenuItem *)configurationCreateMenuItem:(NSMenu *)menu{
-    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"新建窗口" key:'N' target:self action:@selector(createNew:)];
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"New Panel" key:'N' target:self action:@selector(createNew:)];
     [menu addItem:item];
     return item;
 }
 
 - (NSMenuItem *)configurationCopyMenuItem:(NSMenu *)menu{
-    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"复制链接" key:'C' target:self action:@selector(copyLink:)];
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"Copy URL" key:'C' target:self action:@selector(copyLink:)];
     [menu addItem:item];
     return item;
 }
 
 - (NSMenuItem *)configurationOpenSafariItem:(NSMenu *)menu;
 {
-    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"Safari打开" key:'P' target:self action:@selector(safariPlay:)];
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"Open Safari" key:'P' target:self action:@selector(safariPlay:)];
     [menu addItem:item];
     return item;
 }
@@ -296,6 +296,8 @@
     else {
         self.currentIndex --;
     }
+    VipUrlItem *item = self.itemsArray[self.currentIndex];
+    [self changeVideoItem:item];
 }
 
 - (void)copyLink:(id)sender{
@@ -424,8 +426,8 @@
         self.currentVipApi = item.url;
         
         AppDelegate *delegate = (id)[NSApplication sharedApplication].delegate;
-        NSMenuItem *listStatusItem = [delegate.statusItem.menu itemWithTitle:@"破解接口"];;
-        NSMenuItem *listMainItem = [[NSApplication sharedApplication].mainMenu itemWithTitle:@"破解接口"];
+        NSMenuItem *listStatusItem = [delegate.statusItem.menu itemWithTitle:@"VIP"];;
+        NSMenuItem *listMainItem = [[NSApplication sharedApplication].mainMenu itemWithTitle:@"VIP"];
         
         NSMenuItem *oldItem1 = nil;
         if (_currentIndex < listStatusItem.submenu.itemArray.count) {
