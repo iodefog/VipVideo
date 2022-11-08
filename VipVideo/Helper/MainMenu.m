@@ -23,14 +23,14 @@
 
 - (void)createStatusBarItems{
     //添加vip解析列表
-    NSMenuItem * apiListItem = [[NSMenuItem alloc] initWithTitle:@"破解接口" action:Nil keyEquivalent:@""];
+    NSMenuItem * apiListItem = [[NSMenuItem alloc] initWithTitle:@"VIP" action:Nil keyEquivalent:@""];
     [self addItem:apiListItem];
-    NSMenu *apiListMenu = [[NSMenu alloc] initWithTitle:@"破解接口"];
+    NSMenu *apiListMenu = [[NSMenu alloc] initWithTitle:@"VIP"];
     [[VipURLManager sharedInstance] configurationVipMenu:apiListMenu];
     [self setSubmenu:apiListMenu forItem:apiListItem];
 
     // 展示窗口
-    self.showItem = [[VipURLManager sharedInstance] configurationShowMenuItem:self];
+    _showItem = [[VipURLManager sharedInstance] configurationShowMenuItem:self];
     
     // 新建按钮
     self.creatNewItem = [[VipURLManager sharedInstance] configurationCreateMenuItem:self];
@@ -61,17 +61,18 @@
 
 + (void)configuMainMenu:(NSMenu *)menu{
     
-    NSMenuItem * managerItem = [[NSMenuItem alloc] initWithTitle:@"管理" action:Nil keyEquivalent:@""];
-    NSMenu *manager = [[NSMenu alloc] initWithTitle:@"管理"];
+    NSMenuItem * managerItem = [[NSMenuItem alloc] initWithTitle:@"Action" action:Nil keyEquivalent:@""];
+    NSMenu *manager = [[NSMenu alloc] initWithTitle:@"Action"];
     [menu setSubmenu:manager forItem:managerItem];
 
+    [[VipURLManager sharedInstance] configurationGoBackMenuItem:manager];
     [[VipURLManager sharedInstance] configurationShowMenuItem:manager];
     [[VipURLManager sharedInstance] configurationCreateMenuItem:manager];
     [[VipURLManager sharedInstance] configurationChangeUpMenuItem:manager];
     [[VipURLManager sharedInstance] configurationChangeNextMenuItem:manager];
 
-    NSMenuItem * apiListItem = [[NSMenuItem alloc] initWithTitle:@"破解接口" action:Nil keyEquivalent:@""];
-    NSMenu *apiListMenu = [[NSMenu alloc] initWithTitle:@"破解接口"];
+    NSMenuItem * apiListItem = [[NSMenuItem alloc] initWithTitle:@"VIP" action:Nil keyEquivalent:@""];
+    NSMenu *apiListMenu = [[NSMenu alloc] initWithTitle:@"VIP"];
     [[VipURLManager sharedInstance] configurationVipMenu:apiListMenu];
     [menu setSubmenu:apiListMenu forItem:apiListItem];
 

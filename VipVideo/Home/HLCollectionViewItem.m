@@ -22,8 +22,7 @@
 
 - (void)viewDidLayout{
     [super viewDidLayout];
-    self.button.frame = CGRectMake(5, 5, CGRectGetWidth(self.view.bounds)-10, CGRectGetHeight(self.view.bounds)-10);
-    self.button.layer.backgroundColor = NSColor.whiteColor.CGColor;
+    self.button.frame = CGRectMake(5, 5, CGRectGetWidth(self.view.bounds)-5, CGRectGetHeight(self.view.bounds)-5);
 }
 
 - (void)viewDidLoad {
@@ -32,7 +31,8 @@
     
     if (self.button == nil) {
         self.button = [[NSVideoButton alloc] init];
-        [self.button setBezelStyle:NSBezelStyleInline];
+        [self.button setBezelStyle:NSBezelStyleRegularSquare];
+        self.button.layer.cornerRadius = 5;
         self.button.target = self;
         self.button.wantsLayer = YES;
         self.button.action = @selector(buttonClicked:);
