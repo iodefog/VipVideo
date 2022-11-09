@@ -38,6 +38,7 @@
 
 app下载地址：
 
+* [VIPVideo.pkg](https://iodefog.github.io/dmg/VIPVideo.pkg)
 * [VIPVideo.zip](https://iodefog.github.io/dmg/VIPVideo.zip)
 * [VIPVideo.dmg](https://iodefog.github.io/dmg/VIPVideo.dmg)
 
