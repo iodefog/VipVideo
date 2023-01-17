@@ -13,6 +13,7 @@
 #import "NSString+HLAddition.h"
 #import "HLCollectionViewItem.h"
 #import "AppDelegate.h"
+#import "HLRegexMatcher.h"
 
 #pragma mark ----
 
@@ -110,6 +111,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoForwardCurrentURL:) name:KHLVipVideoGoForwardCurrentURL object:nil];
 }
 
+- (WKWebView *)currentWebView {
+    if (self.secondWindow.isVisible) {
+        return self.secondWebView;
+    } else {
+        return self.webView;
+    }
+}
+
 - (void)configurationDefaultData{
     [self createButtonsForData];
 }
@@ -162,12 +171,7 @@
             return;
         }
         
-        NSArray *vipDomains = @[@"www.iqiyi.com",
-                                @"video.qq.com",
-                                @"www.mgtv.com",
-                                @"www.bilibili.com"];
-        NSString *host = navigationAction.request.URL.host;
-        if([vipDomains containsObject:host]) {
+        if([HLRegexMatcher isValidVideoUrl:requestUrl]) {
             self.currentUrl = navigationAction.request.URL.absoluteString;
         }
         
@@ -213,7 +217,7 @@
     secondConfiguration = configuration;
     [self.secondWindow close];
     
-    NSUInteger windowStyleMask = NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask | NSTitledWindowMask;
+    NSUInteger windowStyleMask = NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable | NSWindowStyleMaskTitled;
     NSWindow *keyWindow = NSApplication.sharedApplication.keyWindow;
     NSWindow *secondWindow = [[NSWindow alloc] initWithContentRect:keyWindow.frame styleMask:windowStyleMask backing:NSBackingStoreBuffered defer:NO];
     
@@ -246,18 +250,15 @@
 
 
 - (void)vipVideoCurrentApiDidChange:(NSNotification *)notification{
-    __weak typeof(self) mySelf = self;
-    [self.webView evaluateJavaScript:@"document.location.href" completionHandler:^(id _Nullable url, NSError * _Nullable error) {
+    [self.currentWebView evaluateJavaScript:@"document.location.href" completionHandler:^(NSString * _Nullable url, NSError * _Nullable error) {
+        if (self.currentUrl == nil) {
+            self.currentUrl = url;
+        }
         NSString *finalUrl = [NSString stringWithFormat:@"%@%@", [[VipURLManager sharedInstance] currentVipApi]?:@"",self.currentUrl?:@""];
-//        NSLog(@"finalUrl = %@", finalUrl);
         NSString * encodingString = [finalUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:encodingString]];
         
-        if(mySelf.secondWindow.isVisible) {
-            [mySelf.secondWebView loadRequest:request];
-        } else {
-            [mySelf.webView loadRequest:request];
-        }
+        [self.currentWebView loadRequest:request];
     }];
 }
 
@@ -265,18 +266,18 @@
 - (void)vipVideoDidCopyCurrentURL:(NSNotification *)notification{
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     [pasteboard clearContents];
-    [pasteboard setString:self.webView.URL.absoluteString forType:NSPasteboardTypeString];
+    [pasteboard setString:self.currentWebView.URL.absoluteString forType:NSPasteboardTypeString];
 }
 
 - (void)vipVideoGoBackCurrentURL:(NSNotification *)notification{
-    if ([self.webView canGoBack]) {
-        [self.webView goBack];
+    if ([self.currentWebView canGoBack]) {
+        [self.currentWebView goBack];
     }
 }
 
 - (void)vipVideoGoForwardCurrentURL:(NSNotification *)notification{
-    if ([self.webView canGoForward]) {
-        [self.webView goForward];
+    if ([self.currentWebView canGoForward]) {
+        [self.currentWebView goForward];
     }
 }
 
@@ -324,7 +325,7 @@
 - (void)refreshVideoModel:(VipUrlItem *)model{
     
     if ([model.url isEqualToString:@"history"]) {
-        [self.webView loadHTMLString:self.getHistoryHtml baseURL:nil];
+        [self.currentWebView loadHTMLString:self.getHistoryHtml baseURL:nil];
     }
     else{
         NSString *encodingString = [model.url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
@@ -333,11 +334,7 @@
         NSApplication.sharedApplication.windows.firstObject.title = [NSString stringWithFormat:@"VipVideo-%@",model.title];
         NSApplication.sharedApplication.windows.firstObject.titlebarAppearsTransparent = YES;
 
-        if(self.secondWindow.isVisible) {
-            [self.secondWebView loadRequest:request];
-        } else {
-            [self.webView loadRequest:request];
-        }
+        [self.currentWebView loadRequest:request];
     }
 }
 
@@ -414,7 +411,7 @@
 
 - (void)clearAllHistory{
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"HLWebViewHistroy"];
-    [self.webView loadHTMLString:self.getHistoryHtml baseURL:nil];
+    [self.currentWebView loadHTMLString:self.getHistoryHtml baseURL:nil];
 }
 
 #pragma mark - CollectionView
@@ -434,7 +431,7 @@
         __strong typeof(self) strongSelf = weakSelf;
         
         strongSelf.selectedObject.selected = NO;
-        
+        self.currentUrl = nil;
         [VipURLManager sharedInstance].currentIndex = 0;
         [strongSelf refreshVideoModel:object];
         
