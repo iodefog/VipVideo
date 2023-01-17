@@ -1,94 +1,101 @@
 {
-    "new_version_info":
-    {
-       "latest_version":"1.6",
-       "updateMessage": "",
-       "update": "0",
-       "needLimit":"0"
+    "new_version_info":{
+        "latest_version":"1.6",
+        "updateMessage":"",
+        "update":"0",
+        "needLimit":"0"
     },
-    "i_new_version_info":
-    {
-       "i_latest_version":"1.6",
-       "i_updateMessage": "",
-       "i_update": "0",
-       "i_needLimit":"0"
+    "i_new_version_info":{
+        "i_latest_version":"1.6",
+        "i_updateMessage":"",
+        "i_update":"0",
+        "i_needLimit":"0"
     },
-    "platformlist": [
+    "platformlist":[
         {
-            "name": "CCTV",
-            "icon": "",
-            "url": "http://tv.cctv.com/live/cctv5/"
-        }
-        ,
-        {
-            "name": "爱奇艺",
-            "icon": "爱奇艺",
-            "canvip": 1,
-            "url": "https://www.iqiyi.com/"
+            "name":"CCTV",
+            "icon":"",
+            "url":"http://tv.cctv.com/live/cctv5/"
         },
         {
-            "name": "腾讯视频",
-            "icon": "腾讯",
-            "canvip": 1,
-            "url": "https://v.qq.com/"
-        },{
-            "name": "芒果",
-            "icon": "芒果",
-            "canvip": 1,
-            "url": "https://www.mgtv.com/"
-        }
-        , {
-            "name": "bilibili",
-            "icon": "bilibili",
-            "canvip": 0,
-            "url": "https://www.bilibili.com/"
-        }, {
-            "name": "漫岛",
-            "icon": "漫岛",
-            "url": "https://www.mddm.tv/"
-        }, {
-            "name": "美剧",
-            "icon": "美剧",
-            "url": "https://91mjw.vip/all"
+            "name":"爱奇艺",
+            "icon":"爱奇艺",
+            "canvip":1,
+            "url":"https://www.iqiyi.com/"
         },
         {
-            "name": "韩剧",
-            "icon": "韩剧",
-            "url": "https://www.kan.cc/"
+            "name":"腾讯视频",
+            "icon":"腾讯",
+            "canvip":1,
+            "url":"https://v.qq.com/"
         },
         {
-            "name": "日剧",
-            "icon": "日剧",
-            "url": "http://www.wwmulu.com/"
-        }, {
-            "name": "新视觉影院",
-            "icon": "4080",
-            "url": "https://www.finebv.com/"
-        }, {
-            "name": "第一影院",
-            "icon": "4080",
-            "url": "https://www.yitv.cc/"
-        },{
-            "name": "音乐破解",
-            "icon": "",
-            "url": "https://music.sonimei.cn/"
-        }
-        , {
-            "name": "历史记录",
-            "icon": "",
-            "url": "history"
-        }
-        , {
-            "name": "更新日志",
-            "icon": "",
-            "url": "https://github.com/iodefog/VipVideo/blob/master/README.md"
+            "name":"芒果",
+            "icon":"芒果",
+            "canvip":1,
+            "url":"https://www.mgtv.com/"
+        },
+        {
+            "name":"bilibili",
+            "icon":"bilibili",
+            "canvip":0,
+            "url":"https://www.bilibili.com/"
+        },
+        {
+            "name":"漫岛",
+            "icon":"漫岛",
+            "url":"https://www.mddm.tv/"
+        },
+        {
+            "name":"美剧",
+            "icon":"美剧",
+            "url":"https://91mjw.vip/all"
+        },
+        {
+            "name":"韩剧",
+            "icon":"韩剧",
+            "url":"https://www.kan.cc/"
+        },
+        {
+            "name":"日剧",
+            "icon":"日剧",
+            "url":"http://www.wwmulu.com/"
+        },
+        {
+            "name":"新视觉影院",
+            "icon":"4080",
+            "url":"https://www.finebv.com/"
+        },
+        {
+            "name":"1905",
+            "icon":"4080",
+            "url":"https://vip.1905.com/"
+        },
+        {
+            "name":"大师兄影视",
+            "icon":"",
+            "url":"https://dsxys.pro/"
+        },
+        {
+            "name":"天空影视",
+            "icon":"",
+            "url":"https://www.yskj1.com/"
+        },
+        {
+            "name":"历史记录",
+            "icon":"",
+            "url":"history"
+        },
+        {
+            "name":"更新日志",
+            "icon":"",
+            "url":"https://github.com/iodefog/VipVideo/blob/master/README.md"
         }
     ],
-    
-    "list": [
+    "list":[
         {
-            "name": "原地址-（提示：本软件免费无广告,不要花钱购买）",
-            "url": ""
+            "name":"原地址-（提示：本软件免费无广告,不要花钱购买）",
+            "url":""
         },
         {
             "name":"4.21-6",
@@ -99,7 +106,7 @@
             "url":"http://www.82190555.com/index/qqvod.php?url="
         },
         {
-            "name":"api-1",
+            "name":"OK",
             "url":"https://okjx.cc/?url="
         },
         {
@@ -126,7 +133,6 @@
             "name":"api-7",
             "url":"https://www.nxflv.com/?url="
         },
-        
         {
             "name":"api-8",
             "url":" https://www.ckplayer.vip/jiexi/?url="
@@ -144,9 +150,36 @@
             "url":"https://jx.qqwtt.com/?url="
         },
         {
-            "name":"api-12",
+            "name":"纯净1",
+            "url":"https://z1.m1907.top/?jx="
+        },
+        {
+            "name":"B站1",
+            "url":"https://jx.jsonplayer.com/player/?url="
+        },
+        {
+            "name":"爱豆",
             "url":"https://jx.aidouer.net/?url="
+        },
+        {
+            "name":"CHok",
+            "url":"https://www.gai4.com/?url="
+        },
+        {
+            "name":"RDHK",
+            "url":"https://jx.rdhk.net/?v="
+        },
+        {
+            "name":"人人迷",
+            "url":"https://jx.blbo.cc:4433/?url="
+        },
+        {
+            "name":"思古3",
+            "url":"https://jsap.attakids.com/?url="
+        },
+        {
+            "name":"听乐",
+            "url":"https://jx.dj6u.com/?url="
         }
     ]
 }
-

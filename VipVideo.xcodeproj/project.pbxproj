@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4F03FC9123C05BFE00292A72 /* NSString+HLAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F03FC9023C05BFE00292A72 /* NSString+HLAddition.m */; };
+		4F2081C729769C66004F2EC6 /* HLRegexMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F2081C629769C66004F2EC6 /* HLRegexMatcher.m */; };
 		4F2DDCAB2311275E00A105C5 /* vlist.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F2DDCAA2311275E00A105C5 /* vlist.json */; };
 		4FA3209B248B579C00DEA984 /* HybridNSURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA3209A248B579C00DEA984 /* HybridNSURLProtocol.m */; };
 		4FA3209E248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA3209D248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m */; };
@@ -30,6 +31,8 @@
 /* Begin PBXFileReference section */
 		4F03FC8F23C05BFE00292A72 /* NSString+HLAddition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+HLAddition.h"; sourceTree = "<group>"; };
 		4F03FC9023C05BFE00292A72 /* NSString+HLAddition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+HLAddition.m"; sourceTree = "<group>"; };
+		4F2081C529769C66004F2EC6 /* HLRegexMatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HLRegexMatcher.h; sourceTree = "<group>"; };
+		4F2081C629769C66004F2EC6 /* HLRegexMatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HLRegexMatcher.m; sourceTree = "<group>"; };
 		4F2DDCAA2311275E00A105C5 /* vlist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = vlist.json; sourceTree = "<group>"; };
 		4FA32099248B579C00DEA984 /* HybridNSURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HybridNSURLProtocol.h; sourceTree = "<group>"; };
 		4FA3209A248B579C00DEA984 /* HybridNSURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HybridNSURLProtocol.m; sourceTree = "<group>"; };
@@ -97,6 +100,8 @@
 				C72BBE181F9DE8B000C5141E /* VipURLManager.m */,
 				C7240AB01FA17AF7000684F1 /* JSONKit.h */,
 				C7240AAF1FA17AF7000684F1 /* JSONKit.m */,
+				4F2081C529769C66004F2EC6 /* HLRegexMatcher.h */,
+				4F2081C629769C66004F2EC6 /* HLRegexMatcher.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -231,6 +236,7 @@
 				4FA3209E248B5D1800DEA984 /* NSURLProtocol+WKWebVIew.m in Sources */,
 				4FA3209B248B579C00DEA984 /* HybridNSURLProtocol.m in Sources */,
 				C7240AB11FA17AF7000684F1 /* JSONKit.m in Sources */,
+				4F2081C729769C66004F2EC6 /* HLRegexMatcher.m in Sources */,
 				C72BBE281F9DE8B000C5141E /* HLHomeWindowController.m in Sources */,
 				C72BBE241F9DE8B000C5141E /* MainMenu.m in Sources */,
 				4FC0FB0623C824F200ADD778 /* HLCollectionViewItem.m in Sources */,
@@ -371,7 +377,7 @@
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = VipVideo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lhl.macvipvideo;
 				PRODUCT_NAME = VIPVideo;
@@ -390,7 +396,7 @@
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = VipVideo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lhl.macvipvideo;
 				PRODUCT_NAME = VIPVideo;
