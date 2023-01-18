@@ -39,9 +39,9 @@
 
 app下载地址：
 
-* [VIPVideo.pkg](https://github.com/iodefog/VipVideo/releases/download/1.6/VIPVideo.pkg)
-* [VIPVideo.zip](https://github.com/iodefog/VipVideo/releases/download/1.6/VIPVideo.zip)
-* [VIPVideo.dmg](https://github.com/iodefog/VipVideo/releases/download/1.6/VIPVideo.dmg)
+* [VIPVideo.pkg](https://github.com/iodefog/VipVideo/releases/download/1.7/VIPVideo.pkg)
+* [VIPVideo.zip](https://github.com/iodefog/VipVideo/releases/download/1.7/VIPVideo.zip)
+* [VIPVideo.dmg](https://github.com/iodefog/VipVideo/releases/download/1.7/VIPVideo.dmg)
 
 <b>如果MAC软件提示已损坏，需要移到废纸篓的解决方法</br></b>
 
