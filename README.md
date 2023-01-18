@@ -43,37 +43,6 @@ app下载地址：
 * [VIPVideo.zip](https://github.com/iodefog/VipVideo/releases/download/1.7/VIPVideo.zip)
 * [VIPVideo.dmg](https://github.com/iodefog/VipVideo/releases/download/1.7/VIPVideo.dmg)
 
-<b>如果MAC软件提示已损坏，需要移到废纸篓的解决方法</br></b>
-
-<b>解决方法一： </b>
-允许任何来源的应用。在系统偏好设置里，打开“安全性和隐私”，将“允许从以下位置下载的应用程序”设置为“任何来源“。当然，这个设置已经无法在Mac OS Sierra上完成了。
-在Mac OS Sierra上，应该进行以下操作：
-
-1. 打开终端（Terminal），输入以下命令后回车，输入密码 </br>
-
-	``` 
-	sudo spctl --master-disable 
-	```
-
-2. 重新运行下载的应用程序
-
-<b>解决方法二：</b>
-移除这个应用的安全隔离属性，操作如下：
-
-1. 打开终端（Terminal），输入以下命令后回车，如需要，请输入密码</br>
-格式：``` tr -r -d com.apple.quarantine <path> ``` </br>
-<path> 是你下载的应用程序的路径，一般在/Applications/应用程序名字 </br>
-示例：
-
-	```
-	xattr -r -d com.apple.quarantine /Applications/VIPVideo.app
-	```
-</br>
-
-2. 重新运行下载的应用程序。
-
----
-
 
 ## 软件功能介绍：
 * 破解接口
@@ -158,6 +127,37 @@ brew install ffmpeg --with-sdl2
 ```
 注意 ``` brew install ffmpeg --with-ffplay ``` 已被启用。
 
+
+### 如果MAC软件提示已损坏，需要移到废纸篓的解决方法
+
+<b>解决方法一： </b>
+允许任何来源的应用。在系统偏好设置里，打开“安全性和隐私”，将“允许从以下位置下载的应用程序”设置为“任何来源“。当然，这个设置已经无法在Mac OS Sierra上完成了。
+在Mac OS Sierra上，应该进行以下操作：
+
+1. 打开终端（Terminal），输入以下命令后回车，输入密码 </br>
+
+	``` 
+	sudo spctl --master-disable 
+	```
+
+2. 重新运行下载的应用程序
+
+<b>解决方法二：</b>
+移除这个应用的安全隔离属性，操作如下：
+
+1. 打开终端（Terminal），输入以下命令后回车，如需要，请输入密码</br>
+格式：``` tr -r -d com.apple.quarantine <path> ``` </br>
+<path> 是你下载的应用程序的路径，一般在/Applications/应用程序名字 </br>
+示例：
+
+	```
+	xattr -r -d com.apple.quarantine /Applications/VIPVideo.app
+	```
+</br>
+
+2. 重新运行下载的应用程序。
+
+---
 
 ----------------------
 
