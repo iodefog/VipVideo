@@ -15,6 +15,7 @@
 #define KHLVipVideoGoBackCurrentURL     @"KHLVipVideoGoBackCurrentURL"
 #define KHLVipVideoGoForwardCurrentURL  @"KHLVipVideoGoForwardCurrentURL"
 #define KHLVipVideoStopPlay             @"KHLVipVideoStopPlay"
+#define KHLVipVideoEditApi              @"KHLVipVideoEditApi"
 
 @interface VipUrlItem:NSObject
 
@@ -43,14 +44,15 @@
 @property (nonatomic, strong) NSString *currentVipApi;
 @property (nonatomic, assign) NSInteger currentIndex;
 
+@property (nonatomic, strong) NSArray *vipListJsonArray;
+@property (nonatomic, strong) NSArray *platformJsonArray;
+
 + (instancetype)sharedInstance;
 - (void)changeVideoItem:(VipUrlItem *)item;
 
-
-
-
 - (void)configurationVipMenu:(NSMenu *)menu;
 
+- (NSMenuItem *)configurationAddCustomVipsMenuItem:(NSMenu *)menu;
 - (NSMenuItem *)configurationGoBackMenuItem:(NSMenu *)menu;
 - (NSMenuItem *)configurationGoForwardMenuItem:(NSMenu *)menu;
 - (NSMenuItem *)configurationQuitMenuItem:(NSMenu *)menu;
@@ -63,6 +65,11 @@
 - (NSMenuItem *)configurationNativePlayMenuItem:(NSMenu *)menu;
 
 + (NSMenuItem *)addShowMenuItemTitle:(NSString *)title key:(unichar)key target:(id)target action:(SEL)action;
+
+// vip解析源列表
+- (void)transformVIPSJsonToModel:(NSArray *)jsonArray;
+// 平台源列表
+- (void)transformPlatformJsonToModel:(NSArray *)jsonArray;
 
 // 调起本地MPV或者FFMPEG
 - (void)nativePlay:(id)sender;

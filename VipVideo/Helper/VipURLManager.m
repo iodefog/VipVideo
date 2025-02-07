@@ -80,12 +80,29 @@
     
 //#error 请先配置 viplist.json 里的平台url。改成常见视频平台即可。例如 http://v.qq.com
     
+    NSString *jsonString = [[NSUserDefaults standardUserDefaults] objectForKey:@"NSCustomVipUrls"] ?: @"";
+    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    
     NSString *path = [[NSBundle mainBundle] pathForResource:@"vlist" ofType:@"json"];
     NSData *data = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
 //    NSLog(@"%@,error %@",dict, error);
-    [self transformJsonToModel:dict[@"list"]];
-    [self transformPlatformJsonToModel:dict[@"platformlist"]];
+    if (!error && jsonArray.count > 0) {
+        [self transformVIPSJsonToModel:jsonArray];
+    } else {
+        [self transformVIPSJsonToModel:dict[@"list"]];
+    }
+    
+    
+    jsonString = [[NSUserDefaults standardUserDefaults] objectForKey:@"NSCustomPlatformUrls"] ?: @"";
+    jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    jsonArray = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    if (!error && jsonArray.count > 0) {
+        [self transformPlatformJsonToModel:jsonArray];
+    } else  {
+        [self transformPlatformJsonToModel:dict[@"platformlist"]];
+    }
 }
 
 - (void)initVipURLs{
@@ -140,22 +157,45 @@
             item.url = dict[@"url"];
             [urlsArray addObject:item];
         }
-        
         [self.platformItemsArray removeAllObjects];
         [self.platformItemsArray addObjectsFromArray:urlsArray];
+        self.platformJsonArray = jsonArray;
     }
+    
+    [self addPlatfromDefaultItems];
 }
 
+- (void)addPlatfromDefaultItems {
+    NSMutableArray *urlsArray = self.platformItemsArray;
+    
+    VipUrlItem *item = [[VipUrlItem alloc] init];
+    item.title = @"历史记录";
+    item.url = @"://history";
+    [urlsArray addObject:item];
+    
+    item = [[VipUrlItem alloc] init];
+    item.title = @"更新日志";
+    item.url = @"https://github.com/iodefog/VipVideo/blob/master/README.md";
+    [urlsArray addObject:item];
+    
+    item = [[VipUrlItem alloc] init];
+    item.title = @"编辑";
+    item.url = @"://edit";
+    [urlsArray addObject:item];
+}
 
-- (void)transformJsonToModel:(NSArray *)jsonArray
+- (void)transformVIPSJsonToModel:(NSArray *)jsonArray
 {
     if ([jsonArray isKindOfClass:[NSArray class]]) {
+        self.vipListJsonArray = jsonArray;
         NSMutableArray *urlsArray = [NSMutableArray array];
         for (NSDictionary *dict in jsonArray) {
-            VipUrlItem *item = [[VipUrlItem alloc] init];
-            item.title = dict[@"name"];
-            item.url = dict[@"url"];
-            [urlsArray addObject:item];
+            if ([dict isKindOfClass:NSDictionary.class]) {
+                VipUrlItem *item = [[VipUrlItem alloc] init];
+                item.title = dict[@"name"];
+                item.url = dict[@"url"];
+                [urlsArray addObject:item];
+            }
         }
         
         AppDelegate *delegate = (id)[NSApplication sharedApplication].delegate;
@@ -195,6 +235,12 @@
         
         index ++;
     }
+}
+
+- (NSMenuItem *)configurationAddCustomVipsMenuItem:(NSMenu *)menu{
+    NSMenuItem *item = [VipURLManager addShowMenuItemTitle:@"添加自定义解析源" key:'A' target:self action:@selector(addCustomVips:)];
+    [menu addItem:item];
+    return item;
 }
 
 - (NSMenuItem *)configurationGoBackMenuItem:(NSMenu *)menu{
@@ -298,6 +344,10 @@
     }
     VipUrlItem *item = self.itemsArray[self.currentIndex];
     [self changeVideoItem:item];
+}
+
+- (void)addCustomVips:(id)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:KHLVipVideoEditApi object:nil];
 }
 
 - (void)copyLink:(id)sender{

@@ -22,6 +22,12 @@
 
 #define NSCollectionViewWidth   75
 #define NSCollectionViewHeight  50
+#define NSTextViewTips @"[{}]"
+
+typedef enum : NSUInteger {
+    EditType_VIP,
+    EditType_Platform,
+} EditType;
 
 #define ChromeUserAgent @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
 
@@ -41,6 +47,10 @@
 @property (nonatomic, strong) VipUrlItem        *selectedObject;
 @property (nonatomic, strong) NSWindow          *secondWindow; // 第二弹窗
 @property (nonatomic, strong) WKWebView         *secondWebView;// 第二个弹窗的webview
+@property (nonatomic, strong) NSView            *vipUrlsEditView; // vip编辑框
+@property (nonatomic, strong) NSTextView        *vipUrlsTextView; // vip编辑框
+@property (nonatomic, assign) NSInteger         currentEditType;
+
 @end;
 
 @implementation HLHomeViewController
@@ -109,6 +119,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoDidCopyCurrentURL:) name:KHLVipVideoDidCopyCurrentURL object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoBackCurrentURL:) name:KHLVipVideoGoBackCurrentURL object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoGoForwardCurrentURL:) name:KHLVipVideoGoForwardCurrentURL object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vipVideoEditAPIs:) name:KHLVipVideoEditApi object:nil];
 }
 
 - (WKWebView *)currentWebView {
@@ -281,6 +292,97 @@
     }
 }
 
+- (void)vipVideoEditAPIs:(NSNotification *)notification {
+    [self showEidtViewWithType:EditType_VIP];
+}
+
+- (void)showEidtViewWithType:(EditType)editType {
+    self.currentEditType = editType;
+    
+    NSView *editView = [[NSView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 200)];
+    editView.wantsLayer = YES;
+    editView.layer.backgroundColor = NSColor.whiteColor.CGColor;
+    [self.view addSubview:editView];
+    self.vipUrlsEditView = editView;
+
+    NSTextView *textView = [[NSTextView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(editView.bounds) - 100, CGRectGetHeight(editView.bounds))];
+    self.vipUrlsTextView = textView;
+    textView.backgroundColor = NSColor.grayColor;
+    
+    NSError *error;
+    NSArray *jsonArray = editType == EditType_VIP ? [VipURLManager sharedInstance].vipListJsonArray : [VipURLManager sharedInstance].platformJsonArray;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject: jsonArray options:0 error:&error];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    textView.string = jsonString;
+    [editView addSubview:textView];
+    
+    NSButton *enterBtn = [NSButton buttonWithTitle:@"确定" target:self action:@selector(enterClicked:)];
+    enterBtn.frame = CGRectMake(CGRectGetWidth(self.view.bounds) - 90, 30, 90, 30);
+    [editView addSubview:enterBtn];
+    
+    NSButton *cancelBtn = [NSButton buttonWithTitle:@"取消" target:self action:@selector(cancelClicked:)];
+    cancelBtn.frame = CGRectMake(CGRectGetWidth(self.view.bounds) - 90, 70, 90, 30);
+    [editView addSubview:cancelBtn];
+    
+    NSButton *resetBtn = [NSButton buttonWithTitle:@"重置(重启)" target:self action:@selector(resetClicked:)];
+    resetBtn.frame = CGRectMake(CGRectGetWidth(self.view.bounds) - 90, 110, 90, 30);
+    [editView addSubview:resetBtn];
+}
+
+- (void)clearEidtView{
+    [self.vipUrlsEditView removeFromSuperview];
+}
+
+#pragma mark - button action
+- (void)enterClicked:(NSButton *)button {
+    NSString *jsonString = [self.vipUrlsTextView.string stringByReplacingOccurrencesOfString:NSTextViewTips withString:@""];
+    if (jsonString.length == 0 ) {
+        [self showError];
+        return;
+    }
+    [self saveVipUrls:jsonString];
+}
+
+- (void)saveVipUrls:(NSString *)urls {
+    [self clearEidtView];
+    
+    NSData *jsonData = [urls dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *error = nil;
+    NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    if (!error && jsonArray.count > 0) {
+        
+        if (self.currentEditType == EditType_VIP) {
+            [[NSUserDefaults standardUserDefaults] setObject:urls forKey:@"NSCustomVipUrls"];
+            [[VipURLManager sharedInstance] transformVIPSJsonToModel:jsonArray];
+        } else  if(self.currentEditType == EditType_Platform) {
+            [[NSUserDefaults standardUserDefaults] setObject:urls forKey:@"NSCustomPlatformUrls"];
+            [[VipURLManager sharedInstance] transformPlatformJsonToModel:jsonArray];
+            [self videoRequestSuccess:nil];
+        }
+    }
+}
+
+- (void)cancelClicked:(NSButton *)button {
+    [self clearEidtView];
+}
+
+- (void)showError{
+    NSError * error = [NSError errorWithDomain:@"数据不合法" code:404 userInfo:nil];
+    NSAlert * alert = [NSAlert alertWithError:error];
+    [alert runModal];
+}
+
+- (void)resetClicked:(NSButton *)button {
+    if (self.currentEditType == EditType_VIP) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"NSCustomVipUrls"];
+    } else  if(self.currentEditType == EditType_Platform) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"NSCustomPlatformUrls"];
+    }
+    
+    exit(0);
+}
+
 #pragma mark - Create
 
 - (WKWebView *)createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration {
@@ -323,9 +425,11 @@
 #pragma mark - Notification
 
 - (void)refreshVideoModel:(VipUrlItem *)model{
-    
-    if ([model.url isEqualToString:@"history"]) {
+    if ([model.url isEqualToString:@"://history"]) {
         [self.currentWebView loadHTMLString:self.getHistoryHtml baseURL:nil];
+    }
+    else if ([model.url isEqualToString:@"://edit"]) {
+        [self showEidtViewWithType:EditType_Platform];
     }
     else{
         NSString *encodingString = [model.url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];

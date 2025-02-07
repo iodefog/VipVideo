@@ -35,6 +35,7 @@
     // 新建按钮
     self.creatNewItem = [[VipURLManager sharedInstance] configurationCreateMenuItem:self];
     
+    [[VipURLManager sharedInstance] configurationAddCustomVipsMenuItem:self];
     [[VipURLManager sharedInstance] configurationGoBackMenuItem:self];
     [[VipURLManager sharedInstance] configurationGoForwardMenuItem:self];
 
@@ -65,6 +66,7 @@
     NSMenu *manager = [[NSMenu alloc] initWithTitle:@"Action"];
     [menu setSubmenu:manager forItem:managerItem];
 
+    [[VipURLManager sharedInstance] configurationAddCustomVipsMenuItem:manager];
     [[VipURLManager sharedInstance] configurationGoBackMenuItem:manager];
     [[VipURLManager sharedInstance] configurationShowMenuItem:manager];
     [[VipURLManager sharedInstance] configurationCreateMenuItem:manager];
