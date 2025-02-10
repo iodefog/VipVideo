@@ -431,7 +431,7 @@ typedef enum : NSUInteger {
     else if ([model.url isEqualToString:@"://edit"]) {
         [self showEidtViewWithType:EditType_Platform];
     }
-    else{
+    else {
         NSString *encodingString = [model.url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:encodingString]];
         
