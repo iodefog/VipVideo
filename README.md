@@ -165,6 +165,6 @@ brew install ffmpeg --with-sdl2
 
 QQ群：567503018
 QQ: 592658688
-微信群1：“vipvideo交流群”<img width="517" alt="image" src="https://github.com/user-attachments/assets/e08721b5-9c83-47df-853c-4fea46dbcb67" />
+微信群1：“vipvideo交流群”<img width="117" alt="image" src="https://github.com/user-attachments/assets/e08721b5-9c83-47df-853c-4fea46dbcb67" />
 
 
