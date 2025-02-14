@@ -306,6 +306,13 @@ typedef enum : NSUInteger {
     self.vipUrlsEditView = editView;
 
     NSTextView *textView = [[NSTextView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(editView.bounds) - 100, CGRectGetHeight(editView.bounds))];
+    // 禁用自动纠正和智能替换
+    textView.automaticQuoteSubstitutionEnabled = NO; // 禁用智能引号
+    textView.automaticDashSubstitutionEnabled = NO;  // 禁用智能破折号
+    textView.automaticTextReplacementEnabled = NO;   // 禁用文本自动替换
+    textView.automaticSpellingCorrectionEnabled = NO; // 禁用拼写自动纠正
+    textView.smartInsertDeleteEnabled = NO;          // 禁用智能插入/删除
+
     self.vipUrlsTextView = textView;
     textView.backgroundColor = NSColor.grayColor;
     

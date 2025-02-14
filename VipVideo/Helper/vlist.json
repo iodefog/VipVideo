@@ -1,12 +1,12 @@
 {
     "new_version_info": {
-        "latest_version": "1.6",
+        "latest_version": "1.1.1",
         "updateMessage": "",
         "update": "0",
         "needLimit": "0"
     },
     "i_new_version_info": {
-        "i_latest_version": "1.6",
+        "i_latest_version": "1.1.1",
         "i_updateMessage": "",
         "i_update": "0",
         "i_needLimit": "0"
@@ -36,11 +36,40 @@
             "url": "https://www.mgtv.com/"
         },
         {
+            "name": "抖音",
+            "url": "https://www.douyin.com/"
+        },
+        {
+            "name": "快手",
+            "url": "https://www.kuaishou.com/"
+        },
+        {
             "name": "bilibili",
             "icon": "bilibili",
             "canvip": 0,
             "url": "https://www.bilibili.com/"
         },
+        {
+            "name": "网易云音乐",
+            "url": "https://music.163.com/"
+        },
+        {
+            "name": "QQ音乐",
+            "url": "https://y.qq.com/"
+        },
+        {
+            "name": "酷狗音乐",
+            "url": "https://www.kugou.com/"
+        },
+        {
+            "name": "酷我音乐",
+            "url": "https://www.kuwo.cn/"
+        },
+        {
+            "name": "喜马拉雅",
+            "url": "https://www.ximalaya.com/"
+        },
+        
         {
             "name": "漫岛",
             "icon": "漫岛",
@@ -49,7 +78,7 @@
         {
             "name": "美剧",
             "icon": "美剧",
-            "url": "https://91mjw.vip/all"
+            "url": "https://mjw21.com/"
         },
         {
             "name": "韩剧",
@@ -80,6 +109,18 @@
             "name": "天空影视",
             "icon": "",
             "url": "https://www.yskj1.com/"
+        },
+        {
+            "name": "西瓜视频",
+            "url": "https://www.ixigua.com/"
+        },
+        {
+            "name": "Netflix(奈飞)",
+            "url": "https://www.netflix.com/"
+        }
+        ,{
+            "name": "youtubu",
+            "url": "https://www.youtube.com/"
         }
     ],
     "list": [
@@ -248,10 +289,6 @@
             "url": "https://www.h8jx.com/jiexi.php?url="
         },
         {
-            "name": "api-4",
-            "url": "https://api.jiexi.la/?url="
-        },
-        {
             "name": "api-5",
             "url": "https://vip.laobandq.com/jiexi.php?url="
         },
@@ -264,28 +301,12 @@
             "url": "https://www.nxflv.com/?url="
         },
         {
-            "name": "api-8",
-            "url": " https://www.ckplayer.vip/jiexi/?url="
-        },
-        {
             "name": "api-9",
             "url": "https://www.m3u8.tv.cdn.8old.cn/m3u8tv.1031/api.php?url="
         },
         {
-            "name": "api-10",
-            "url": "https://jx.m3u8.tv/jiexi/?url="
-        },
-        {
             "name": "api-11",
             "url": "https://jx.qqwtt.com/?url="
-        },
-        {
-            "name": "纯净1",
-            "url": "https://z1.m1907.top/?jx="
-        },
-        {
-            "name": "B站1",
-            "url": "https://jx.jsonplayer.com/player/?url="
         },
         {
             "name": "爱豆",
@@ -306,10 +327,6 @@
         {
             "name": "思古3",
             "url": "https://jsap.attakids.com/?url="
-        },
-        {
-            "name": "听乐",
-            "url": "https://jx.dj6u.com/?url="
         }
     ]
 }
