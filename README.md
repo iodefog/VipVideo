@@ -65,6 +65,34 @@ app下载地址：
 ### 主页
 ![](./images/home.jpeg)
 
+支持源：
+| 分类 | 平台名称 | VIP解析 | 网址 |
+|-----|---------|---------|------|
+| 电视台 | CCTV | - | http://tv.cctv.com/live/cctv5/ |
+| 视频网站 | 爱奇艺 | ✅ | https://www.iqiyi.com/ |
+| 视频网站 | 腾讯视频 | ✅ | https://v.qq.com/ |
+| 视频网站 | 芒果TV | ✅ | https://www.mgtv.com/ |
+| 视频网站 | bilibili | ✅ | https://www.bilibili.com/ |
+| 视频网站 | 1905 | - | https://vip.1905.com/ |
+| 视频网站 | 西瓜视频 | - | https://www.ixigua.com/ |
+| 视频网站 | Netflix | - | https://www.netflix.com/ |
+| 视频网站 | YouTube | - | https://www.youtube.com/ |
+| 音乐平台 | 网易云音乐 | - | https://music.163.com/ |
+| 音乐平台 | QQ音乐 | - | https://y.qq.com/ |
+| 音乐平台 | 酷狗音乐 | - | https://www.kugou.com/ |
+| 音乐平台 | 酷我音乐 | - | https://www.kuwo.cn/ |
+| 音乐平台 | 喜马拉雅 | - | https://www.ximalaya.com/ |
+| 直播平台 | 抖音 | - | https://www.douyin.com/ |
+| 直播平台 | 快手 | - | https://www.kuaishou.com/ |
+| 影视剧网站 | 漫岛 | - | https://www.mddm.tv/ |
+| 影视剧网站 | 美剧 | - | https://mjw21.com/ |
+| 影视剧网站 | 韩剧 | - | https://www.kan.cc/ |
+| 影视剧网站 | 日剧 | - | http://www.wwmulu.com/ |
+| 影视剧网站 | 新视觉影院 | - | https://www.finebv.com/ |
+| 影视剧网站 | 大师兄影视 | - | https://dsxys.pro/ |
+| 影视剧网站 | 天空影视 | - | https://www.yskj1.com/ |
+
+
 ### 功能位
 ![](./images/gongnengwei.png)
 
