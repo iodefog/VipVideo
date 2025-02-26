@@ -1,0 +1,58 @@
+# 依赖目录
+node_modules/
+
+# 构建输出目录
+dist/
+build/
+
+# 日志文件
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 运行时数据
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# 目录用于缓存工具
+.npm
+.eslintcache
+.node_repl_history
+
+# 输出的二进制文件
+*.exe
+*.dmg
+*.app
+
+# macOS 系统文件
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows 系统文件
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# 编辑器/IDE 特定文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+
+# 环境变量文件
+.env
+.env.local
+.env.*.local
+
+# Electron-builder 输出
+/dist_electron
+
+# 其他
+*.bak
+*.tmp
+*.temp

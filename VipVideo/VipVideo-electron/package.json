@@ -1,0 +1,22 @@
+{
+  "name": "VipVideo",
+  "version": "1.0.0",
+  "description": "VipVideo",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "debug": "electron --inspect=5858 .",
+    "build": "electron-builder --mac --win --publish never",
+    "build:mac": "electron-builder --mac --publish never",
+    "build:win": "electron-builder --win --publish never"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^23.0.2"
+  },
+  "dependencies": {
+    "electron-store": "^8.0.0"
+  }
+}
