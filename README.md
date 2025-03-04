@@ -43,6 +43,7 @@ app下载地址：
 
 * [VIPVideo.pkg](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VIPVideo.pkg)
 * [VIPVideo.zip](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VIPVideo.zip)
+* [VIPVideo.exe.zip 无vip破解](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VipVideo.exe.zip)
 
 
 ## 软件功能介绍：
