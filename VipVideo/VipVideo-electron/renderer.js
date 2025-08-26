@@ -18,16 +18,18 @@ const webview = document.getElementById('webview');
 const platformButtons = document.getElementById('platform-buttons');
 const customButton = document.getElementById('custom-button');
 const historyButton = document.getElementById('history-button');
+const devtoolsButton = document.getElementById('devtools-button');
 
 // 检查元素是否存在
 if (!webview) console.error('Webview element not found');
 if (!platformButtons) console.error('Platform buttons container not found');
 if (!customButton) console.error('Custom button not found');
 if (!historyButton) console.error('History button not found');
+if (!devtoolsButton) console.error('DevTools button not found');
 
-// 配置 webview（注意：useragent/allowpopups 需在 index.html 中静态设置才会生效）
+// 配置 webview（关键参数已在 index.html 静态设置）
 if (webview) {
-  webview.setAttribute('webpreferences', 'contextIsolation=no, nodeIntegration=yes');
+  try { webview.setAttribute('allow', 'autoplay; encrypted-media'); } catch (e) {}
 }
 
 // 创建回退按钮
@@ -191,6 +193,27 @@ customButton.addEventListener('click', () => {
 });
 
 // 历史记录按钮事件
+// DevTools 按钮事件（切换 webview 的 DevTools）
+if (devtoolsButton) {
+  devtoolsButton.addEventListener('click', () => {
+    try {
+      if (webview.isDevToolsOpened()) webview.closeDevTools();
+      else webview.openDevTools();
+    } catch (e) { console.error('toggle devtools failed', e); }
+  });
+}
+
+// 绑定快捷键：Cmd/Ctrl+Shift+I 或 F12 打开 webview DevTools
+document.addEventListener('keydown', (e) => {
+  const isToggle = ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'i') || e.key === 'F12';
+  if (isToggle) {
+    e.preventDefault();
+    try {
+      if (webview.isDevToolsOpened()) webview.closeDevTools();
+      else webview.openDevTools();
+    } catch (err) { console.error('hotkey toggle devtools failed', err); }
+  }
+});
 historyButton.addEventListener('click', () => {
   allowShowBackButton = false;
   backButton.style.display = 'none';
@@ -272,6 +295,10 @@ webview.addEventListener('dom-ready', () => {
       -webkit-user-select: auto !important;
     }
   `);
+  // 对网易云音乐启用媒体权限
+  try {
+    webview.setAudioMuted(false);
+  } catch (e) {}
 });
 
 let urlStack = [];

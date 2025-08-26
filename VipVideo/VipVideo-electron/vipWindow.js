@@ -107,14 +107,17 @@ function injectVipUI(child, vlistArray) {
 }
 
 function openVipWindow(url, vlistArray, size = { width: 1200, height: 800 }) {
-  const child = new BrowserWindow({
-    width: size.width,
-    height: size.height,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      preload: path.join(__dirname, 'child_preload.js')
-    }
+    const child = new BrowserWindow({
+      width: size.width,
+      height: size.height,
+      webPreferences: {
+      webviewTag: true,
+      autoplayPolicy: 'no-user-gesture-required', // 允许自动播放
+      webSecurity: false, // 禁用web安全策略
+      nodeIntegration: true, // 启用Node集成
+      contextIsolation: false, // 禁用上下文隔离
+        preload: path.join(__dirname, 'child_preload.js')
+      }
   });
   child.loadURL(url);
   child.webContents.on('did-finish-load', () => {

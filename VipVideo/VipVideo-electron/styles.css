@@ -37,7 +37,7 @@ body {
   white-space: nowrap;
 }
 
-#custom-button, #history-button {
+#custom-button, #history-button, #devtools-button {
   margin-left: 10px;
   padding: 5px 10px;
 }

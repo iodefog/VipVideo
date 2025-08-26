@@ -7,6 +7,7 @@
 
 | 更新日期 | 更新内容 |
 | ---- | --- |
+|2025-08-27| 1. 新增windows支持版本 </br> 2.解决网易云音乐不能播放问题 </br> |
 |2025-02-14| 1. 新增抖音、快手等短视频渠道</br> 2.新增腾讯音乐、网易云音乐等音乐渠道 </br> 3.关闭编辑面板自动修正能力 </br>  |
 |2025-02-10| 1. 支持vip源自定义能力</br> 2.支持添加新平台可编辑或排序 </br> 3.更新一些vip解析源 </br>  |
 |2023-01-17| 1. 修复腾讯视频不能使用VIP问题</br> 2.替换部分失效导航网站 </br> 3. pkg支持Mac M1安装 |
@@ -191,11 +192,12 @@ brew install ffmpeg --with-sdl2
 
 ----------------------
 
-如有其他问题，请发送邮件 [iodefog@gmail.com](mailto:iodefog@gmail.com)
+如有其他问题，请发送邮件 [592658688@qq.com](mailto:592658688@qq.com)
 
 QQ群：567503018
 QQ: 592658688
-微信群1：
-<img width="217" alt="image" src="https://github.com/user-attachments/assets/e08721b5-9c83-47df-853c-4fea46dbcb67" />
+
+有定制需求或者长期需求，可以赏个1~5毛钱，谢谢支持。
+<img width="217" alt="image" src="./IMG_3639.JPG" />
 
 
