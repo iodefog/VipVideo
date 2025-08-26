@@ -134,21 +134,6 @@
             "mobile": 1
         },
         {
-            "name": "B站1",
-            "url": "https://jx.jsonplayer.com/player/?url=",
-            "mobile": 1
-        },
-        {
-            "name": "YT",
-            "url": "https://jx.yangtu.top/?url=",
-            "mobile": 0
-        },
-        {
-            "name": "BL",
-            "url": "https://vip.bljiex.com/?v=",
-            "mobile": 0
-        },
-        {
             "name": "冰豆",
             "url": "https://bd.jx.cn/?url=",
             "mobile": 0
@@ -164,11 +149,6 @@
             "mobile": 0
         },
         {
-            "name": "弹幕",
-            "url": "https://dmjx.m3u8.tv/?url=",
-            "mobile": 0
-        },
-        {
             "name": "JX",
             "url": "https://jiexi.site/?url=",
             "mobile": 0
@@ -176,11 +156,6 @@
         {
             "name": "JY",
             "url": "https://jx.playerjy.com/?url=",
-            "mobile": 0
-        },
-        {
-            "name": "解析la",
-            "url": "https://api.jiexi.la/?url=",
             "mobile": 0
         },
         {

@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, Menu, Tray, screen } = require('electron');
 const path = require('path');
 const fs = require('fs'); // 引入 fs 模块，用于读取 vlist.json 文件
 const Store = require('electron-store');
+const { openVipWindow } = require('./vipWindow');
 
 const store = new Store();
 let mainWindow;
@@ -15,6 +16,7 @@ if (fs.existsSync(vlistPath)) {
 }
 
 function createWindow() {
+  console.log('createWindow');
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -38,21 +40,8 @@ function createWindow() {
 function createTray() {
   tray = new Tray(path.join(__dirname, 'images/iconStatus@2x.png')); // 设置任务栏图标
 
-  // 创建 VIP 子菜单
-  const vipMenu = vlistData.map((item) => ({
-    label: item.name,
-    click: () => {
-      // 获取当前 WebView 的 URL
-      mainWindow.webContents.send('get-current-url', item.url);
-    }
-  }));
-
-  // 创建任务栏菜单
+  // 创建任务栏菜单（移除自动拼接相关逻辑）
   const contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'VIP',
-      submenu: vipMenu // 添加 VIP 子菜单
-    },
     {
       label: '退出',
       click: () => {
@@ -67,6 +56,7 @@ function createTray() {
 
   // 点击任务栏图标时显示窗口并置顶
   tray.on('click', () => {
+    console.log('tray click');
     if (mainWindow && !mainWindow.isDestroyed()) {
       const { width, height } = mainWindow.getBounds(); // 获取窗口宽高
       const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize; // 获取屏幕工作区大小
@@ -105,31 +95,18 @@ function createTray() {
   }
 }
 
-// 监听 WebView URL 拦截
-ipcMain.on('current-url', (event, currentUrl) => {
-  console.log("lihongli02", currentUrl, event);
-    // 检查 URL 是否需要拦截
-    if (currentUrl.includes('video')) {
-      // 如果是视频页面，生成新的 URL
-      const newUrl = `${currentUrl}`;
-      mainWindow.loadURL(newUrl); // 使用 WebView 加载新 URL
-    } else {
-      // 如果是普通跳链，直接加载
-      mainWindow.loadURL(currentUrl);
-    }
-});
-
 // 监听渲染进程发来的 create-new-window 消息
 ipcMain.on('create-new-window', (event, newPageUrl) => {
-  console.log('Creating new window for URL:', newPageUrl);
+  console.log('[main] Creating new window for URL:', newPageUrl);
 
   // 创建一个新的 BrowserWindow
   const newWindow = new BrowserWindow({
-    width: 800, // 设置新窗口宽度
-    height: 600, // 设置新窗口高度
+    width: 1200,
+    height: 800,
     webPreferences: {
       nodeIntegration: false, // 根据需求设置
       contextIsolation: true, // 根据需求设置
+      preload: path.join(__dirname, 'child_preload.js')
     },
   });
 
@@ -146,6 +123,25 @@ app.whenReady().then(() => {
   app.on('applicationSupportsSecureRestorableState', () => true); // 启用安全的可恢复状态
   createWindow();
   createTray(); // 创建任务栏图标
+
+  // 拦截所有 webview 的 window.open，统一用自定义尺寸创建窗口
+  app.on('web-contents-created', (event, contents) => {
+    try {
+      if (contents.getType && contents.getType() === 'webview') {
+        contents.setWindowOpenHandler(({ url }) => {
+          try {
+            console.log('[main] setWindowOpenHandler URL:', url);
+            openVipWindow(url, vlistData, { width: 1200, height: 800 });
+          } catch (e) {
+            console.error('[main] create child window failed:', e);
+          }
+          return { action: 'deny' };
+        });
+      }
+    } catch (e) {
+      console.warn('[main] web-contents-created hook error:', e);
+    }
+  });
 });
 
 app.on('ready', () => {
