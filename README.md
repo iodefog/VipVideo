@@ -42,12 +42,12 @@
 
 ## 下载安装地址：
 
-**v1.1.2** 版本
+**v1.1.2** 版本 (暂不支持设置源和顺序)
 * [Mac(Apple芯片)](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo-1.1.2-arm64-mac.zip)
 * [Mac(Inter)](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo-1.1.2-mac.zip)
 * [Windows版本](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo.1.1.2.exe.zip)
 
-旧版（1.1.1）
+旧版（1.1.1） (可设置源和顺序)
 * [VIPVideo.pkg](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VIPVideo.pkg)
 * [VIPVideo.zip](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VIPVideo.zip)
 * [VIPVideo.exe.zip（无vip破解）](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VipVideo.exe.zip)
