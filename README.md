@@ -7,7 +7,7 @@
 
 | 更新日期 | 更新内容 |
 | ---- | --- |
-|2025-08-27| 1. 新增windows支持版本 </br> 2.解决网易云音乐不能播放问题 </br> |
+|2025-08-27| 1. 增加windows支持VIP播放功能 </br> 2.解决网易云音乐不能播放和后台时自动停止问题 </br> |
 |2025-02-14| 1. 新增抖音、快手等短视频渠道</br> 2.新增腾讯音乐、网易云音乐等音乐渠道 </br> 3.关闭编辑面板自动修正能力 </br>  |
 |2025-02-10| 1. 支持vip源自定义能力</br> 2.支持添加新平台可编辑或排序 </br> 3.更新一些vip解析源 </br>  |
 |2023-01-17| 1. 修复腾讯视频不能使用VIP问题</br> 2.替换部分失效导航网站 </br> 3. pkg支持Mac M1安装 |
@@ -40,8 +40,12 @@
 
 ## 下载安装地址：
 
-app下载地址：
+**v1.1.2** 版本
+* [Mac(Apple芯片)](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo-1.1.2-arm64-mac.zip)
+* [Mac(Inter)](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo-1.1.2-mac.zip)
+* [Windows版本](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo.1.1.2.exe.zip)
 
+旧版（1.1.1）
 * [VIPVideo.pkg](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VIPVideo.pkg)
 * [VIPVideo.zip](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VIPVideo.zip)
 * [VIPVideo.exe.zip（无vip破解）](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VipVideo.exe.zip)
