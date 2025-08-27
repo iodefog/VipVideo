@@ -71,7 +71,9 @@
 ---
 
 ### 主页
-![](./images/home.jpeg)
+![](./images/home-v2.jpg)
+
+    vip使用方法：先点击需要看的视频，然后点击“vip”，选择解析路线即可。如果不能播放，需要手动换下一条线路
 
 支持源：
 | 分类 | 平台名称 | VIP解析 | 网址 |
@@ -99,71 +101,6 @@
 | 影视剧网站 | 新视觉影院 | - | https://www.finebv.com/ |
 | 影视剧网站 | 大师兄影视 | - | https://dsxys.pro/ |
 | 影视剧网站 | 天空影视 | - | https://www.yskj1.com/ |
-
-
-### 功能位
-![](./images/gongnengwei.png)
-
----
-
-### 使用方法：
-
-以vip电影《勇敢者游戏决战丛林》为例
-
-* 1.搜索找到vip电影《勇敢者游戏决战丛林》
-![](./images/WX20180530-145513@2x.jpeg)
-
-* 2.进入播放页面, 可以看到需要vip或者劵
-![](./images/WX20180530-145751@2x.jpeg) 
-
-* 3.利用“破解接口”转换成vip播放地址
-![](./images/WX20180530-145832@2x.jpeg) 
-
-* 4.可以看到切换后播放器时间已经变为119分钟。尽情享受吧
-![](./images/WX20180530-150004@2x.jpeg) 
-
----
-
-### 其他：
-
-1. 如果双击dmg出现提示"文件已损坏，打不开"等提示。原因：mac不支持未在AppStore上架的软件。（提示：本软件未获取任何隐私信息，源码可查，可放心使用）
-
-	解决方法：请在终端输入以下代码，并输入电脑密码，再次打开dmg文件即可。
-
-	```
-	sudo spctl --master-disable
-	```
-
-2. 如果提示需要安装FlashPlayer才能播放。请先安装FlashPlayer及允许。此外可能需要设置如下配置：
-
-![](./images/peizhi.png)
-![](./images/peizhi2.jpg)
-
-## 依赖软件安装指南：
-### MPV 安装介绍
-
-简单安装命令：
-```
-// 首先安装brew
-gem install brew
-
-// 安装mpv
-brew install mpv
-```
-详细安装指南，请参考[https://iodefog.github.io/2019/01/28/mpv/](https://iodefog.github.io/2019/01/28/mpv/)
-
-
-### FFPlay 安装介绍
-```
-// 首先安装brew
-gem install brew
-
-// 安装ffmpeg和ffplay
-brew install ffmpeg --with-sdl2
-
-```
-注意 ``` brew install ffmpeg --with-ffplay ``` 已被启用。
-
 
 ### 如果MAC软件提示已损坏，需要移到废纸篓的解决方法
 
