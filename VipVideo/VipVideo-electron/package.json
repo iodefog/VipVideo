@@ -1,22 +1,108 @@
 {
   "name": "VipVideo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "VipVideo",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "debug": "electron --inspect=5858 .",
-    "build": "electron-builder --mac --win --publish never",
-    "build:mac": "electron-builder --mac --publish never",
-    "build:win": "electron-builder --win --publish never"
+    "build": "electron-builder --mac --win --linux --publish never",
+    "build:mac": "electron-builder --mac --x64 --arm64 --publish never",
+    "build:win": "electron-builder --win --publish never",
+    "build:linux": "electron-builder --linux --publish never"
+  },
+  "build": {
+    "appId": "com.lhl.vipvideo",
+    "productName": "VipVideo",
+    "icon": "build/icons/icon.icns",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "build/icons/icon.icns",
+      "compression": "maximum",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icons/icon.ico",
+      "publisherName": "lihongli",
+      "compression": "maximum"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icons/icon.png",
+      "category": "Utility",
+      "compression": "maximum"
+    },
+    "files": [
+      "**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!**/node_modules/*/{docs,documentation,doc}",
+      "!**/node_modules/*/{coverage,.nyc_output}",
+      "!**/node_modules/*/{.eslintrc,.eslintignore,.prettierrc,.prettierignore}",
+      "!**/node_modules/*/{tsconfig.json,tsconfig.*.json}",
+      "!**/node_modules/*/{.babelrc,.babelrc.js,babel.config.js}",
+      "!**/node_modules/*/{webpack.config.js,rollup.config.js,vite.config.js}",
+      "!**/node_modules/*/{jest.config.js,mocha.opts,karma.conf.js}",
+      "!**/node_modules/*/{.gitignore,.npmignore}",
+      "!**/node_modules/*/{package-lock.json,yarn.lock,pnpm-lock.yaml}",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+      "!**/{.env,.env.local,.env.development,.env.test,.env.production}",
+      "!**/{.vscode,.idea}",
+      "!**/{dist,build,out}",
+      "!**/{.cache,.parcel-cache}"
+    ],
+    "npmRebuild": false,
+    "nodeGypRebuild": false,
+    "buildDependenciesFromSource": true,
+    "asar": true,
+    "compression": "maximum"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^37.3.1",
+    "electron": "37.3.1",
     "electron-builder": "^23.0.2"
   },
   "dependencies": {
-    "electron-store": "^8.0.0"
   }
 }

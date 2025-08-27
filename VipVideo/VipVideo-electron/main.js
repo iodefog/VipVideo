@@ -1,10 +1,37 @@
 const { app, BrowserWindow, ipcMain, Menu, Tray, screen, session } = require('electron');
 const path = require('path');
 const fs = require('fs'); // 引入 fs 模块，用于读取 vlist.json 文件
-const Store = require('electron-store');
 const { openVipWindow } = require('./vipWindow');
 
-const store = new Store();
+// 简单的历史记录存储
+const historyFile = path.join(app.getPath('userData'), 'history.json');
+let historyData = [];
+
+// 读取历史记录
+function loadHistory() {
+  try {
+    if (fs.existsSync(historyFile)) {
+      const data = fs.readFileSync(historyFile, 'utf-8');
+      historyData = JSON.parse(data);
+      if (!Array.isArray(historyData)) {
+        historyData = [];
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to load history:', error);
+    historyData = [];
+  }
+}
+
+// 保存历史记录
+function saveHistory() {
+  try {
+    fs.writeFileSync(historyFile, JSON.stringify(historyData, null, 2));
+  } catch (error) {
+    console.warn('Failed to save history:', error);
+  }
+}
+
 let mainWindow;
 let tray;
 
@@ -250,15 +277,13 @@ app.on('before-quit', () => {
 });
 
 ipcMain.on('save-history', (event, url) => {
-  let history = store.get('history', []);
-  if (!Array.isArray(history)) {
-    history = [];
-  }
-  history.unshift(url);
-  history = history.slice(0, 10);
-  store.set('history', history);
+  loadHistory(); // 加载当前历史记录
+  historyData.unshift(url);
+  historyData = historyData.slice(0, 10);
+  saveHistory(); // 保存更新后的历史记录
 });
 
 ipcMain.on('get-history', (event) => {
-  event.reply('history', store.get('history', []));
+  loadHistory(); // 加载当前历史记录
+  event.reply('history', historyData);
 });

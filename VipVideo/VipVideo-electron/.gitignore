@@ -3,7 +3,6 @@ node_modules/
 
 # 构建输出目录
 dist/
-build/
 
 # 日志文件
 *.log

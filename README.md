@@ -198,6 +198,6 @@ QQ群：567503018
 QQ: 592658688
 
 有定制需求或者长期需求，可以赏个1~5毛钱，谢谢支持。
-<img width="217" alt="image" src="./IMG_3639.JPG" />
+<img width="217" alt="image" src="./images/IMG_3639.JPG" />
 
 
