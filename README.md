@@ -46,6 +46,8 @@
 * [Mac(Apple芯片)](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo-1.1.2-arm64-mac.zip)
 * [Mac(Inter)](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo-1.1.2-mac.zip)
 * [Windows版本](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo.1.1.2.exe.zip)
+百度网盘下载地址：
+* 链接: https://pan.baidu.com/s/1wcpReZs2-UG71g1idPyPmA?pwd=nkye 提取码: nkye 
 
 旧版（1.1.1） (可设置源和顺序)
 * [VIPVideo.pkg](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VIPVideo.pkg)
