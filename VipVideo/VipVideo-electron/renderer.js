@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron');
+const path = require('path');
 console.log('[renderer] start');
 
 let vlistData;
@@ -81,17 +82,39 @@ function updateBackButton() {
   backButton.style.display = canGoBack ? 'block' : 'none';
 }
 
-// 修改 webview 导航事件监听
-webview.addEventListener('did-navigate', () => {
+// 修改 webview 导航事件监听，同时记录历史记录
+webview.addEventListener('did-navigate', (event) => {
   console.log('did-navigate');
   allowShowBackButton = true;
   updateBackButton();
+  
+  // 记录内部导航到历史记录
+  const url = event.url;
+  if (url && url.startsWith('http')) {
+    // 获取webview中页面的实际标题
+    const webviewTitle = webview.getWebContents().getTitle() || 'Unknown Page';
+    ipcRenderer.send('save-history', { 
+      url, 
+      title: webviewTitle
+    });
+  }
 });
 
-webview.addEventListener('did-navigate-in-page', () => {
+webview.addEventListener('did-navigate-in-page', (event) => {
   console.log('did-navigate-in-page');
   allowShowBackButton = true;
   updateBackButton();
+  
+  // 记录页面内导航到历史记录
+  const url = event.url;
+  if (url && url.startsWith('http')) {
+    // 获取webview中页面的实际标题
+    const webviewTitle = webview.getWebContents().getTitle() || 'Unknown Page';
+    ipcRenderer.send('save-history', { 
+      url, 
+      title: webviewTitle
+    });
+  }
 });
 
 // 添加手势支持
@@ -122,17 +145,35 @@ function loadURL(url, title) {
     return;
   }
   try {
-    allowShowBackButton = false;
-    backButton.style.display = 'none';
-    webview.loadURL(url).catch(err => {
-      console.error('Failed to load URL:', err);
+    // 保留allowShowBackButton的当前值，不总是重置为false
+    if (backButton) {
+      backButton.style.display = allowShowBackButton ? 'block' : 'none';
+    }
+    
+    console.log('[renderer] 准备加载URL:', url);
+    console.log('[renderer] 当前allowShowBackButton状态:', allowShowBackButton);
+    
+    // 加载URL并添加错误处理
+    webview.loadURL(url).then(() => {
+      console.log('[renderer] URL加载成功:', url);
+    }).catch(err => {
+      console.error('[renderer] Failed to load URL:', err);
+      console.error('[renderer] Error details:', err.code, err.errno);
     });
+    
     if (title) {
       document.title = title;
     }
-    ipcRenderer.send('save-history', url);
+    
+    // 只有当URL不是history.html时才保存历史记录，避免重复保存
+    if (!url.includes('history.html')) {
+      // 获取webview中页面的实际标题，如果参数中没有提供
+      const webviewTitle = title || webview.getWebContents().getTitle() || 'Unknown Page';
+      console.log('[renderer] 保存历史记录:', { url, title: webviewTitle });
+      ipcRenderer.send('save-history', { url, title: webviewTitle });
+    }
   } catch (error) {
-    console.error('Error loading URL:', error);
+    console.error('[renderer] Error loading URL:', error);
   }
 }
 
@@ -182,17 +223,220 @@ if (vlistData && vlistData.platformlist && platformButtons) {
   console.error('Unable to create platform buttons');
 }
 
-// 自定义按钮事件
-customButton.addEventListener('click', () => {
-  const url = prompt('请输入要访问的URL：');
-  if (url) {
-    allowShowBackButton = false;
-    backButton.style.display = 'none';
-    loadURL(url, '自定义页面');
+// 创建编辑弹框样式
+const createEditDialogStyle = () => {
+  const style = document.createElement('style');
+  style.textContent = `
+    #edit-dialog {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 600px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 2000;
+      flex-direction: column;
+    }
+    #edit-dialog-header {
+      padding: 15px;
+      background: #f0f0f0;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 8px 8px 0 0;
+    }
+    #edit-dialog-title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    #edit-dialog-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #666;
+    }
+    #edit-dialog-content {
+      flex: 1;
+      padding: 15px;
+      overflow: auto;
+    }
+    #vlist-textarea {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 14px;
+      resize: none;
+    }
+    #edit-dialog-footer {
+      padding: 15px;
+      background: #f0f0f0;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-radius: 0 0 8px 8px;
+    }
+    #edit-dialog-save, #edit-dialog-cancel {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #edit-dialog-save {
+      background: #1890ff;
+      color: white;
+    }
+    #edit-dialog-save:hover {
+      background: #40a9ff;
+    }
+    #edit-dialog-cancel {
+      background: #f5f5f5;
+      color: #333;
+    }
+    #edit-dialog-cancel:hover {
+      background: #e6e6e6;
+    }
+    #dialog-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1999;
+    }
+    #error-message {
+      color: #ff4d4f;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+  `;
+  document.head.appendChild(style);
+};
+
+// 创建编辑弹框
+const createEditDialog = () => {
+  const overlay = document.createElement('div');
+  overlay.id = 'dialog-overlay';
+  document.body.appendChild(overlay);
+
+  const dialog = document.createElement('div');
+  dialog.id = 'edit-dialog';
+  dialog.style.display = 'none';
+
+  const header = document.createElement('div');
+  header.id = 'edit-dialog-header';
+  header.innerHTML = `
+    <div id="edit-dialog-title">编辑 vlist.json</div>
+    <button id="edit-dialog-close">×</button>
+  `;
+
+  const content = document.createElement('div');
+  content.id = 'edit-dialog-content';
+  content.innerHTML = `
+    <textarea id="vlist-textarea"></textarea>
+    <div id="error-message"></div>
+  `;
+
+  const footer = document.createElement('div');
+  footer.id = 'edit-dialog-footer';
+  footer.innerHTML = `
+    <button id="edit-dialog-cancel">取消</button>
+    <button id="edit-dialog-save">保存</button>
+  `;
+
+  dialog.appendChild(header);
+  dialog.appendChild(content);
+  dialog.appendChild(footer);
+  document.body.appendChild(dialog);
+
+  // 添加事件监听
+  document.getElementById('edit-dialog-close').addEventListener('click', closeEditDialog);
+  document.getElementById('edit-dialog-cancel').addEventListener('click', closeEditDialog);
+  document.getElementById('edit-dialog-save').addEventListener('click', saveVlistContent);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeEditDialog();
+  });
+};
+
+// 打开编辑弹框
+const openEditDialog = () => {
+  document.getElementById('dialog-overlay').style.display = 'block';
+  document.getElementById('edit-dialog').style.display = 'flex';
+  document.getElementById('error-message').textContent = '';
+  
+  // 请求 vlist.json 内容
+  ipcRenderer.send('get-vlist-content');
+};
+
+// 关闭编辑弹框
+const closeEditDialog = () => {
+  document.getElementById('dialog-overlay').style.display = 'none';
+  document.getElementById('edit-dialog').style.display = 'none';
+};
+
+// 保存 vlist.json 内容
+const saveVlistContent = () => {
+  const textarea = document.getElementById('vlist-textarea');
+  const content = textarea.value;
+  const errorElement = document.getElementById('error-message');
+  
+  try {
+    // 先在前端验证 JSON 格式
+    JSON.parse(content);
+    errorElement.textContent = '';
+    // 发送到主进程保存
+    ipcRenderer.send('save-vlist-content', content);
+  } catch (error) {
+    errorElement.textContent = 'JSON 格式错误: ' + error.message;
   }
+};
+
+// 初始化编辑弹框
+createEditDialogStyle();
+createEditDialog();
+
+// 自定义按钮事件
+customButton.addEventListener('click', openEditDialog);
+
+// 监听 vlist 内容响应
+ipcRenderer.on('vlist-content', (event, content) => {
+  const textarea = document.getElementById('vlist-textarea');
+  textarea.value = content;
 });
 
+// 监听保存成功响应
+ipcRenderer.on('vlist-save-success', () => {
+  alert('保存成功！请重启应用以应用更改。');
+  closeEditDialog();
+});
+
+// 监听保存错误响应
+ipcRenderer.on('vlist-save-error', (event, message) => {
+  document.getElementById('error-message').textContent = '保存失败: ' + message;
+});
+
+
+
 // 历史记录按钮事件
+historyButton.addEventListener('click', () => {
+  // 使用IPC通知主进程打开历史记录窗口
+  console.log('[renderer] 点击历史记录按钮，请求打开历史记录窗口');
+  ipcRenderer.send('open-history-window');
+});
+
 // DevTools 按钮事件（切换 webview 的 DevTools）
 if (devtoolsButton) {
   devtoolsButton.addEventListener('click', () => {
@@ -214,65 +458,22 @@ document.addEventListener('keydown', (e) => {
     } catch (err) { console.error('hotkey toggle devtools failed', err); }
   }
 });
-historyButton.addEventListener('click', () => {
-  allowShowBackButton = false;
-  backButton.style.display = 'none';
-  ipcRenderer.send('get-history');
+// 历史记录按钮事件已在前面实现
+
+
+
+// 监听来自历史记录页面的URL加载请求
+ipcRenderer.on('load-url-from-history', (event, data) => {
+  const { url, title } = data;
+  loadURL(url, title);
 });
 
-// 处理历史记录显示
-ipcRenderer.on('history', (event, history) => {
-  const historyHTML = `
-    <!DOCTYPE html>
-    <html lang="zh-CN">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>操作记录</title>
-        <style>
-          body { 
-            font-family: Arial, sans-serif; 
-            padding: 20px; 
-            background-color: #f5f5f5;
-          }
-          h1 { 
-            color: #333; 
-            margin-bottom: 20px;
-          }
-          ul { 
-            list-style-type: none; 
-            padding: 0; 
-            margin: 0;
-          }
-          li { 
-            margin-bottom: 10px; 
-            cursor: pointer; 
-            color: #0066cc;
-            padding: 8px;
-            background-color: white;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-          }
-          li:hover { 
-            background-color: #f0f7ff;
-          }
-        </style>
-      </head>
-      <body>
-        <h1>操作记录</h1>
-        <ul>
-          ${history.map(url => `<li onclick="window.parent.loadURL('${url}', '历史记录')">${url}</li>`).join('')}
-        </ul>
-      </body>
-    </html>
-  `;
-  
-  const blob = new Blob([historyHTML], { type: 'text/html; charset=utf-8' });
-  webview.loadURL(URL.createObjectURL(blob));
-  document.title = '操作记录';
+// 监听返回按钮事件
+ipcRenderer.on('go-back', () => {
+  // 返回主页面
+  const indexFilePath = path.join(__dirname, 'index.html');
+  loadURL(`file://${indexFilePath}`, 'VipVideo');
 });
-
-// 设置全局加载函数
 window.loadURL = loadURL;
 
 // webview 事件监听

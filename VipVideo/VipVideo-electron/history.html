@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>操作记录</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .header {
+      padding: 20px;
+      background: #2c3e50;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .back-button {
+      background: #3498db;
+      color: white;
+    }
+    
+    .back-button:hover {
+      background: #2980b9;
+    }
+    
+    .clear-button {
+      background: #e74c3c;
+      color: white;
+    }
+    
+    .clear-button:hover {
+      background: #c0392b;
+    }
+    
+    .content {
+      padding: 20px;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+    }
+    
+    .no-history {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+    }
+    
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    
+    .history-item {
+      padding: 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+    
+    .history-item:hover {
+      border-color: #3498db;
+      background: #f0f7ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .history-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #2c3e50;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .history-url {
+      font-size: 14px;
+      color: #7f8c8d;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 4px;
+    }
+    
+    .history-time {
+      font-size: 12px;
+      color: #95a5a6;
+    }
+    
+    /* 滚动条样式 */
+    .history-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .history-list::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    
+    .history-list::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+    }
+    
+    .history-list::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>操作记录</h1>
+      <div class="actions">
+        <button class="back-button" id="backButton">返回</button>
+        <button class="clear-button" id="clearButton">清空记录</button>
+      </div>
+    </div>
+    <div class="content">
+      <div id="loading" class="loading">加载中...</div>
+      <div id="noHistory" class="no-history" style="display: none;">
+        暂无操作记录
+      </div>
+      <div id="historyList" class="history-list" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script>
+    // 注意：在Electron渲染进程中，可以使用ipcRenderer
+    const { ipcRenderer } = require('electron');
+    
+    // 加载历史记录数据
+    function loadHistoryData() {
+      console.log('请求加载历史记录');
+      ipcRenderer.send('get-history');
+      
+      // 添加超时处理，确保加载状态总能隐藏
+      setTimeout(() => {
+        const loading = document.getElementById('loading');
+        if (loading.style.display !== 'none') {
+          console.warn('加载历史记录超时');
+          loading.style.display = 'none';
+          document.getElementById('noHistory').style.display = 'block';
+        }
+      }, 5000); // 5秒超时
+    }
+    
+    // 渲染历史记录
+    function renderHistory(data) {
+      const historyList = document.getElementById('historyList');
+      const loading = document.getElementById('loading');
+      const noHistory = document.getElementById('noHistory');
+      
+      loading.style.display = 'none';
+      
+      if (!data || data.length === 0) {
+        noHistory.style.display = 'block';
+        historyList.style.display = 'none';
+        return;
+      }
+      
+      noHistory.style.display = 'none';
+      historyList.style.display = 'flex';
+      historyList.innerHTML = '';
+      
+      // 按时间倒序排列
+      data.sort((a, b) => b.timestamp - a.timestamp);
+      
+      data.forEach(item => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        
+        // 格式化时间
+        const date = new Date(item.timestamp);
+        const formattedTime = date.toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        historyItem.innerHTML = `
+          <div class="history-title">${item.title || 'Unknown Page'}</div>
+          <div class="history-url">${item.url}</div>
+          <div class="history-time">${formattedTime}</div>
+        `;
+        
+        historyItem.addEventListener('click', () => {
+          ipcRenderer.send('load-url', { url: item.url, title: item.title });
+        });
+        
+        historyList.appendChild(historyItem);
+      });
+    }
+    
+    // 清空历史记录
+    function clearHistory() {
+      if (confirm('确定要清空所有操作记录吗？')) {
+        ipcRenderer.send('clear-history');
+      }
+    }
+    
+    // 返回主页面
+    function goBack() {
+      ipcRenderer.send('go-back');
+    }
+    
+    // 事件监听
+    document.addEventListener('DOMContentLoaded', () => {
+      // 加载历史记录
+      loadHistoryData();
+      
+      // 绑定按钮事件
+      document.getElementById('backButton').addEventListener('click', goBack);
+      document.getElementById('clearButton').addEventListener('click', clearHistory);
+      
+      // 监听历史记录数据响应
+      ipcRenderer.once('history-data', (event, data) => {
+        console.log('Received history data:', data);
+        renderHistory(data);
+      });
+      
+      // 监听历史记录错误响应
+      ipcRenderer.once('history-error', (event, error) => {
+        console.error('Failed to load history:', error);
+        const loading = document.getElementById('loading');
+        loading.style.display = 'none';
+        document.getElementById('noHistory').style.display = 'block';
+      });
+      
+      // 监听清空历史记录成功响应
+      ipcRenderer.on('history-cleared', () => {
+        console.log('History cleared successfully');
+        renderHistory([]);
+        alert('操作记录已清空！');
+      });
+      
+      // 监听清空历史记录错误响应
+      ipcRenderer.on('history-clear-error', (event, error) => {
+        console.error('Failed to clear history:', error);
+        alert('清空记录失败：' + error);
+      });
+    });
+  </script>
+</body>
+</html>

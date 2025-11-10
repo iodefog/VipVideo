@@ -17,23 +17,28 @@
             "icon": "",
             "url": "http://tv.cctv.com/live/cctv5/"
         },
-        {
-            "name": "爱奇艺",
-            "icon": "爱奇艺",
-            "canvip": 1,
-            "url": "https://www.iqiyi.com/"
-        },
+        
         {
             "name": "腾讯视频",
             "icon": "腾讯",
             "canvip": 1,
             "url": "https://v.qq.com/"
         },
+{
+            "name": "爱奇艺",
+            "icon": "爱奇艺",
+            "canvip": 1,
+            "url": "https://www.iqiyi.com/"
+        },
         {
             "name": "芒果",
             "icon": "芒果",
             "canvip": 1,
             "url": "https://www.mgtv.com/"
+        },
+        {
+            "name": "优酷",
+            "url": "https://www.youku.com/"
         },
         {
             "name": "抖音",
@@ -119,8 +124,23 @@
             "url": "https://www.netflix.com/"
         }
         ,{
-            "name": "youtubu",
-            "url": "https://www.youtube.com/"
+            "name": "deepseek",
+            "url": "https://chat.deepseek.com/"
+        },{
+            "name": "chatgpt",
+            "url": "https://chatgpt.com/"
+        },{
+            "name": "豆包",
+            "url": "https://www.doubao.com/chat/"
+        },{
+            "name": "MangaPlus",
+            "url": "https://mangaplus.shueisha.co.jp/"
+        },{
+            "name": "起点",
+            "url": "https://www.qidian.com/"
+        },{
+            "name": "七猫",
+            "url": "https://www.qimao.com/"
         }
     ],
     "list": [

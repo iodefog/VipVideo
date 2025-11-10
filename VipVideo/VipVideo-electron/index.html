@@ -7,13 +7,13 @@
 </head>
 <body>
   <div id="webview-container">
-    <webview id="webview" src="about:blank" allowpopups="true" allow="autoplay; encrypted-media" httpreferrer="https://music.163.com/" useragent="Mozilla/5.0 (Macintosh; Intel Mac OS X 14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" webpreferences="contextIsolation=yes, nodeIntegration=no, sandbox=yes" partition="persist:netease" preload="webview-preload.js"></webview>
+    <webview id="webview" src="about:blank" allowpopups="true" allow="autoplay; encrypted-media" httpreferrer="https://music.163.com/" useragent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" webpreferences="contextIsolation=yes, nodeIntegration=no, sandbox=yes" partition="persist:netease" preload="webview-preload.js"></webview>
   </div>
   <div id="button-container">
     <div id="platform-buttons"></div>
     <button id="custom-button">自定义</button>
     <button id="history-button">操作记录</button>
-    <!-- <button id="devtools-button" title="切换 WebView DevTools (Ctrl/Cmd+Shift+I 或 F12)">DevTools</button> -->
+    <button id="devtools-button" title="切换 WebView DevTools (Ctrl/Cmd+Shift+I 或 F12)">DevTools</button>
   </div>
   <script src="renderer.js"></script>
 </body>
