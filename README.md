@@ -9,6 +9,7 @@
 
 | 更新日期 | 更新内容 |
 | ---- | --- |
+|2025-11-10| 1. 新增支持自定义播放列表和播放源的能力 </br> 2.新增优酷源 </br> |
 |2025-08-27| 1. 增加windows支持VIP播放功能 </br> 2.解决网易云音乐不能播放和后台时自动停止问题 </br> |
 |2025-02-14| 1. 新增抖音、快手等短视频渠道</br> 2.新增腾讯音乐、网易云音乐等音乐渠道 </br> 3.关闭编辑面板自动修正能力 </br>  |
 |2025-02-10| 1. 支持vip源自定义能力</br> 2.支持添加新平台可编辑或排序 </br> 3.更新一些vip解析源 </br>  |
@@ -43,9 +44,9 @@
 ## 下载安装地址：
 
 **v1.1.2** 版本 (暂不支持设置源和顺序)
-* [Mac(Apple芯片)](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo-1.1.2-arm64-mac.zip)
-* [Mac(Inter)](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo-1.1.2-mac.zip)
-* [Windows版本](https://github.com/iodefog/VipVideo/releases/download/1.1.2/VipVideo.1.1.2.exe.zip)
+* [Mac(Apple芯片)](https://github.com/iodefog/VipVideo/releases/download/1.1.3/VipVideo-1.1.3-arm64-mac.zip)
+* [Mac(Inter)](https://github.com/iodefog/VipVideo/releases/download/1.1.3/VipVideo-1.1.3-mac.zip)
+* [Windows版本](https://github.com/iodefog/VipVideo/releases/download/1.1.3/VipVideo.1.1.3.exe.zip)
 
 百度网盘下载地址：
 * 链接: https://pan.baidu.com/s/1wcpReZs2-UG71g1idPyPmA?pwd=nkye 提取码: nkye 
