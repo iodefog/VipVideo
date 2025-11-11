@@ -43,19 +43,13 @@
 
 ## 下载安装地址：
 
-**v1.1.2** 版本 (暂不支持设置源和顺序)
+**v1.1.3** 版本 (支持自定义源和顺序)
 * [Mac(Apple芯片)](https://github.com/iodefog/VipVideo/releases/download/1.1.3/VipVideo-1.1.3-arm64-mac.zip)
 * [Mac(Inter)](https://github.com/iodefog/VipVideo/releases/download/1.1.3/VipVideo-1.1.3-mac.zip)
 * [Windows版本](https://github.com/iodefog/VipVideo/releases/download/1.1.3/VipVideo.1.1.3.exe.zip)
 
 百度网盘下载地址：
 * 链接: https://pan.baidu.com/s/1wcpReZs2-UG71g1idPyPmA?pwd=nkye 提取码: nkye 
-
-旧版（1.1.1） (可设置源和顺序)
-* [VIPVideo.pkg](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VIPVideo.pkg)
-* [VIPVideo.zip](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VIPVideo.zip)
-* [VIPVideo.exe.zip（无vip破解）](https://github.com/iodefog/VipVideo/releases/download/1.1.1/VipVideo.exe.zip)
-
 
 ## 软件功能介绍：
 * 破解接口
