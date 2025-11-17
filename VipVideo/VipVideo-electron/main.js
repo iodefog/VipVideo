@@ -7,8 +7,16 @@ const { openVipWindow } = require('./vipWindow');
 const historyFile = path.join(app.getPath('userData'), 'history.json');
 let historyData = [];
 
-// vlist.json 文件路径
-const vlistPath = path.join(__dirname, 'vlist.json');
+// 获取vlist.json的正确路径（优先使用用户数据目录，支持打包环境）
+function getVlistPath() {
+  const userVlistPath = path.join(app.getPath('userData'), 'vlist.json');
+  return userVlistPath;
+}
+
+// 默认的vlist.json路径（用于读取初始配置）
+const defaultVlistPath = path.join(__dirname, 'vlist.json');
+// 用户数据目录中的vlist.json路径（用于保存和优先读取）
+const userVlistPath = getVlistPath();
 
 // 读取历史记录
 function loadHistory() {
@@ -58,11 +66,19 @@ try {
   app.commandLine.appendSwitch('disable-site-isolation-trials')
 } catch (_) {}
 
-// 读取 vlist.json 文件
+// 读取 vlist.json 文件（优先读取用户数据目录中的）
 function readVlistData() {
   try {
-    if (fs.existsSync(vlistPath)) {
-      const data = fs.readFileSync(vlistPath, 'utf-8');
+    // 优先读取用户数据目录中的配置
+    if (fs.existsSync(userVlistPath)) {
+      console.log('[main] 读取用户配置 vlist.json:', userVlistPath);
+      const data = fs.readFileSync(userVlistPath, 'utf-8');
+      return JSON.parse(data);
+    }
+    // 如果用户配置不存在，读取默认配置
+    else if (fs.existsSync(defaultVlistPath)) {
+      console.log('[main] 读取默认配置 vlist.json:', defaultVlistPath);
+      const data = fs.readFileSync(defaultVlistPath, 'utf-8');
       return JSON.parse(data);
     }
   } catch (error) {
@@ -75,8 +91,13 @@ let vlistData = readVlistData();
 let vlistJsonContent = '';
 // 读取原始 JSON 内容（保留格式）
 try {
-  if (fs.existsSync(vlistPath)) {
-    vlistJsonContent = fs.readFileSync(vlistPath, 'utf-8');
+  // 优先读取用户数据目录中的配置
+  if (fs.existsSync(userVlistPath)) {
+    vlistJsonContent = fs.readFileSync(userVlistPath, 'utf-8');
+  }
+  // 如果用户配置不存在，读取默认配置
+  else if (fs.existsSync(defaultVlistPath)) {
+    vlistJsonContent = fs.readFileSync(defaultVlistPath, 'utf-8');
   }
 } catch (error) {
   console.error('Failed to read vlist.json content:', error);
@@ -168,20 +189,11 @@ function createTray() {
 // 监听渲染进程发来的 create-new-window 消息
 ipcMain.on('create-new-window', (event, newPageUrl) => {
   console.log('[main] Creating new window for URL:', newPageUrl);
-
-  // 创建一个新的 BrowserWindow
-  const newWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    webPreferences: {
-      nodeIntegration: false, // 根据需求设置
-      contextIsolation: true, // 根据需求设置
-      preload: path.join(__dirname, 'child_preload.js')
-    },
-  });
-
-  // 加载新窗口的 URL
-  newWindow.loadURL(newPageUrl);
+  
+  // 使用 vipWindow.js 中的 openVipWindow 函数创建新窗口
+  // 这样可以确保返回按钮和其他 VIP 功能在新窗口中也能正常工作
+  const vlistArray = vlistData ? vlistData.list : [];
+  const newWindow = openVipWindow(newPageUrl, vlistArray);
 
   // 可选：监听新窗口关闭事件
   newWindow.on('closed', () => {
@@ -411,16 +423,26 @@ ipcMain.on('get-vlist-content', (event) => {
   event.sender.send('vlist-content', vlistJsonContent);
 });
 
-// 保存 vlist.json 内容
+// 保存 vlist.json 内容到用户数据目录（可写目录）
 ipcMain.on('save-vlist-content', (event, content) => {
   try {
     // 验证 JSON 格式
     const parsed = JSON.parse(content);
-    // 保存到文件
-    fs.writeFileSync(vlistPath, content, 'utf-8');
+    
+    // 确保用户数据目录存在
+    const userDataDir = app.getPath('userData');
+    if (!fs.existsSync(userDataDir)) {
+      fs.mkdirSync(userDataDir, { recursive: true });
+    }
+    
+    // 保存到用户数据目录
+    console.log('[main] 保存配置到用户数据目录:', userVlistPath);
+    fs.writeFileSync(userVlistPath, content, 'utf-8');
+    
     // 更新内存中的数据
     vlistData = parsed;
     vlistJsonContent = content;
+    
     event.sender.send('vlist-save-success');
   } catch (error) {
     console.error('Failed to save vlist.json:', error);

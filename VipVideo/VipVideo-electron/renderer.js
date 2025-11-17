@@ -191,6 +191,61 @@ function createButton(platform) {
   return button;
 }
 
+// 创建可重用的滚动函数
+function scrollPlatformButtons(direction) {
+  const platformButtons = document.getElementById('platform-buttons');
+  const beforeButton = document.getElementById('before-button');
+  
+  if (platformButtons) {
+    // 设置每次滚动的距离
+    const scrollAmount = 200;
+    // 计算滚动方向（正值向右，负值向左）
+    const scrollDirection = direction === 'right' ? 1 : -1;
+    
+    platformButtons.scrollTo({
+      left: platformButtons.scrollLeft + (scrollAmount * scrollDirection),
+      behavior: 'smooth'
+    });
+    
+    // 滚动后立即更新按钮显示状态
+    updateScrollButtonVisibility();
+    
+    console.log(`平台按钮向${direction === 'right' ? '右' : '左'}滚动`);
+  }
+}
+
+// 更新滚动按钮的显示状态
+function updateScrollButtonVisibility() {
+  const platformButtons = document.getElementById('platform-buttons');
+  const beforeButton = document.getElementById('before-button');
+  
+  if (platformButtons && beforeButton) {
+    // 当scrollLeft > 10时显示before-button（有一个小的阈值防止抖动）
+    if (platformButtons.scrollLeft > 10) {
+      beforeButton.style.display = 'flex';
+    } else {
+      beforeButton.style.display = 'none';
+    }
+  }
+}
+
+// 为向右滚动按钮添加事件监听
+document.getElementById('more-button').addEventListener('click', () => {
+  scrollPlatformButtons('right');
+});
+
+// 为向左滚动按钮添加事件监听（注意ID改为before-button）
+document.getElementById('before-button').addEventListener('click', () => {
+  scrollPlatformButtons('left');
+});
+
+// 添加滚动事件监听器来动态更新按钮显示状态
+if (platformButtons) {
+  platformButtons.addEventListener('scroll', updateScrollButtonVisibility);
+  // 初始加载时检查一次
+  updateScrollButtonVisibility();
+}
+
 // 初始化平台按钮
 if (vlistData && vlistData.platformlist && platformButtons) {
   console.log('Creating platform buttons');
@@ -408,8 +463,158 @@ const saveVlistContent = () => {
 createEditDialogStyle();
 createEditDialog();
 
+// 创建密码输入模态框样式
+function createPasswordModalStyle() {
+  const style = document.createElement('style');
+  style.textContent = `
+    .password-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .password-modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 300px;
+      text-align: center;
+    }
+    .password-modal-content h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    .password-modal-content p {
+      font-size: 12px;
+      color: #666666;
+      margin-bottom: 15px;
+    }
+    .password-modal-content input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .password-modal-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+    .password-modal-buttons button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .password-modal-buttons button:first-child {
+      background-color: #f0f0f0;
+    }
+    .password-modal-buttons button:last-child {
+      background-color: #4CAF50;
+      color: white;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// 创建并显示密码输入模态框
+function showPasswordModal() {
+  return new Promise((resolve) => {
+    // 创建模态框元素
+    const modal = document.createElement('div');
+    modal.className = 'password-modal';
+    modal.innerHTML = `
+      <div class="password-modal-content">
+        <h3>请输入密码</h3>
+        <p>密码格式：6-10位数字，默认密码：VipVideo</p>
+        <input type="password" id="password-input" placeholder="请输入密码">
+        <div class="password-modal-buttons">
+          <button id="cancel-button">取消</button>
+          <button id="confirm-button">确认</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    const passwordInput = document.getElementById('password-input');
+    const cancelButton = document.getElementById('cancel-button');
+    const confirmButton = document.getElementById('confirm-button');
+    
+    // 自动聚焦到密码输入框
+    passwordInput.focus();
+    
+    // 确认按钮事件
+    confirmButton.addEventListener('click', () => {
+      const password = passwordInput.value;
+      document.body.removeChild(modal);
+      resolve(password);
+    });
+    
+    // 取消按钮事件
+    cancelButton.addEventListener('click', () => {
+      document.body.removeChild(modal);
+      resolve(null);
+    });
+    
+    // 按回车键确认
+    passwordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        confirmButton.click();
+      }
+    });
+    
+    // 按ESC键取消
+    modal.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        cancelButton.click();
+      }
+    });
+  });
+}
+
+// 验证密码函数
+async function verifyPassword() {
+  const defaultPassword = 'VipVideo';
+  
+  // 确保样式已创建
+  if (!document.querySelector('style[textContent*="password-modal"]')) {
+    createPasswordModalStyle();
+  }
+  
+  // 显示密码输入模态框
+  const password = await showPasswordModal();
+  
+  // 检查密码是否存在且符合要求
+  if (!password) {
+    return false; // 用户取消输入
+  }
+  
+  // 验证密码格式：6-10位数字，或者是默认密码
+  if (password === defaultPassword || /^\d{6,10}$/.test(password)) {
+    return true;
+  } else {
+    alert('密码格式不正确，请输入6-10位数字，或者使用默认密码。');
+    return false;
+  }
+}
+
 // 自定义按钮事件
-customButton.addEventListener('click', openEditDialog);
+customButton.addEventListener('click', async () => {
+  // 验证密码，通过后才打开编辑对话框
+  const isVerified = await verifyPassword();
+  if (isVerified) {
+    openEditDialog();
+  }
+});
 
 // 监听 vlist 内容响应
 ipcRenderer.on('vlist-content', (event, content) => {

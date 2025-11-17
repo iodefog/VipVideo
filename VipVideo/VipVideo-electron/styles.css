@@ -17,18 +17,27 @@ body {
 
 #button-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 10px;
   background-color: #f0f0f0;
   border-top: 1px solid #ccc;
+  gap: 10px;
+}
+
+#before-button, #more-button {
+  flex-shrink: 0;
 }
 
 #platform-buttons {
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
-  max-width: calc(100% - 200px);
+  flex: 1;
+  min-width: 0;
+}
+
+#custom-button, #history-button, #devtools-button {
+  flex-shrink: 0;
 }
 
 .platform-button {
@@ -38,6 +47,37 @@ body {
 }
 
 #custom-button, #history-button, #devtools-button {
-  margin-left: 10px;
   padding: 5px 10px;
+}
+
+/* 为更多按钮和前置按钮添加三个竖点效果 */
+#more-button, #before-button {
+  width: 10px;
+  height: 28px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  font-size: 0; /* 隐藏文本 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 初始隐藏前置按钮 */
+#before-button {
+  display: none;
+}
+
+#more-before::before, #more-button::before, #before-button::before {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background-color: #333;
+  border-radius: 50%;
+  box-shadow: 
+    0 8px 0 #333,
+    0 -8px 0 #333;
 }
