@@ -246,9 +246,9 @@ function loadURL(url, title) {
     localStorage.setItem('lastUrl', url);
 
     if (title) {
-      document.title = `${title} (v${appVersion})`;
+      document.title = `${title}`;
     } else {
-      document.title = `VipVideo (v${appVersion})`;
+      document.title = `VipVideo`;
     }
 
     // 只有当URL不是history.html时才保存历史记录，避免重复保存

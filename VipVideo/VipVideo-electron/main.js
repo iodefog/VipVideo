@@ -72,6 +72,12 @@ function getPreferredVlistPath() {
   const defaultExists = fs.existsSync(defaultVlistPath);
 
   if (userExists && defaultExists) {
+    // 如果是打包后的环境，始终优先使用用户配置
+    // 除非用户完全删除了配置文件，否则不应该覆盖
+    if (app.isPackaged) {
+      return userVlistPath;
+    }
+
     try {
       const userStat = fs.statSync(userVlistPath);
       const defaultStat = fs.statSync(defaultVlistPath);
@@ -91,8 +97,21 @@ function getPreferredVlistPath() {
   return null;
 }
 
+// 确保用户配置文件存在
+function ensureUserVlistExists() {
+  try {
+    if (!fs.existsSync(userVlistPath) && fs.existsSync(defaultVlistPath)) {
+      fs.copyFileSync(defaultVlistPath, userVlistPath);
+      console.log('[main] 已初始化用户配置文件:', userVlistPath);
+    }
+  } catch (e) {
+    console.error('[main] 初始化用户配置失败:', e);
+  }
+}
+
 // 读取 vlist.json 文件
 function readVlistData() {
+  ensureUserVlistExists();
   const filePath = getPreferredVlistPath();
   if (!filePath) return null;
 
