@@ -1,12 +1,12 @@
 {
     "new_version_info": {
-        "latest_version": "1.1.1",
+        "latest_version": "1.1.4",
         "updateMessage": "",
         "update": "0",
         "needLimit": "0"
     },
     "i_new_version_info": {
-        "i_latest_version": "1.1.1",
+        "i_latest_version": "1.1.4",
         "i_updateMessage": "",
         "i_update": "0",
         "i_needLimit": "0"
@@ -24,7 +24,7 @@
             "canvip": 1,
             "url": "https://v.qq.com/"
         },
-{
+        {
             "name": "爱奇艺",
             "icon": "爱奇艺",
             "canvip": 1,
@@ -96,9 +96,19 @@
             "url": "http://www.wwmulu.com/"
         },
         {
-            "name": "新视觉影院",
+            "name": "铜钟音乐",
             "icon": "4080",
-            "url": "https://www.finebv.com/"
+            "url": "https://tonzhon.whamon.com/"
+        },
+        {
+            "name": "九酷音乐",
+            "icon": "4080",
+            "url": "https://www.9ku.com/"
+        },
+        {
+            "name": "送歌网",
+            "icon": "4080",
+            "url": "https://www.songe.cc/"
         },
         {
             "name": "1905",

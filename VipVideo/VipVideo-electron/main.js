@@ -423,6 +423,13 @@ ipcMain.on('get-vlist-content', (event) => {
   event.sender.send('vlist-content', vlistJsonContent);
 });
 
+// 获取 vlist 数据对象
+ipcMain.on('get-vlist-data', (event) => {
+  // 确保vlistData是最新的
+  const currentVlistData = readVlistData();
+  event.sender.send('vlist-data', currentVlistData);
+});
+
 // 保存 vlist.json 内容到用户数据目录（可写目录）
 ipcMain.on('save-vlist-content', (event, content) => {
   try {

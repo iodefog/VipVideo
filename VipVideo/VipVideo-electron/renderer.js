@@ -2,18 +2,48 @@ const { ipcRenderer } = require('electron');
 const path = require('path');
 console.log('[renderer] start');
 
-let vlistData;
+let vlistData = null;
 // 添加一个变量来控制是否允许显示返回按钮
 let allowShowBackButton = true;
 
-try {
-  vlistData = require('./vlist.json');
-  console.log('vlistData loaded:', vlistData);
+// 通过IPC从主进程获取vlist数据
+ipcRenderer.on('vlist-data', (event, data) => {
+  vlistData = data;
+  console.log('vlistData received from main process:', vlistData);
   // 暴露给新开的窗口通过 window.opener.vlistData 访问
   try { window.vlistData = vlistData; } catch (_) {}
-} catch (error) {
-  console.error('Error loading vlist.json:', error);
-}
+  
+  // 如果已经加载了平台按钮容器，重新创建平台按钮
+  const platformButtons = document.getElementById('platform-buttons');
+  if (platformButtons && vlistData && vlistData.platformlist) {
+    // 清空现有按钮
+    platformButtons.innerHTML = '';
+    // 重新创建平台按钮
+    vlistData.platformlist.forEach(platform => {
+      const button = createButton(platform);
+      platformButtons.appendChild(button);
+    });
+    
+    // 如果有平台数据，加载第一个平台
+    if (vlistData.platformlist.length > 0) {
+      const firstPlatform = vlistData.platformlist[0];
+      console.log("Loading first platform:", firstPlatform);
+      setTimeout(() => {
+        loadURL(firstPlatform.url, firstPlatform.name);
+      }, 100);
+    }
+  }
+  
+  // 重新渲染VIP解析列表
+  try {
+    renderVipList();
+  } catch (e) {
+    console.error('Failed to render VIP list:', e);
+  }
+});
+
+// 请求vlist数据
+ipcRenderer.send('get-vlist-data');
 
 const webview = document.getElementById('webview');
 const platformButtons = document.getElementById('platform-buttons');
@@ -246,37 +276,8 @@ if (platformButtons) {
   updateScrollButtonVisibility();
 }
 
-// 初始化平台按钮
-if (vlistData && vlistData.platformlist && platformButtons) {
-  console.log('Creating platform buttons');
-  
-  // 先创建所有按钮
-  const createAllButtons = () => {
-    vlistData.platformlist.forEach(platform => {
-      const button = createButton(platform);
-      platformButtons.appendChild(button);
-    });
-    console.log('Platform buttons created:', platformButtons.children.length);
-  };
-
-  // 然后加载第一个平台
-  const loadFirstPlatform = () => {
-    if (vlistData.platformlist.length > 0) {
-      const firstPlatform = vlistData.platformlist[0];
-      console.log("Loading first platform:", firstPlatform);
-      // 使用 setTimeout 确保按钮渲染完成后再加载 URL
-      setTimeout(() => {
-        loadURL(firstPlatform.url, firstPlatform.name);
-      }, 100);
-    }
-  };
-
-  // 按顺序执行
-  createAllButtons();
-  loadFirstPlatform();
-} else {
-  console.error('Unable to create platform buttons');
-}
+// 初始化平台按钮的逻辑已经移到vlist-data事件监听器中
+// 确保只在收到数据后才创建平台按钮
 
 // 创建编辑弹框样式
 const createEditDialogStyle = () => {
