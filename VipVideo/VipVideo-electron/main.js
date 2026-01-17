@@ -64,44 +64,66 @@ try {
   app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
   app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
   app.commandLine.appendSwitch('disable-site-isolation-trials')
-} catch (_) {}
+} catch (_) { }
 
-// 读取 vlist.json 文件（优先读取用户数据目录中的）
+// 获取优先使用的 vlist.json 路径（基于修改时间和存在性）
+function getPreferredVlistPath() {
+  const userExists = fs.existsSync(userVlistPath);
+  const defaultExists = fs.existsSync(defaultVlistPath);
+
+  if (userExists && defaultExists) {
+    try {
+      const userStat = fs.statSync(userVlistPath);
+      const defaultStat = fs.statSync(defaultVlistPath);
+      // 如果默认配置（开发/源码目录）比用户配置新，优先使用默认配置
+      // 这允许开发者直接修改源文件并生效
+      if (defaultStat.mtime > userStat.mtime) {
+        console.log('[main] 检测到源文件更新，优先使用默认配置:', defaultVlistPath);
+        return defaultVlistPath;
+      }
+    } catch (e) {
+      console.warn('[main] 比较文件时间失败:', e);
+    }
+  }
+
+  if (userExists) return userVlistPath;
+  if (defaultExists) return defaultVlistPath;
+  return null;
+}
+
+// 读取 vlist.json 文件
 function readVlistData() {
+  const filePath = getPreferredVlistPath();
+  if (!filePath) return null;
+
   try {
-    // 优先读取用户数据目录中的配置
-    if (fs.existsSync(userVlistPath)) {
-      console.log('[main] 读取用户配置 vlist.json:', userVlistPath);
-      const data = fs.readFileSync(userVlistPath, 'utf-8');
-      return JSON.parse(data);
-    }
-    // 如果用户配置不存在，读取默认配置
-    else if (fs.existsSync(defaultVlistPath)) {
-      console.log('[main] 读取默认配置 vlist.json:', defaultVlistPath);
-      const data = fs.readFileSync(defaultVlistPath, 'utf-8');
-      return JSON.parse(data);
-    }
+    console.log('[main] 读取 vlist.json:', filePath);
+    const data = fs.readFileSync(filePath, 'utf-8');
+    return JSON.parse(data);
   } catch (error) {
     console.error('Failed to read vlist.json:', error);
   }
   return null;
 }
 
-let vlistData = readVlistData();
+let vlistData = null;
 let vlistJsonContent = '';
-// 读取原始 JSON 内容（保留格式）
+
+// 初始化读取
 try {
-  // 优先读取用户数据目录中的配置
-  if (fs.existsSync(userVlistPath)) {
-    vlistJsonContent = fs.readFileSync(userVlistPath, 'utf-8');
-  }
-  // 如果用户配置不存在，读取默认配置
-  else if (fs.existsSync(defaultVlistPath)) {
-    vlistJsonContent = fs.readFileSync(defaultVlistPath, 'utf-8');
+  const filePath = getPreferredVlistPath();
+  if (filePath) {
+    vlistJsonContent = fs.readFileSync(filePath, 'utf-8');
+    vlistData = JSON.parse(vlistJsonContent);
+  } else {
+    // 默认空结构
+    vlistData = { list: [], platformlist: [] };
+    vlistJsonContent = JSON.stringify(vlistData, null, 2);
   }
 } catch (error) {
-  console.error('Failed to read vlist.json content:', error);
+  console.error('Failed to init vlist.json content:', error);
   vlistJsonContent = JSON.stringify({ list: [], platformlist: [] }, null, 2);
+  vlistData = { list: [], platformlist: [] };
 }
 
 function createWindow() {
@@ -187,13 +209,15 @@ function createTray() {
 }
 
 // 监听渲染进程发来的 create-new-window 消息
-ipcMain.on('create-new-window', (event, newPageUrl) => {
-  console.log('[main] Creating new window for URL:', newPageUrl);
-  
+ipcMain.on('create-new-window', (event, newPageUrl, canShowVip) => {
+  console.log('[main] Creating new window for URL:', newPageUrl, 'canShowVip:', canShowVip);
+
   // 使用 vipWindow.js 中的 openVipWindow 函数创建新窗口
   // 这样可以确保返回按钮和其他 VIP 功能在新窗口中也能正常工作
   const vlistArray = vlistData ? vlistData.list : [];
-  const newWindow = openVipWindow(newPageUrl, vlistArray);
+  // 如果 canShowVip 未定义，默认为 true (兼容旧代码)
+  const showVip = canShowVip !== undefined ? canShowVip : true;
+  const newWindow = openVipWindow(newPageUrl, vlistArray, { width: 1200, height: 800 }, showVip);
 
   // 可选：监听新窗口关闭事件
   newWindow.on('closed', () => {
@@ -205,7 +229,7 @@ ipcMain.on('create-new-window', (event, newPageUrl) => {
 function initializeApp() {
   console.log('[main] 初始化应用...');
   loadHistory();
-  
+
   app.on('applicationSupportsSecureRestorableState', () => true); // 启用安全的可恢复状态
   createWindow();
   createTray(); // 创建任务栏图标
@@ -214,7 +238,7 @@ function initializeApp() {
   try {
     const s = session.fromPartition('persist:netease');
     const preflightHeadersMap = new Map();
-    const SAFARI_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15';
+    const SAFARI_UA = '"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36';
     s.webRequest.onBeforeSendHeaders((details, callback) => {
       const url = details.url || '';
       const headers = details.requestHeaders || {};
@@ -258,7 +282,7 @@ function initializeApp() {
         // 添加 Vary 头避免缓存问题
         const vary = responseHeaders['vary'] || responseHeaders['Vary'] || [];
         const varySet = new Set((Array.isArray(vary) ? vary : [vary]).flatMap(v => String(v || '').split(',').map(s => s.trim()).filter(Boolean)));
-        ['Origin','Access-Control-Request-Headers','Access-Control-Request-Method'].forEach(h => varySet.add(h));
+        ['Origin', 'Access-Control-Request-Headers', 'Access-Control-Request-Method'].forEach(h => varySet.add(h));
         responseHeaders['Vary'] = [Array.from(varySet).join(', ')];
         return callback({ responseHeaders });
       }
@@ -395,15 +419,15 @@ ipcMain.on('open-history-window', () => {
       webSecurity: false
     }
   });
-  
+
   // 加载history.html文件
   const historyFilePath = path.join(__dirname, './history.html');
   console.log('[main] 历史记录文件路径:', historyFilePath);
   historyWindow.loadFile(historyFilePath);
-  
+
   // 可选：打开开发者工具以便调试
   // historyWindow.webContents.openDevTools();
-  
+
   // 监听窗口关闭事件
   historyWindow.on('closed', () => {
     console.log('[main] 历史记录窗口已关闭');
@@ -430,26 +454,41 @@ ipcMain.on('get-vlist-data', (event) => {
   event.sender.send('vlist-data', currentVlistData);
 });
 
+// 获取默认/原始的 vlist.json 内容 (用于重置)
+ipcMain.on('get-default-vlist-content', (event) => {
+  try {
+    if (fs.existsSync(defaultVlistPath)) {
+      const content = fs.readFileSync(defaultVlistPath, 'utf-8');
+      event.sender.send('default-vlist-content', content);
+    } else {
+      event.sender.send('default-vlist-content', JSON.stringify({ list: [], platformlist: [] }, null, 2));
+    }
+  } catch (error) {
+    console.error('Failed to read default vlist.json:', error);
+    event.sender.send('vlist-save-error', '无法读取默认配置: ' + error.message);
+  }
+});
+
 // 保存 vlist.json 内容到用户数据目录（可写目录）
 ipcMain.on('save-vlist-content', (event, content) => {
   try {
     // 验证 JSON 格式
     const parsed = JSON.parse(content);
-    
+
     // 确保用户数据目录存在
     const userDataDir = app.getPath('userData');
     if (!fs.existsSync(userDataDir)) {
       fs.mkdirSync(userDataDir, { recursive: true });
     }
-    
+
     // 保存到用户数据目录
     console.log('[main] 保存配置到用户数据目录:', userVlistPath);
     fs.writeFileSync(userVlistPath, content, 'utf-8');
-    
+
     // 更新内存中的数据
     vlistData = parsed;
     vlistJsonContent = content;
-    
+
     event.sender.send('vlist-save-success');
   } catch (error) {
     console.error('Failed to save vlist.json:', error);

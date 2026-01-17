@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>VIP Video</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div id="webview-container">
-    <webview id="webview" src="about:blank" allowpopups="true" allow="autoplay; encrypted-media" httpreferrer="https://music.163.com/" useragent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" webpreferences="contextIsolation=yes, nodeIntegration=no, sandbox=yes" partition="persist:netease" preload="webview-preload.js"></webview>
+    <webview id="webview" src="about:blank" allowpopups="true" allow="autoplay; encrypted-media"
+      httpreferrer="https://music.163.com/"
+      useragent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+      webpreferences="contextIsolation=yes, nodeIntegration=no, sandbox=yes" partition="persist:netease"
+      preload="webview-preload.js"></webview>
   </div>
   <div id="button-container">
     <button id="before-button"></button>
     <div id="platform-buttons"></div>
     <button id="more-button"></button>
-    <button id="custom-button">自定义</button>
+    <button id="filter-button">筛选</button>
+    <button id="custom-button">编辑</button>
     <button id="history-button">历史</button>
+    <button id="update-button">升级</button>
     <!-- <button id="devtools-button" title="切换 WebView DevTools (Ctrl/Cmd+Shift+I 或 F12)">DevTools</button> -->
   </div>
   <script src="renderer.js"></script>
 </body>
+
 </html>

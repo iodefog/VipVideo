@@ -1,10 +1,9 @@
 const { BrowserWindow } = require('electron');
 const path = require('path');
 
-function injectVipUI(child, vlistArray) {
+function injectVipUI(child, vlistArray, canShowVip) {
   const list = Array.isArray(vlistArray) ? vlistArray : [];
-  // 主要修改内容
-  
+
   // 1. CSS样式添加
   const css = `
     #back-button { position: fixed; top: 70px; left: 30px; z-index: 2147483647; width: 44px; height: 44px; border-radius: 22px; background: #1890ff; color: #fff; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: block; text-align: center; line-height: 44px; font-size: 18px; font-weight: bold; user-select: none; }
@@ -18,6 +17,7 @@ function injectVipUI(child, vlistArray) {
   const injected = `(() => {
     try {
       const list = ${JSON.stringify(list)};
+      const canShowVip = ${JSON.stringify(canShowVip)};
       const style = document.createElement('style');
       style.textContent = ${JSON.stringify(css)};
       (document.head || document.documentElement).appendChild(style);
@@ -49,91 +49,93 @@ function injectVipUI(child, vlistArray) {
         window.addEventListener('hashchange', updateBackButtonState);
       }
 
-      if (document.getElementById('vip-drag-btn')) return;
-      
-      const btn = document.createElement('button');
-      btn.id = 'vip-drag-btn';
-      btn.textContent = 'VIP';
-      (document.body || document.documentElement).appendChild(btn);
+      if (canShowVip) {
+        if (document.getElementById('vip-drag-btn')) return;
+        
+        const btn = document.createElement('button');
+        btn.id = 'vip-drag-btn';
+        btn.textContent = 'VIP';
+        (document.body || document.documentElement).appendChild(btn);
 
-      const pop = document.createElement('div');
-      pop.id = 'vip-popover';
-      (document.body || document.documentElement).appendChild(pop);
+        const pop = document.createElement('div');
+        pop.id = 'vip-popover';
+        (document.body || document.documentElement).appendChild(pop);
 
-      const prefixes = list.map(function(i){ return i && i.url; }).filter(Boolean);
-      function isParser(u) { return prefixes.some(function(p){ return typeof p === 'string' && u.indexOf(p) === 0; }); }
-      function extract(u) {
-        try {
-          var parsed = new URL(u);
-          var params = Array.from(parsed.searchParams.values());
-          for (var i = 0; i < params.length; i++) {
-            var v = params[i] || '';
-            try {
-              var dec = decodeURIComponent(v);
-              if (dec.indexOf('http://') === 0 || dec.indexOf('https://') === 0) return dec;
-            } catch(e) {}
-            if (v.indexOf('http://') === 0 || v.indexOf('https://') === 0) return v;
-          }
-          return params.length > 0 ? params[0] : u;
-        } catch(e) { return u; }
-      }
-
-      function updateOriginal() {
-        try {
-          var now = location.href || '';
-          if (isParser(now)) {
-            var orig = extract(now);
-            if (orig) window.__VIP_ORIGINAL__ = orig;
-          } else {
-            window.__VIP_ORIGINAL__ = now;
-          }
-        } catch(e) {}
-      }
-
-      // 初始化与监听导航变化，保持原始 URL
-      updateOriginal();
-      window.addEventListener('hashchange', updateOriginal);
-      window.addEventListener('popstate', updateOriginal);
-      try {
-        var _push = history.pushState;
-        history.pushState = function(){ var r = _push.apply(this, arguments); try{ updateOriginal(); }catch(e){} return r; }
-        var _replace = history.replaceState;
-        history.replaceState = function(){ var r2 = _replace.apply(this, arguments); try{ updateOriginal(); }catch(e){} return r2; }
-      } catch(e) {}
-
-      function render() {
-        const frag = document.createDocumentFragment();
-        list.forEach((it, idx) => {
-          const el = document.createElement('div');
-          el.className = 'vip-item';
-          el.textContent = (it && it.name) ? it.name : ('解析' + (idx + 1));
-          el.addEventListener('click', function() {
-            var now = location.href || '';
-            // 优先使用保留的原始 URL，确保多次解析仍基于原始内容地址
-            var baseCandidate = window.__VIP_ORIGINAL__ || now;
-            var base = isParser(baseCandidate) ? extract(baseCandidate) : baseCandidate;
-            var target = (it && it.url) ? ('' + it.url + base) : base;
-            location.href = target;
-            pop.style.display = 'none';
-          });
-          frag.appendChild(el);
-        });
-        pop.innerHTML = '';
-        pop.appendChild(frag);
-      }
-
-      render();
-
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        var curr = (typeof getComputedStyle === 'function') ? getComputedStyle(pop).display : pop.style.display;
-        pop.style.display = (curr === 'none') ? 'block' : 'none';
-      });
-      document.addEventListener('click', (e) => {
-        if (pop.style.display === 'block' && e.target !== pop && e.target !== btn && !pop.contains(e.target)) {
-          pop.style.display = 'none';
+        const prefixes = list.map(function(i){ return i && i.url; }).filter(Boolean);
+        function isParser(u) { return prefixes.some(function(p){ return typeof p === 'string' && u.indexOf(p) === 0; }); }
+        function extract(u) {
+          try {
+            var parsed = new URL(u);
+            var params = Array.from(parsed.searchParams.values());
+            for (var i = 0; i < params.length; i++) {
+              var v = params[i] || '';
+              try {
+                var dec = decodeURIComponent(v);
+                if (dec.indexOf('http://') === 0 || dec.indexOf('https://') === 0) return dec;
+              } catch(e) {}
+              if (v.indexOf('http://') === 0 || v.indexOf('https://') === 0) return v;
+            }
+            return params.length > 0 ? params[0] : u;
+          } catch(e) { return u; }
         }
-      });
+
+        function updateOriginal() {
+          try {
+            var now = location.href || '';
+            if (isParser(now)) {
+              var orig = extract(now);
+              if (orig) window.__VIP_ORIGINAL__ = orig;
+            } else {
+              window.__VIP_ORIGINAL__ = now;
+            }
+          } catch(e) {}
+        }
+
+        // 初始化与监听导航变化，保持原始 URL
+        updateOriginal();
+        window.addEventListener('hashchange', updateOriginal);
+        window.addEventListener('popstate', updateOriginal);
+        try {
+          var _push = history.pushState;
+          history.pushState = function(){ var r = _push.apply(this, arguments); try{ updateOriginal(); }catch(e){} return r; }
+          var _replace = history.replaceState;
+          history.replaceState = function(){ var r2 = _replace.apply(this, arguments); try{ updateOriginal(); }catch(e){} return r2; }
+        } catch(e) {}
+
+        function render() {
+          const frag = document.createDocumentFragment();
+          list.forEach((it, idx) => {
+            const el = document.createElement('div');
+            el.className = 'vip-item';
+            el.textContent = (it && it.name) ? it.name : ('解析' + (idx + 1));
+            el.addEventListener('click', function() {
+              var now = location.href || '';
+              // 优先使用保留的原始 URL，确保多次解析仍基于原始内容地址
+              var baseCandidate = window.__VIP_ORIGINAL__ || now;
+              var base = isParser(baseCandidate) ? extract(baseCandidate) : baseCandidate;
+              var target = (it && it.url) ? ('' + it.url + base) : base;
+              location.href = target;
+              pop.style.display = 'none';
+            });
+            frag.appendChild(el);
+          });
+          pop.innerHTML = '';
+          pop.appendChild(frag);
+        }
+
+        render();
+
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          var curr = (typeof getComputedStyle === 'function') ? getComputedStyle(pop).display : pop.style.display;
+          pop.style.display = (curr === 'none') ? 'block' : 'none';
+        });
+        document.addEventListener('click', (e) => {
+          if (pop instanceof Node && btn instanceof Node && pop.style.display === 'block' && e.target !== pop && e.target !== btn && !pop.contains(e.target)) {
+            pop.style.display = 'none';
+          }
+        });
+      }
     } catch (e) { console.warn('VIP inject failed:', e); }
   })();`;
   // 执行注入脚本到渲染进程
@@ -143,30 +145,30 @@ function injectVipUI(child, vlistArray) {
   return child;
 }
 
-function openVipWindow(url, vlistArray, size = { width: 1200, height: 800 }) {
-    const child = new BrowserWindow({
-      width: size.width,
-      height: size.height,
-      webPreferences: {
+function openVipWindow(url, vlistArray, size = { width: 1200, height: 800 }, canShowVip = true) {
+  const child = new BrowserWindow({
+    width: size.width,
+    height: size.height,
+    webPreferences: {
       webviewTag: true,
       autoplayPolicy: 'no-user-gesture-required', // 允许自动播放
       webSecurity: false, // 禁用web安全策略
       nodeIntegration: true, // 启用Node集成
       contextIsolation: false, // 禁用上下文隔离
       preload: path.join(__dirname, 'child_preload.js'),
-       // 启用插件支持（有些加密视频可能需要）
-        plugins: true,
-        // 启用JavaScript（默认启用，但显式设置）
-        javascript: true,
-        // 配置会话以支持媒体键系统（EME）
-        partition: 'persist:vipvideo',
-        // 禁用缓存可能有助于解决某些播放问题
-        cache: true,
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15'
-      },
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15'
+      // 启用插件支持（有些加密视频可能需要）
+      plugins: true,
+      // 启用JavaScript（默认启用，但显式设置）
+      javascript: true,
+      // 配置会话以支持媒体键系统（EME）
+      partition: 'persist:vipvideo',
+      // 禁用缓存可能有助于解决某些播放问题
+      cache: true,
+      userAgent: '"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36'
+    },
+    userAgent: '"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36'
   });
-   // 自动允许媒体键系统权限请求
+  // 自动允许媒体键系统权限请求
   child.webContents.session.setPermissionRequestHandler((webContents, permission, callback, details) => {
     const requestingUrl = details.requestingUrl || '';
     console.log(`[vipWindow] 权限请求: ${permission} 来自: ${requestingUrl}`);
@@ -178,7 +180,7 @@ function openVipWindow(url, vlistArray, size = { width: 1200, height: 800 }) {
   });
   child.loadURL(url);
   child.webContents.on('did-finish-load', () => {
-    injectVipUI(child, vlistArray);
+    injectVipUI(child, vlistArray, canShowVip);
   });
   return child;
 }

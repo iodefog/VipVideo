@@ -1,39 +1,77 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell } = require('electron');
 const path = require('path');
+const packageJson = require('./package.json');
+const appVersion = packageJson.version;
+const updateUrl = 'https://pan.baidu.com/s/1wcpReZs2-UG71g1idPyPmA?pwd=nkye';
 console.log('[renderer] start');
 
 let vlistData = null;
 // 添加一个变量来控制是否允许显示返回按钮
 let allowShowBackButton = true;
+// 当前选中的分类
+// 当前选中的分类，从 localStorage 读取，默认为 'all'
+let currentCategory = localStorage.getItem('lastSelectedCategory') || 'all';
+
+// 分类列表，将从 vlistData 中加载
+let categoryList = [
+  { id: 'all', name: 'All' }
+];
 
 // 通过IPC从主进程获取vlist数据
 ipcRenderer.on('vlist-data', (event, data) => {
   vlistData = data;
   console.log('vlistData received from main process:', vlistData);
   // 暴露给新开的窗口通过 window.opener.vlistData 访问
-  try { window.vlistData = vlistData; } catch (_) {}
-  
+  try { window.vlistData = vlistData; } catch (_) { }
+
+  // 更新分类列表
+  if (vlistData && vlistData.categorylist) {
+    categoryList = vlistData.categorylist;
+    // 确保有 all 选项，如果没有则添加
+    if (!categoryList.find(c => c.id === 'all')) {
+      categoryList.unshift({ id: 'all', name: 'All' });
+    }
+  } else {
+    // 默认分类
+    categoryList = [
+      { "id": "all", "name": "All" },
+      { "id": "tv", "name": "电视" },
+      { "id": "video", "name": "视频" },
+      { "id": "music", "name": "音乐" },
+      { "id": "novel", "name": "小说" },
+      { "id": "comic", "name": "漫画" },
+      { "id": "other", "name": "其他" }
+    ];
+  }
+
+  // 更新筛选按钮当前显示的文字
+  updateFilterButtonText();
+
   // 如果已经加载了平台按钮容器，重新创建平台按钮
-  const platformButtons = document.getElementById('platform-buttons');
-  if (platformButtons && vlistData && vlistData.platformlist) {
-    // 清空现有按钮
-    platformButtons.innerHTML = '';
-    // 重新创建平台按钮
-    vlistData.platformlist.forEach(platform => {
-      const button = createButton(platform);
-      platformButtons.appendChild(button);
-    });
-    
-    // 如果有平台数据，加载第一个平台
-    if (vlistData.platformlist.length > 0) {
-      const firstPlatform = vlistData.platformlist[0];
-      console.log("Loading first platform:", firstPlatform);
-      setTimeout(() => {
-        loadURL(firstPlatform.url, firstPlatform.name);
-      }, 100);
+  // 如果已经加载了平台按钮容器，重新创建平台按钮
+  renderPlatformButtons();
+
+  // 如果有平台数据且页面为空，加载上次访问的页面或第一个平台
+  if (vlistData && vlistData.platformlist && vlistData.platformlist.length > 0) {
+    const webview = document.getElementById('webview');
+    // 只有当 webview src 为空或者 about:blank 时才自动加载
+    if (webview && (!webview.src || webview.src === 'about:blank')) {
+      const lastUrl = localStorage.getItem('lastUrl');
+      if (lastUrl) {
+        console.log("Loading last visited URL:", lastUrl);
+        setTimeout(() => {
+          loadURL(lastUrl);
+        }, 100);
+      } else {
+        const firstPlatform = vlistData.platformlist[0];
+        console.log("Loading first platform:", firstPlatform);
+        setTimeout(() => {
+          loadURL(firstPlatform.url, firstPlatform.name);
+        }, 100);
+      }
     }
   }
-  
+
   // 重新渲染VIP解析列表
   try {
     renderVipList();
@@ -60,7 +98,7 @@ if (!devtoolsButton) console.error('DevTools button not found');
 
 // 配置 webview（关键参数已在 index.html 静态设置）
 if (webview) {
-  try { webview.setAttribute('allow', 'autoplay; encrypted-media'); } catch (e) {}
+  try { webview.setAttribute('allow', 'autoplay; encrypted-media'); } catch (e) { }
 }
 
 // 创建回退按钮
@@ -112,38 +150,51 @@ function updateBackButton() {
   backButton.style.display = canGoBack ? 'block' : 'none';
 }
 
+// 监听页面标题更新
+webview.addEventListener('page-title-updated', (event) => {
+  // 更新主窗口标题，带上版本号
+  document.title = `${event.title}`;
+});
+
 // 修改 webview 导航事件监听，同时记录历史记录
 webview.addEventListener('did-navigate', (event) => {
-  console.log('did-navigate');
+  console.log('did-navigate', event.url);
   allowShowBackButton = true;
   updateBackButton();
-  
+
   // 记录内部导航到历史记录
   const url = event.url;
-  if (url && url.startsWith('http')) {
-    // 获取webview中页面的实际标题
-    const webviewTitle = webview.getWebContents().getTitle() || 'Unknown Page';
-    ipcRenderer.send('save-history', { 
-      url, 
-      title: webviewTitle
-    });
+  // 忽略无效协议和 history.html 自身
+  if (url && (url.startsWith('http') || url.startsWith('https')) && !url.includes('history.html')) {
+    // 延迟获取标题，确保页面 title 已更新
+    setTimeout(() => {
+      const webviewTitle = webview.getTitle() || 'Unknown Page';
+      console.log('[renderer] did-navigate 保存历史记录:', { url, title: webviewTitle });
+      ipcRenderer.send('save-history', {
+        url,
+        title: webviewTitle
+      });
+    }, 500);
   }
 });
 
 webview.addEventListener('did-navigate-in-page', (event) => {
-  console.log('did-navigate-in-page');
+  console.log('did-navigate-in-page', event.url);
   allowShowBackButton = true;
   updateBackButton();
-  
+
   // 记录页面内导航到历史记录
   const url = event.url;
-  if (url && url.startsWith('http')) {
-    // 获取webview中页面的实际标题
-    const webviewTitle = webview.getWebContents().getTitle() || 'Unknown Page';
-    ipcRenderer.send('save-history', { 
-      url, 
-      title: webviewTitle
-    });
+  if (url && (url.startsWith('http') || url.startsWith('https')) && !url.includes('history.html')) {
+    // 延迟获取标题
+    setTimeout(() => {
+      const webviewTitle = webview.getTitle() || 'Unknown Page';
+      console.log('[renderer] did-navigate-in-page 保存历史记录:', { url, title: webviewTitle });
+      ipcRenderer.send('save-history', {
+        url,
+        title: webviewTitle
+      });
+    }, 500);
   }
 });
 
@@ -160,7 +211,7 @@ webview.addEventListener('touchend', (e) => {
   console.log('touchend');
   touchEndX = e.changedTouches[0].clientX;
   const swipeDistance = touchEndX - touchStartX;
-  
+
   if (swipeDistance > 50 && webview.canGoBack()) {
     webview.goBack();
   }
@@ -179,10 +230,10 @@ function loadURL(url, title) {
     if (backButton) {
       backButton.style.display = allowShowBackButton ? 'block' : 'none';
     }
-    
+
     console.log('[renderer] 准备加载URL:', url);
     console.log('[renderer] 当前allowShowBackButton状态:', allowShowBackButton);
-    
+
     // 加载URL并添加错误处理
     webview.loadURL(url).then(() => {
       console.log('[renderer] URL加载成功:', url);
@@ -190,23 +241,66 @@ function loadURL(url, title) {
       console.error('[renderer] Failed to load URL:', err);
       console.error('[renderer] Error details:', err.code, err.errno);
     });
-    
+
+    // 保存最后访问的 URL
+    localStorage.setItem('lastUrl', url);
+
     if (title) {
-      document.title = title;
+      document.title = `${title} (v${appVersion})`;
+    } else {
+      document.title = `VipVideo (v${appVersion})`;
     }
-    
+
     // 只有当URL不是history.html时才保存历史记录，避免重复保存
+    // 注意：这里不再保存历史记录，改为在 page-title-updated 或 did-navigate 事件中保存
+    // 以确保记录的是最终加载的 URL 和标题
+    /*
     if (!url.includes('history.html')) {
       // 获取webview中页面的实际标题，如果参数中没有提供
       const webviewTitle = title || webview.getWebContents().getTitle() || 'Unknown Page';
       console.log('[renderer] 保存历史记录:', { url, title: webviewTitle });
       ipcRenderer.send('save-history', { url, title: webviewTitle });
     }
+    */
   } catch (error) {
     console.error('[renderer] Error loading URL:', error);
   }
 }
 
+
+// 渲染平台按钮
+function renderPlatformButtons() {
+  const platformButtons = document.getElementById('platform-buttons');
+  if (!platformButtons || !vlistData || !vlistData.platformlist) return;
+
+  // 清空现有按钮
+  platformButtons.innerHTML = '';
+
+  // 获取有效的分类ID集合
+  const validCategoryIds = new Set(categoryList.map(c => c.id));
+
+  // 筛选列表
+  const list = vlistData.platformlist.filter(item => {
+    if (currentCategory === 'all') return true;
+
+    // 如果 item 没有 category 或者 category 不在定义的列表中，归为 'other'
+    let itemCategory = item.category;
+    if (!itemCategory || !validCategoryIds.has(itemCategory)) {
+      itemCategory = 'other';
+    }
+
+    return itemCategory === currentCategory;
+  });
+
+  // 重新创建按钮
+  list.forEach(platform => {
+    const button = createButton(platform);
+    platformButtons.appendChild(button);
+  });
+
+  // 更新滚动按钮状态
+  updateScrollButtonVisibility();
+}
 
 // 创建平台按钮
 function createButton(platform) {
@@ -216,30 +310,84 @@ function createButton(platform) {
   button.addEventListener('click', () => {
     allowShowBackButton = false;
     backButton.style.display = 'none';
+    // 传递 canvip 参数
+    const canVip = platform.canvip === 1; // 确保是布尔值或数字1
+    // 需要通知主进程该窗口是否支持VIP功能，以便控制VIP按钮显示
+    // 目前 loadURL 函数尚未支持传递额外参数给 main process 
+    // 但我们可以通过 vlistData 全局对象在 vipWindow 中判断，或者修改 create-new-window IPC
+
+    // 这里我们稍微 hack 一下，将 canvip 信息暂存，供 new-window 事件使用
+    // 或者直接修改 ipcRenderer.send 的逻辑。
+    // 但由于 loadURL 只是 webview.loadURL，最终触发 new-window 是在页面内部跳转时？
+    // 不，点击按钮是直接加载 URL。
+
+    // 如果是点击下方按钮加载的页面，是在当前 webview 加载
+    // 只有 webview 内部点击链接导致的新窗口才走 create-new-window
+    // 所以我们需要通知 current webview 所在环境关于 VIP 按钮的状态？
+    // 描述说：屏幕上的 “VIP” 按钮，根据数据中的 canvip 来显示。
+    // 这通常是指新打开的独立 VIP 窗口中的按钮。
+
+    // 修改 loadURL 逻辑，传递 title 和 potential vip status?
+    // 当前架构下，首页是 webview，点击按钮直接在当前 webview 加载。
+    // VIP 按钮是在 vipWindow.js 注入的，那是针对“新窗口”的。
+    // 如果用户是在主界面 webview 浏览，是否有 VIP 按钮？
+    // 主界面 renderer.js 没有注入 VIP 按钮逻辑。
+    // 既然需求提到“屏幕上的 VIP 按钮”，可能是指 vipWindow 中的，或者主界面也要加？
+    // 假设是指 vipWindow (因为 vipWindow.js 中有注入 VIP UI 的逻辑)
+    // 那么只有当从 webview 打开新窗口时才涉及。
+
+    // 另一种可能是主界面 webview 也需要注入 VIP 按钮？
+    // 目前 index.html 没有 VIP 按钮，renderer.js 也没注入。
+    // 只有 vipWindow.js 有 injectVipUI。
+    // 如果用户意图是“在主界面点击平台，进入 webview 播放，此时要有 VIP 按钮”
+    // 那么我们需要在 renderer.js 中也实现类似的注入逻辑，或者在 webview preload 中处理。
+    // 但鉴于 vipWindow.js 的存在，通常是 popups 才有。
+
+    // 无论如何，我们先保持 loadURL 调用。
     loadURL(platform.url, platform.name);
+
+    // 记录当前平台的 canvip 状态
+    const isVip = platform.canvip === 1;
+    sessionStorage.setItem('current_platform_canvip', isVip ? '1' : '0');
+
+    // 更新主界面 VIP 按钮显隐
+    const mainVipBtn = document.getElementById('vip-drag-btn');
+    if (mainVipBtn) {
+      mainVipBtn.style.display = isVip ? 'flex' : 'none';
+    }
   });
   return button;
+}
+
+// 更新 Filter 按钮文字
+function updateFilterButtonText() {
+  const filterButton = document.getElementById('filter-button');
+  if (filterButton) {
+    const category = categoryList.find(c => c.id === currentCategory);
+    const label = category ? category.name : 'All';
+    filterButton.textContent = `筛选: ${label}`;
+  }
 }
 
 // 创建可重用的滚动函数
 function scrollPlatformButtons(direction) {
   const platformButtons = document.getElementById('platform-buttons');
   const beforeButton = document.getElementById('before-button');
-  
+
   if (platformButtons) {
     // 设置每次滚动的距离
     const scrollAmount = 200;
     // 计算滚动方向（正值向右，负值向左）
     const scrollDirection = direction === 'right' ? 1 : -1;
-    
+
     platformButtons.scrollTo({
       left: platformButtons.scrollLeft + (scrollAmount * scrollDirection),
       behavior: 'smooth'
     });
-    
+
     // 滚动后立即更新按钮显示状态
     updateScrollButtonVisibility();
-    
+
     console.log(`平台按钮向${direction === 'right' ? '右' : '左'}滚动`);
   }
 }
@@ -248,7 +396,7 @@ function scrollPlatformButtons(direction) {
 function updateScrollButtonVisibility() {
   const platformButtons = document.getElementById('platform-buttons');
   const beforeButton = document.getElementById('before-button');
-  
+
   if (platformButtons && beforeButton) {
     // 当scrollLeft > 10时显示before-button（有一个小的阈值防止抖动）
     if (platformButtons.scrollLeft > 10) {
@@ -363,6 +511,13 @@ const createEditDialogStyle = () => {
     #edit-dialog-cancel:hover {
       background: #e6e6e6;
     }
+    #edit-dialog-reset {
+      background: #faad14;
+      color: white;
+    }
+    #edit-dialog-reset:hover {
+      background: #d48806;
+    }
     #dialog-overlay {
       display: none;
       position: fixed;
@@ -377,6 +532,29 @@ const createEditDialogStyle = () => {
       color: #ff4d4f;
       margin-top: 10px;
       font-size: 12px;
+    }
+    #filter-popover {
+      display: none;
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 1000;
+      min-width: 100px;
+    }
+    .filter-option {
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+    }
+    .filter-option:hover {
+      background: #f0f0f0;
+    }
+    .filter-option.active {
+      color: #1890ff;
+      background: #e6f7ff;
     }
   `;
   document.head.appendChild(style);
@@ -410,6 +588,7 @@ const createEditDialog = () => {
   footer.id = 'edit-dialog-footer';
   footer.innerHTML = `
     <button id="edit-dialog-cancel">取消</button>
+    <button id="edit-dialog-reset">重置</button>
     <button id="edit-dialog-save">保存</button>
   `;
 
@@ -421,6 +600,7 @@ const createEditDialog = () => {
   // 添加事件监听
   document.getElementById('edit-dialog-close').addEventListener('click', closeEditDialog);
   document.getElementById('edit-dialog-cancel').addEventListener('click', closeEditDialog);
+  document.getElementById('edit-dialog-reset').addEventListener('click', resetVlistContent);
   document.getElementById('edit-dialog-save').addEventListener('click', saveVlistContent);
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) closeEditDialog();
@@ -432,7 +612,7 @@ const openEditDialog = () => {
   document.getElementById('dialog-overlay').style.display = 'block';
   document.getElementById('edit-dialog').style.display = 'flex';
   document.getElementById('error-message').textContent = '';
-  
+
   // 请求 vlist.json 内容
   ipcRenderer.send('get-vlist-content');
 };
@@ -448,16 +628,30 @@ const saveVlistContent = () => {
   const textarea = document.getElementById('vlist-textarea');
   const content = textarea.value;
   const errorElement = document.getElementById('error-message');
-  
+
   try {
     // 先在前端验证 JSON 格式
-    JSON.parse(content);
+    const parsed = JSON.parse(content);
+    // 自动格式化 JSON (4空格缩进)
+    const formatted = JSON.stringify(parsed, null, 4);
+
+    // 更新文本框显示
+    textarea.value = formatted;
+
     errorElement.textContent = '';
     // 发送到主进程保存
-    ipcRenderer.send('save-vlist-content', content);
+    ipcRenderer.send('save-vlist-content', formatted);
   } catch (error) {
-    errorElement.textContent = 'JSON 格式错误: ' + error.message;
+    const msg = 'JSON 格式错误: ' + error.message;
+    errorElement.textContent = msg;
+    alert(msg);
   }
+};
+
+// 重置 vlist.json 内容
+const resetVlistContent = () => {
+  // 请求默认配置
+  ipcRenderer.send('get-default-vlist-content');
 };
 
 // 初始化编辑弹框
@@ -543,36 +737,36 @@ function showPasswordModal() {
         </div>
       </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     const passwordInput = document.getElementById('password-input');
     const cancelButton = document.getElementById('cancel-button');
     const confirmButton = document.getElementById('confirm-button');
-    
+
     // 自动聚焦到密码输入框
     passwordInput.focus();
-    
+
     // 确认按钮事件
     confirmButton.addEventListener('click', () => {
       const password = passwordInput.value;
       document.body.removeChild(modal);
       resolve(password);
     });
-    
+
     // 取消按钮事件
     cancelButton.addEventListener('click', () => {
       document.body.removeChild(modal);
       resolve(null);
     });
-    
+
     // 按回车键确认
     passwordInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         confirmButton.click();
       }
     });
-    
+
     // 按ESC键取消
     modal.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -585,20 +779,20 @@ function showPasswordModal() {
 // 验证密码函数
 async function verifyPassword() {
   const defaultPassword = 'VipVideo';
-  
+
   // 确保样式已创建
   if (!document.querySelector('style[textContent*="password-modal"]')) {
     createPasswordModalStyle();
   }
-  
+
   // 显示密码输入模态框
   const password = await showPasswordModal();
-  
+
   // 检查密码是否存在且符合要求
   if (!password) {
     return false; // 用户取消输入
   }
-  
+
   // 验证密码格式：6-10位数字，或者是默认密码
   if (password === defaultPassword || /^\d{6,10}$/.test(password)) {
     return true;
@@ -617,16 +811,95 @@ customButton.addEventListener('click', async () => {
   }
 });
 
+// 筛选按钮事件
+const filterButton = document.getElementById('filter-button');
+if (filterButton) {
+  // 创建 Popover 元素
+  const popover = document.createElement('div');
+  popover.id = 'filter-popover';
+  document.body.appendChild(popover);
+
+  const renderFilterOptions = () => {
+    popover.innerHTML = '';
+    categoryList.forEach(category => {
+      const option = document.createElement('div');
+      option.className = `filter-option ${currentCategory === category.id ? 'active' : ''}`;
+      option.textContent = `[${category.name}]`;
+      option.addEventListener('click', () => {
+        currentCategory = category.id;
+        // 保存到 localStorage
+        localStorage.setItem('lastSelectedCategory', currentCategory);
+
+        renderPlatformButtons();
+        updateFilterButtonText();
+        popover.style.display = 'none';
+      });
+      popover.appendChild(option);
+    });
+  };
+
+  filterButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+
+    // 移除红点并标记为已点击
+    if (filterButton.classList.contains('red-dot')) {
+      filterButton.classList.remove('red-dot');
+      localStorage.setItem('hasClickedFilter', 'true');
+    }
+
+    if (popover.style.display === 'block') {
+      popover.style.display = 'none';
+      return;
+    } else {
+      renderFilterOptions();
+      const rect = filterButton.getBoundingClientRect();
+      popover.style.left = rect.left + 'px';
+      popover.style.bottom = (window.innerHeight - rect.top + 5) + 'px'; // 显示在按钮上方
+      popover.style.display = 'block';
+    }
+  });
+
+  // 点击外部关闭 Popover
+  document.addEventListener('click', (e) => {
+    if (popover.style.display === 'block' && e.target !== filterButton && !popover.contains(e.target)) {
+      popover.style.display = 'none';
+    }
+  });
+}
+
 // 监听 vlist 内容响应
 ipcRenderer.on('vlist-content', (event, content) => {
   const textarea = document.getElementById('vlist-textarea');
   textarea.value = content;
 });
 
+// 监听默认配置内容响应
+ipcRenderer.on('default-vlist-content', (event, content) => {
+  const textarea = document.getElementById('vlist-textarea');
+  if (confirm('确定要重置为默认配置吗？当前未保存的修改将丢失。')) {
+    textarea.value = content;
+    document.getElementById('error-message').textContent = '已加载默认配置，请点击保存以应用。';
+  }
+});
+
 // 监听保存成功响应
 ipcRenderer.on('vlist-save-success', () => {
-  alert('保存成功！请重启应用以应用更改。');
+  // alert('保存成功！请重启应用以应用更改。'); // 移除 Alert
   closeEditDialog();
+
+  // 立即刷新数据
+  ipcRenderer.send('get-vlist-data');
+
+  // 显示轻量提示 (比如 Toast，或者复用 error-message 位置但不好因为 Dialog 已关闭)
+  // 这里使用一个临时的 Toast
+  const toast = document.createElement('div');
+  toast.textContent = '保存成功，列表已刷新';
+  toast.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 10px 20px; border-radius: 4px; z-index: 3000; transition: opacity 0.5s;';
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => document.body.removeChild(toast), 500);
+  }, 2000);
 });
 
 // 监听保存错误响应
@@ -675,12 +948,23 @@ ipcRenderer.on('load-url-from-history', (event, data) => {
 });
 
 // 监听返回按钮事件
+// 监听返回按钮事件
 ipcRenderer.on('go-back', () => {
   // 返回主页面
   const indexFilePath = path.join(__dirname, 'index.html');
   loadURL(`file://${indexFilePath}`, 'VipVideo');
 });
 window.loadURL = loadURL;
+
+// 更新按钮点击事件
+const updateButton = document.getElementById('update-button');
+if (updateButton) {
+  // 设置按钮内容：第一行“升级”，第二行小字版本号
+  updateButton.innerHTML = `升级<span class="version-text">v${appVersion}</span>`;
+  updateButton.addEventListener('click', () => {
+    shell.openExternal(updateUrl);
+  });
+}
 
 // webview 事件监听
 webview.addEventListener('did-fail-load', (event) => {
@@ -705,7 +989,7 @@ webview.addEventListener('dom-ready', () => {
   // 对网易云音乐启用媒体权限
   try {
     webview.setAudioMuted(false);
-  } catch (e) {}
+  } catch (e) { }
 });
 
 let urlStack = [];
@@ -718,8 +1002,13 @@ webview.addEventListener('new-window', (event) => {
   const newPageUrl = event.url; // 获取新窗口的跳链
   console.log('New window URL:', newPageUrl);
 
+  // 获取当前平台的 canvip 状态
+  const canShowVipString = sessionStorage.getItem('current_platform_canvip');
+  // 转换为布尔值，'1' 或 'true' 为 true，其他为 false
+  const canShowVip = canShowVipString === '1' || canShowVipString === 'true';
+
   // 通过 ipcRenderer 通知主进程创建新窗口
-  ipcRenderer.send('create-new-window', newPageUrl);
+  ipcRenderer.send('create-new-window', newPageUrl, canShowVip);
 });
 
 // 添加返回功能
@@ -758,7 +1047,7 @@ try {
           if (maybe.startsWith('http://') || maybe.startsWith('https://')) {
             return maybe;
           }
-        } catch (_) {}
+        } catch (_) { }
       }
       // 兜底：取第一个参数值
       const first = [...parsed.searchParams.values()][0];
@@ -770,7 +1059,7 @@ try {
           return first;
         }
       }
-    } catch (_) {}
+    } catch (_) { }
     return u;
   }
 
@@ -863,6 +1152,7 @@ try {
   dragBtn.id = 'vip-drag-btn';
   dragBtn.title = '解析列表';
   dragBtn.textContent = 'VIP';
+  dragBtn.style.display = 'none'; // 默认隐藏，点击支持VIP的平台后才显示
   document.body.appendChild(dragBtn);
 
   // 创建弹出层
@@ -878,7 +1168,7 @@ try {
     vlistData.list.forEach((item, index) => {
       const el = document.createElement('div');
       el.className = 'vip-item';
-      el.textContent = item.name || `解析${index+1}`;
+      el.textContent = item.name || `解析${index + 1}`;
       el.addEventListener('click', () => {
         try {
           // 实时获取当前 webview 页地址；若当前已是解析页，则抽取其原始地址

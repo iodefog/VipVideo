@@ -1,6 +1,6 @@
 {
   "name": "VipVideo",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "VipVideo",
   "main": "main.js",
   "scripts": {
@@ -22,7 +22,10 @@
       "target": [
         {
           "target": "zip",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "icon": "build/icons/icon.icns",
@@ -34,11 +37,15 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "build/icons/icon.ico",
@@ -49,15 +56,21 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "rpm",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "build/icons/icon.png",
@@ -103,6 +116,5 @@
     "electron": "37.3.1",
     "electron-builder": "^23.0.2"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

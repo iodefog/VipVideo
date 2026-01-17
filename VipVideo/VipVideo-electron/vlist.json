@@ -1,156 +1,199 @@
 {
-    "new_version_info": {
-        "latest_version": "1.1.4",
-        "updateMessage": "",
-        "update": "0",
-        "needLimit": "0"
-    },
-    "i_new_version_info": {
-        "i_latest_version": "1.1.4",
-        "i_updateMessage": "",
-        "i_update": "0",
-        "i_needLimit": "0"
-    },
+    "categorylist": [
+        {
+            "id": "all",
+            "name": "All"
+        },
+        {
+            "id": "tv",
+            "name": "电视"
+        },
+        {
+            "id": "video",
+            "name": "视频"
+        },
+        {
+            "id": "music",
+            "name": "音乐"
+        },
+        {
+            "id": "novel",
+            "name": "小说"
+        },
+        {
+            "id": "comic",
+            "name": "漫画"
+        },
+        {
+            "id": "other",
+            "name": "其他"
+        }
+    ],
     "platformlist": [
         {
             "name": "CCTV",
-            "icon": "",
-            "url": "http://tv.cctv.com/live/cctv5/"
+            "url": "http://tv.cctv.com/live/cctv5/",
+            "category": "tv"
         },
-        
         {
             "name": "腾讯视频",
-            "icon": "腾讯",
             "canvip": 1,
-            "url": "https://v.qq.com/"
+            "url": "https://v.qq.com/",
+            "category": "video"
         },
         {
             "name": "爱奇艺",
-            "icon": "爱奇艺",
             "canvip": 1,
-            "url": "https://www.iqiyi.com/"
+            "url": "https://www.iqiyi.com/",
+            "category": "video"
         },
         {
             "name": "芒果",
-            "icon": "芒果",
             "canvip": 1,
-            "url": "https://www.mgtv.com/"
+            "url": "https://www.mgtv.com/",
+            "category": "video"
         },
         {
             "name": "优酷",
-            "url": "https://www.youku.com/"
+            "canvip": 1,
+            "url": "https://www.youku.com/",
+            "category": "video"
         },
         {
             "name": "抖音",
-            "url": "https://www.douyin.com/"
+            "url": "https://www.douyin.com/",
+            "category": "video"
         },
         {
             "name": "快手",
-            "url": "https://www.kuaishou.com/"
+            "url": "https://www.kuaishou.com/",
+            "category": "video"
         },
         {
             "name": "bilibili",
-            "icon": "bilibili",
             "canvip": 0,
-            "url": "https://www.bilibili.com/"
+            "url": "https://www.bilibili.com/",
+            "category": "video"
         },
         {
             "name": "网易云音乐",
-            "url": "https://music.163.com/"
+            "url": "https://music.163.com/",
+            "category": "music"
         },
         {
             "name": "QQ音乐",
-            "url": "https://y.qq.com/"
+            "url": "https://y.qq.com/",
+            "category": "music"
         },
         {
             "name": "酷狗音乐",
-            "url": "https://www.kugou.com/"
+            "url": "https://www.kugou.com/",
+            "category": "music"
         },
         {
             "name": "酷我音乐",
-            "url": "https://www.kuwo.cn/"
+            "url": "https://www.kuwo.cn/",
+            "category": "music"
         },
         {
             "name": "喜马拉雅",
-            "url": "https://www.ximalaya.com/"
+            "url": "https://www.ximalaya.com/",
+            "category": "music"
         },
-        
         {
             "name": "漫岛",
-            "icon": "漫岛",
-            "url": "https://www.mddm.tv/"
+            "url": "https://www.mddm.tv/",
+            "category": "video"
         },
         {
             "name": "美剧",
-            "icon": "美剧",
-            "url": "https://mjw21.com/"
+            "url": "https://mjw21.com/",
+            "category": "video"
         },
         {
             "name": "韩剧",
-            "icon": "韩剧",
-            "url": "https://www.kan.cc/"
+            "url": "https://www.kan.cc/",
+            "category": "video"
         },
         {
             "name": "日剧",
-            "icon": "日剧",
-            "url": "http://www.wwmulu.com/"
+            "url": "http://www.wwmulu.com/",
+            "category": "video"
         },
         {
             "name": "铜钟音乐",
-            "icon": "4080",
-            "url": "https://tonzhon.whamon.com/"
+            "url": "https://tonzhon.whamon.com/",
+            "category": "music"
         },
         {
             "name": "九酷音乐",
-            "icon": "4080",
-            "url": "https://www.9ku.com/"
+            "url": "https://www.9ku.com/",
+            "category": "music"
         },
         {
             "name": "送歌网",
-            "icon": "4080",
-            "url": "https://www.songe.cc/"
+            "url": "https://www.songe.cc/",
+            "category": "music"
+        },
+        {
+            "name": "极光无损",
+            "url": "https://jgwav.cc/",
+            "category": "music"
         },
         {
             "name": "1905",
-            "icon": "4080",
-            "url": "https://vip.1905.com/"
+            "url": "https://vip.1905.com/",
+            "category": "video"
         },
         {
             "name": "大师兄影视",
-            "icon": "",
-            "url": "https://dsxys.pro/"
+            "url": "https://dsxys.pro/",
+            "category": "video"
         },
         {
             "name": "天空影视",
-            "icon": "",
-            "url": "https://www.yskj1.com/"
+            "url": "https://www.yskj1.com/",
+            "category": "video"
         },
         {
             "name": "西瓜视频",
-            "url": "https://www.ixigua.com/"
+            "url": "https://www.ixigua.com/",
+            "category": "video"
         },
         {
             "name": "Netflix(奈飞)",
-            "url": "https://www.netflix.com/"
-        }
-        ,{
+            "url": "https://www.netflix.com/",
+            "category": "video"
+        },
+        {
             "name": "deepseek",
-            "url": "https://chat.deepseek.com/"
-        },{
+            "url": "https://chat.deepseek.com/",
+            "category": "other"
+        },
+        {
             "name": "chatgpt",
-            "url": "https://chatgpt.com/"
-        },{
+            "url": "https://chatgpt.com/",
+            "category": "other"
+        },
+        {
             "name": "豆包",
-            "url": "https://www.doubao.com/chat/"
-        },{
+            "url": "https://www.doubao.com/chat/",
+            "category": "other"
+        },
+        {
             "name": "MangaPlus",
-            "url": "https://mangaplus.shueisha.co.jp/"
-        },{
+            "url": "https://mangaplus.shueisha.co.jp/",
+            "category": "comic"
+        },
+        {
             "name": "起点",
-            "url": "https://www.qidian.com/"
-        },{
+            "url": "https://www.qidian.com/",
+            "category": "novel"
+        },
+        {
             "name": "七猫",
-            "url": "https://www.qimao.com/"
+            "url": "https://www.qimao.com/",
+            "category": "novel"
         }
     ],
     "list": [
@@ -160,118 +203,95 @@
         },
         {
             "name": "纯净1",
-            "url": "https://im1907.top/?jx=",
-            "mobile": 1
+            "url": "https://im1907.top/?jx="
         },
         {
             "name": "冰豆",
-            "url": "https://bd.jx.cn/?url=",
-            "mobile": 0
+            "url": "https://bd.jx.cn/?url="
         },
         {
             "name": "CK",
-            "url": "https://www.ckplayer.vip/jiexi/?url=",
-            "mobile": 0
+            "url": "https://www.ckplayer.vip/jiexi/?url="
         },
         {
             "name": "IK9",
-            "url": "https://yparse.ik9.cc/index.php?url=",
-            "mobile": 0
+            "url": "https://yparse.ik9.cc/index.php?url="
         },
         {
             "name": "JX",
-            "url": "https://jiexi.site/?url=",
-            "mobile": 0
+            "url": "https://jiexi.site/?url="
         },
         {
             "name": "JY",
-            "url": "https://jx.playerjy.com/?url=",
-            "mobile": 0
+            "url": "https://jx.playerjy.com/?url="
         },
         {
             "name": "M3U8",
-            "url": "https://jx.m3u8.tv/jiexi/?url=",
-            "mobile": 0
+            "url": "https://jx.m3u8.tv/jiexi/?url="
         },
         {
             "name": "PM",
-            "url": "https://www.playm3u8.cn/jiexi.php?url=",
-            "mobile": 0
+            "url": "https://www.playm3u8.cn/jiexi.php?url="
         },
         {
             "name": "盘古",
-            "url": "https://www.pangujiexi.cc/jiexi.php?url=",
-            "mobile": 0
+            "url": "https://www.pangujiexi.cc/jiexi.php?url="
         },
         {
             "name": "盘古2",
-            "url": "https://www.pangujiexi.com/jiexi/?url=",
-            "mobile": 0
+            "url": "https://www.pangujiexi.com/jiexi/?url="
         },
         {
             "name": "剖云",
-            "url": "https://www.pouyun.com/?url=",
-            "mobile": 0
+            "url": "https://www.pouyun.com/?url="
         },
         {
             "name": "七哥",
-            "url": "https://jx.nnxv.cn/tv.php?url=",
-            "mobile": 0
+            "url": "https://jx.nnxv.cn/tv.php?url="
         },
         {
             "name": "神哥",
-            "url": "https://json.ovvo.pro/jx.php?url=",
-            "mobile": 0
+            "url": "https://json.ovvo.pro/jx.php?url="
         },
         {
             "name": "听乐",
-            "url": "https://jx.dj6u.com/?url=",
-            "mobile": 1
+            "url": "https://jx.dj6u.com/?url="
         },
         {
             "name": "维多",
-            "url": "https://jx.ivito.cn/?url=",
-            "mobile": 0
+            "url": "https://jx.ivito.cn/?url="
         },
         {
             "name": "虾米",
-            "url": "https://jx.xmflv.com/?url=",
-            "mobile": 0
+            "url": "https://jx.xmflv.com/?url="
         },
         {
             "name": "虾米2",
-            "url": "https://jx.xmflv.cc/?url=",
-            "mobile": 0
+            "url": "https://jx.xmflv.cc/?url="
         },
         {
             "name": "夜幕",
-            "url": "https://www.yemu.xyz/?url=",
-            "mobile": 0
+            "url": "https://www.yemu.xyz/?url="
         },
         {
             "name": "云析",
-            "url": "https://jx.yparse.com/index.php?url=",
-            "mobile": 0
+            "url": "https://jx.yparse.com/index.php?url="
         },
         {
             "name": "17云",
-            "url": "https://www.1717yun.com/jx/ty.php?url=",
-            "mobile": 0
+            "url": "https://www.1717yun.com/jx/ty.php?url="
         },
         {
             "name": "180",
-            "url": "https://jx.000180.top/jx/?url=",
-            "mobile": 0
+            "url": "https://jx.000180.top/jx/?url="
         },
         {
             "name": "2ys",
-            "url": "https://gj.fenxiangb.com/player/analysis.php?v=",
-            "mobile": 0
+            "url": "https://gj.fenxiangb.com/player/analysis.php?v="
         },
         {
             "name": "8090",
-            "url": "https://www.8090g.cn/?url=",
-            "mobile": 0
+            "url": "https://www.8090g.cn/?url="
         },
         {
             "name": "4.21-6",
