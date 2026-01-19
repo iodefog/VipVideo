@@ -45,7 +45,7 @@
 
 ## 下载安装地址：
 
-**v1.1.4** 版本 (支持自定义源和顺序)
+**v1.1.5** 版本 (支持自定义源和顺序)
 * [Mac(Apple芯片)](https://github.com/iodefog/VipVideo/releases/download/1.1.5/VipVideo-1.1.5-arm64-mac.zip)
 * [Mac(Inter)](https://github.com/iodefog/VipVideo/releases/download/1.1.5/VipVideo-1.1.5-mac.zip)
 * [Windows版本](https://github.com/iodefog/VipVideo/releases/download/1.1.5/VipVideo.1.1.5.exe.zip)
