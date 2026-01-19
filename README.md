@@ -145,3 +145,6 @@ QQ群：2群：786219580; 1群：567503018
 <img width="217" alt="image" src="./images/IMG_3639.JPG" />
 
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=iodefog/VipVideo&type=date&legend=top-left)](https://www.star-history.com/#iodefog/VipVideo&type=date&legend=top-left)
