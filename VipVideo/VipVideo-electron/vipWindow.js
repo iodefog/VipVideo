@@ -178,6 +178,11 @@ function openVipWindow(url, vlistArray, size = { width: 1200, height: 800 }, can
     }
     callback(false);
   });
+  child.webContents.setWindowOpenHandler(({ url }) => {
+    openVipWindow(url, vlistArray, size, canShowVip);
+    return { action: 'deny' };
+  });
+
   child.loadURL(url);
   child.webContents.on('did-finish-load', () => {
     injectVipUI(child, vlistArray, canShowVip);
