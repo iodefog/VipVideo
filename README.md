@@ -9,6 +9,7 @@
 
 | 更新日期 | 更新内容 |
 | ---- | --- |
+|2026-05-07| 1. 1.1.6版本发布 2. 解决bilibili多次弹框后没有“vip”入口问题 </br> |
 |2026-01-17| 1. 修复“编辑”渠道后保存不了问题 2.渠道过多，增加筛选功能 </br> |
 |2025-11-17| 1. 保存自定义增加密码功能 </br> |
 |2025-11-10| 1. 新增支持自定义播放列表和播放源的能力 </br> 2.新增优酷源 </br> |
@@ -48,9 +49,9 @@
 ## 下载安装地址：
 
 **v1.1.5** 版本 (支持自定义源和顺序)
-* [Mac(Apple芯片)](https://github.com/iodefog/VipVideo/releases/download/1.1.5/VipVideo-1.1.5-arm64-mac.zip)
-* [Mac(Inter)](https://github.com/iodefog/VipVideo/releases/download/1.1.5/VipVideo-1.1.5-mac.zip)
-* [Windows版本](https://github.com/iodefog/VipVideo/releases/download/1.1.5/VipVideo-Setup-1.1.5.exe.zip)
+* [Mac(Apple芯片)](https://github.com/iodefog/VipVideo/releases/download/1.1.6/VipVideo-1.1.6-arm64-mac.zip)
+* [Mac(Inter)](https://github.com/iodefog/VipVideo/releases/download/1.1.6/VipVideo-1.1.6-mac.zip)
+* [Windows版本](https://github.com/iodefog/VipVideo/releases/download/1.1.6/VipVideo-Setup-1.1.6.exe.zip)
 
 百度网盘下载地址：
 * 链接: https://pan.baidu.com/s/1wcpReZs2-UG71g1idPyPmA?pwd=nkye 提取码: nkye 
