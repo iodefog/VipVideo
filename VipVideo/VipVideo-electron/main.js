@@ -1,10 +1,13 @@
-const { app, BrowserWindow, ipcMain, Menu, Tray, screen, session, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray, screen } = require('electron');
 const path = require('path');
 const fs = require('fs'); // 引入 fs 模块，用于读取 vlist.json 文件
 
 // 简单的历史记录存储
 const historyFile = path.join(app.getPath('userData'), 'history.json');
 let historyData = [];
+let historyWriteTimer = null;
+let historyWriteInProgress = false;
+let historyWriteQueued = false;
 
 // 获取vlist.json的正确路径（优先使用用户数据目录，支持打包环境）
 function getVlistPath() {
@@ -16,6 +19,53 @@ function getVlistPath() {
 const defaultVlistPath = path.join(__dirname, 'vlist.json');
 // 用户数据目录中的vlist.json路径（用于保存和优先读取）
 const userVlistPath = getVlistPath();
+const CURRENT_VLIST_CONFIG_VERSION = 4;
+
+// 迁移旧版用户配置。v1.1.6 的默认配置误把 bilibili 标记为不支持 VIP，
+// 只在旧配置升级时修正一次，之后仍允许用户自行编辑 canvip。
+function migrateVlistData(data, filePath) {
+  if (!data || typeof data !== 'object') return data;
+
+  const version = Number(data.configVersion) || 1;
+  if (version >= CURRENT_VLIST_CONFIG_VERSION) return data;
+
+  if (Array.isArray(data.platformlist)) {
+    const bilibili = data.platformlist.find((item) => {
+      if (!item) return false;
+      if (String(item.name || '').toLowerCase() === 'bilibili') return true;
+      try {
+        return new URL(item.url).hostname.endsWith('bilibili.com');
+      } catch (_) {
+        return false;
+      }
+    });
+    if (bilibili) bilibili.canvip = 1;
+  }
+
+  // v4 恢复“纯净1”线路；保留一次性迁移以同步已经升级到 v3 的用户配置。
+  if (Array.isArray(data.list)) {
+    const restoredParser = {
+      name: '纯净1',
+      url: 'https://im1907.top/?jx='
+    };
+    const parserExists = data.list.some((item) => String(item && item.url || '').includes('im1907.top'));
+    if (!parserExists) {
+      const originalIndex = data.list.findIndex((item) => !item || !item.url);
+      data.list.splice(originalIndex >= 0 ? originalIndex + 1 : 0, 0, restoredParser);
+    }
+  }
+
+  data.configVersion = CURRENT_VLIST_CONFIG_VERSION;
+  if (filePath === userVlistPath) {
+    try {
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 4), 'utf-8');
+      console.log('[main] 已升级用户 vlist 配置到版本', CURRENT_VLIST_CONFIG_VERSION);
+    } catch (error) {
+      console.warn('[main] 写入升级后的用户配置失败:', error);
+    }
+  }
+  return data;
+}
 
 // 读取历史记录
 function loadHistory() {
@@ -46,12 +96,40 @@ function loadHistory() {
   }
 }
 
-// 保存历史记录
+function writeHistoryAsync() {
+  if (historyWriteInProgress) {
+    historyWriteQueued = true;
+    return;
+  }
+
+  historyWriteInProgress = true;
+  const content = JSON.stringify(historyData, null, 2);
+  fs.writeFile(historyFile, content, 'utf-8', (error) => {
+    historyWriteInProgress = false;
+    if (error) console.warn('Failed to save history:', error);
+    if (historyWriteQueued) {
+      historyWriteQueued = false;
+      writeHistoryAsync();
+    }
+  });
+}
+
+// 合并短时间内的多次写入，并使用异步 I/O，避免 SPA 导航阻塞主进程。
 function saveHistory() {
+  clearTimeout(historyWriteTimer);
+  historyWriteTimer = setTimeout(() => {
+    historyWriteTimer = null;
+    writeHistoryAsync();
+  }, 200);
+}
+
+function flushHistorySync() {
+  clearTimeout(historyWriteTimer);
+  historyWriteTimer = null;
   try {
-    fs.writeFileSync(historyFile, JSON.stringify(historyData, null, 2));
+    fs.writeFileSync(historyFile, JSON.stringify(historyData, null, 2), 'utf-8');
   } catch (error) {
-    console.warn('Failed to save history:', error);
+    console.warn('Failed to flush history:', error);
   }
 }
 
@@ -91,6 +169,7 @@ try {
   app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
   app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
   app.commandLine.appendSwitch('disable-site-isolation-trials')
+  app.userAgentFallback = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${process.versions.chrome} Safari/537.36`;
 } catch (_) { }
 
 // 获取优先使用的 vlist.json 路径（基于修改时间和存在性）
@@ -145,7 +224,7 @@ function readVlistData() {
   try {
     console.log('[main] 读取 vlist.json:', filePath);
     const data = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(data);
+    return migrateVlistData(JSON.parse(data), filePath);
   } catch (error) {
     console.error('Failed to read vlist.json:', error);
   }
@@ -160,7 +239,8 @@ try {
   const filePath = getPreferredVlistPath();
   if (filePath) {
     vlistJsonContent = fs.readFileSync(filePath, 'utf-8');
-    vlistData = JSON.parse(vlistJsonContent);
+    vlistData = migrateVlistData(JSON.parse(vlistJsonContent), filePath);
+    vlistJsonContent = JSON.stringify(vlistData, null, 4);
   } else {
     // 默认空结构
     vlistData = { list: [], platformlist: [] };
@@ -288,80 +368,6 @@ function initializeApp() {
   createWindow();
   createTray(); // 创建任务栏图标
 
-  // 为网易云音乐等域名补齐必要请求头（Referer/Origin），避免播放接口校验失败
-  try {
-    const s = session.fromPartition('persist:netease');
-    const preflightHeadersMap = new Map();
-    const SAFARI_UA = '"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36';
-    s.webRequest.onBeforeSendHeaders((details, callback) => {
-      const url = details.url || '';
-      const headers = details.requestHeaders || {};
-      const needs163 = /https?:\/\/([^\/]*\.)?music\.163\.com\//i.test(url) || /https?:\/\/([^\/]*\.)?126\.net\//i.test(url);
-      if (needs163 && details.method === 'OPTIONS') {
-        const acrh = headers['Access-Control-Request-Headers'] || headers['access-control-request-headers'];
-        const key = url.split('?')[0];
-        if (acrh && key) preflightHeadersMap.set(key, String(acrh));
-      }
-      if (needs163) {
-        headers['Referer'] = 'https://music.163.com/';
-        headers['Origin'] = 'https://music.163.com';
-        headers['swimlane'] = '51453-ckqqw'
-        // 伪装为 Safari，贴近 macOS Safari 行为
-        headers['User-Agent'] = SAFARI_UA;
-        // 一些资源需要 Range 支持，保持原有 Range
-      }
-      callback({ requestHeaders: headers });
-    });
-
-    // 放宽部分跨域头，减少媒体请求受限（谨慎，仅针对网易云相关域名）
-    s.webRequest.onHeadersReceived((details, callback) => {
-      const url = details.url || '';
-      if (/https?:\/\/([^\/]*\.)?music\.163\.com\//i.test(url) || /https?:\/\/([^\/]*\.)?126\.net\//i.test(url)) {
-        const responseHeaders = details.responseHeaders || {};
-        // 不能使用 *，需要与请求的 Origin 一致，这里固定为网易云主站
-        responseHeaders['access-control-allow-origin'] = ['https://music.163.com'];
-        responseHeaders['access-control-allow-credentials'] = ['true'];
-        // 动态镜像客户端声明的预检请求头
-        const key = url.split('?')[0];
-        const requestedHeaders = preflightHeadersMap.get(key);
-        if (requestedHeaders) {
-          responseHeaders['access-control-allow-headers'] = [requestedHeaders];
-          preflightHeadersMap.delete(key);
-        } else {
-          responseHeaders['access-control-allow-headers'] = [
-            'nm-gcore-status, content-type, x-requested-with, authorization, origin, accept, referer, user-agent, cookie, sec-fetch-mode, sec-fetch-site, sec-fetch-dest'
-          ];
-        }
-        responseHeaders['access-control-allow-methods'] = ['GET,POST,OPTIONS,HEAD'];
-        // 添加 Vary 头避免缓存问题
-        const vary = responseHeaders['vary'] || responseHeaders['Vary'] || [];
-        const varySet = new Set((Array.isArray(vary) ? vary : [vary]).flatMap(v => String(v || '').split(',').map(s => s.trim()).filter(Boolean)));
-        ['Origin', 'Access-Control-Request-Headers', 'Access-Control-Request-Method'].forEach(h => varySet.add(h));
-        responseHeaders['Vary'] = [Array.from(varySet).join(', ')];
-        return callback({ responseHeaders });
-      }
-      callback({ responseHeaders: details.responseHeaders });
-    });
-  } catch (e) {
-    console.warn('[main] set 163 headers failed:', e);
-  }
-
-  // 自动允许网易云相关权限（autoplay / EME），避免点击播放被拦截
-  try {
-    const s = session.defaultSession;
-    s.setPermissionRequestHandler((wc, permission, callback, details) => {
-      const url = (details && details.requestingUrl) || (wc && wc.getURL && wc.getURL()) || '';
-      const is163 = /https?:\/\/([^\/]*\.)?music\.163\.com\//i.test(url) || /https?:\/\/([^\/]*\.)?126\.net\//i.test(url);
-      if (is163 && (permission === 'autoplay' || permission === 'mediaKeySystem')) {
-        return callback(true);
-      }
-      // 默认行为
-      callback(false);
-    });
-  } catch (e) {
-    console.warn('[main] setPermissionRequestHandler failed:', e);
-  }
-
   // 拦截所有 webview 的 window.open，始终复用主播放窗口。
   app.on('web-contents-created', (event, contents) => {
     try {
@@ -405,6 +411,7 @@ app.on('activate', () => {
 
 app.on('before-quit', () => {
   app.isQuitting = true;
+  flushHistorySync();
 });
 
 // 保存历史记录
@@ -416,6 +423,11 @@ ipcMain.on('save-history', (event, data) => {
   const title = typeof data === 'object' ? (data.title || '未知页面') : '未知页面';
   // 添加新记录到历史
   const timestamp = Date.now(); // 使用时间戳而非ISO字符串，更易于前端处理
+  if (historyData[0] && historyData[0].url === url) {
+    historyData[0] = { url, title, timestamp };
+    saveHistory();
+    return;
+  }
   historyData.unshift({ url, title, timestamp });
   // 限制历史记录数量
   if (historyData.length > 100) {
@@ -507,6 +519,10 @@ ipcMain.on('get-vlist-content', (event) => {
 ipcMain.on('get-vlist-data', (event) => {
   // 确保vlistData是最新的
   const currentVlistData = readVlistData();
+  if (currentVlistData) {
+    vlistData = currentVlistData;
+    vlistJsonContent = JSON.stringify(currentVlistData, null, 4);
+  }
   event.sender.send('vlist-data', currentVlistData);
 });
 
