@@ -39,6 +39,8 @@ body {
 
 #custom-button,
 #history-button,
+#topmost-button,
+#transparent-topmost-button,
 #devtools-button {
   flex-shrink: 0;
 }
@@ -51,8 +53,17 @@ body {
 
 #custom-button,
 #history-button,
+#topmost-button,
+#transparent-topmost-button,
 #devtools-button {
   padding: 5px 10px;
+}
+
+#topmost-button.is-active,
+#transparent-topmost-button.is-active {
+  color: #fff;
+  background-color: #1890ff;
+  border-color: #1890ff;
 }
 
 #update-button {

@@ -1,7 +1,6 @@
 const { app, BrowserWindow, ipcMain, Menu, Tray, screen, session, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs'); // 引入 fs 模块，用于读取 vlist.json 文件
-const { openVipWindow } = require('./vipWindow');
 
 // 简单的历史记录存储
 const historyFile = path.join(app.getPath('userData'), 'history.json');
@@ -58,6 +57,34 @@ function saveHistory() {
 
 let mainWindow;
 let tray;
+let mainWindowDisplayMode = 'normal';
+const INACTIVE_WINDOW_OPACITY = 0.62;
+
+// 仅主播放窗口使用该显示模式。半透明模式在窗口失去焦点时透出背后的页面，
+// 重新获得焦点后立即恢复为不透明，避免影响正常操作。
+function applyMainWindowDisplayMode(mode) {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+
+  mainWindowDisplayMode = mode;
+  mainWindow.setAlwaysOnTop(mode !== 'normal');
+  mainWindow.setOpacity(1);
+  mainWindow.webContents.send('window-display-mode', mainWindowDisplayMode);
+}
+
+function configureMainWindowDisplayMode() {
+  mainWindow.on('focus', () => {
+    if (!mainWindow.isDestroyed()) mainWindow.setOpacity(1);
+  });
+
+  mainWindow.on('blur', () => {
+    if (!mainWindow.isDestroyed()) {
+      const opacity = mainWindowDisplayMode === 'transparent-topmost'
+        ? INACTIVE_WINDOW_OPACITY
+        : 1;
+      mainWindow.setOpacity(opacity);
+    }
+  });
+}
 
 // 放宽自动播放策略（命令行级别，尽量贴近 Chrome 行为）
 try {
@@ -160,12 +187,17 @@ function createWindow() {
   });
 
   mainWindow.loadFile('index.html');
+  configureMainWindowDisplayMode();
 
   mainWindow.on('close', function (event) {
     if (!app.isQuitting) {
       event.preventDefault();
       mainWindow.hide();
     }
+  });
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
   });
 }
 
@@ -198,10 +230,8 @@ function createTray() {
       const y = Math.round((screenHeight - height) / 2);
 
       mainWindow.setBounds({ x, y, width, height }); // 设置窗口位置
-      mainWindow.setAlwaysOnTop(true); // 设置窗口置顶
       mainWindow.show(); // 显示窗口
       mainWindow.focus(); // 确保窗口获得焦点
-      mainWindow.setAlwaysOnTop(false); // 取消置顶（可选，根据需求）
     } else {
       createWindow();
     }
@@ -210,10 +240,8 @@ function createTray() {
   // 防止 macOS 弹出“音乐播放样式”
   tray.on('double-click', () => {
     if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.setAlwaysOnTop(true);
       mainWindow.show();
       mainWindow.focus();
-      mainWindow.setAlwaysOnTop(false);
     } else {
       createWindow();
     }
@@ -227,21 +255,28 @@ function createTray() {
   }
 }
 
-// 监听渲染进程发来的 create-new-window 消息
+// 兼容旧版渲染逻辑：网页请求新窗口时，改为在主播放窗口中加载。
 ipcMain.on('create-new-window', (event, newPageUrl, canShowVip) => {
-  console.log('[main] Creating new window for URL:', newPageUrl, 'canShowVip:', canShowVip);
+  console.log('[main] 在当前窗口加载 URL:', newPageUrl);
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('load-url-in-current-window', newPageUrl);
+  }
+});
 
-  // 使用 vipWindow.js 中的 openVipWindow 函数创建新窗口
-  // 这样可以确保返回按钮和其他 VIP 功能在新窗口中也能正常工作
-  const vlistArray = vlistData ? vlistData.list : [];
-  // 如果 canShowVip 未定义，默认为 true (兼容旧代码)
-  const showVip = canShowVip !== undefined ? canShowVip : true;
-  const newWindow = openVipWindow(newPageUrl, vlistArray, { width: 1200, height: 800 }, showVip);
+// 主播放窗口的置顶状态由底部工具栏控制。
+ipcMain.on('set-window-display-mode', (event, mode) => {
+  const senderWindow = BrowserWindow.fromWebContents(event.sender);
+  if (senderWindow !== mainWindow) return;
 
-  // 可选：监听新窗口关闭事件
-  newWindow.on('closed', () => {
-    console.log('New window closed');
-  });
+  const supportedModes = new Set(['normal', 'topmost', 'transparent-topmost']);
+  applyMainWindowDisplayMode(supportedModes.has(mode) ? mode : 'normal');
+});
+
+ipcMain.on('get-window-display-mode', (event) => {
+  const senderWindow = BrowserWindow.fromWebContents(event.sender);
+  if (senderWindow === mainWindow) {
+    event.sender.send('window-display-mode', mainWindowDisplayMode);
+  }
 });
 
 // 确保loadHistory()函数在应用启动时被调用
@@ -327,16 +362,18 @@ function initializeApp() {
     console.warn('[main] setPermissionRequestHandler failed:', e);
   }
 
-  // 拦截所有 webview 的 window.open，统一用自定义尺寸创建窗口
+  // 拦截所有 webview 的 window.open，始终复用主播放窗口。
   app.on('web-contents-created', (event, contents) => {
     try {
       if (contents.getType && contents.getType() === 'webview') {
         contents.setWindowOpenHandler(({ url }) => {
           try {
-            console.log('[main] setWindowOpenHandler URL:', url);
-            openVipWindow(url, vlistData, { width: 1200, height: 800 });
+            console.log('[main] 拦截新窗口请求，在当前窗口加载 URL:', url);
+            if (mainWindow && !mainWindow.isDestroyed()) {
+              mainWindow.webContents.send('load-url-in-current-window', url);
+            }
           } catch (e) {
-            console.error('[main] create child window failed:', e);
+            console.error('[main] 在当前窗口加载链接失败:', e);
           }
           return { action: 'deny' };
         });

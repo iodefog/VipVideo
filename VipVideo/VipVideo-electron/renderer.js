@@ -88,6 +88,8 @@ const platformButtons = document.getElementById('platform-buttons');
 const customButton = document.getElementById('custom-button');
 const historyButton = document.getElementById('history-button');
 const devtoolsButton = document.getElementById('devtools-button');
+const topmostButton = document.getElementById('topmost-button');
+const transparentTopmostButton = document.getElementById('transparent-topmost-button');
 
 // 检查元素是否存在
 if (!webview) console.error('Webview element not found');
@@ -95,6 +97,42 @@ if (!platformButtons) console.error('Platform buttons container not found');
 if (!customButton) console.error('Custom button not found');
 if (!historyButton) console.error('History button not found');
 if (!devtoolsButton) console.error('DevTools button not found');
+if (!topmostButton) console.error('Topmost button not found');
+if (!transparentTopmostButton) console.error('Transparent topmost button not found');
+
+function updateWindowDisplayModeButtons(mode) {
+  if (!topmostButton || !transparentTopmostButton) return;
+
+  const isTopmost = mode === 'topmost';
+  const isTransparentTopmost = mode === 'transparent-topmost';
+  topmostButton.classList.toggle('is-active', isTopmost);
+  transparentTopmostButton.classList.toggle('is-active', isTransparentTopmost);
+  topmostButton.setAttribute('aria-pressed', String(isTopmost));
+  transparentTopmostButton.setAttribute('aria-pressed', String(isTransparentTopmost));
+}
+
+function toggleWindowDisplayMode(mode, button) {
+  const nextMode = button.classList.contains('is-active') ? 'normal' : mode;
+  ipcRenderer.send('set-window-display-mode', nextMode);
+}
+
+if (topmostButton) {
+  topmostButton.addEventListener('click', () => {
+    toggleWindowDisplayMode('topmost', topmostButton);
+  });
+}
+
+if (transparentTopmostButton) {
+  transparentTopmostButton.addEventListener('click', () => {
+    toggleWindowDisplayMode('transparent-topmost', transparentTopmostButton);
+  });
+}
+
+ipcRenderer.on('window-display-mode', (event, mode) => {
+  updateWindowDisplayModeButtons(mode);
+});
+
+ipcRenderer.send('get-window-display-mode');
 
 // 配置 webview（关键参数已在 index.html 静态设置）
 if (webview) {
@@ -310,40 +348,6 @@ function createButton(platform) {
   button.addEventListener('click', () => {
     allowShowBackButton = false;
     backButton.style.display = 'none';
-    // 传递 canvip 参数
-    const canVip = platform.canvip === 1; // 确保是布尔值或数字1
-    // 需要通知主进程该窗口是否支持VIP功能，以便控制VIP按钮显示
-    // 目前 loadURL 函数尚未支持传递额外参数给 main process 
-    // 但我们可以通过 vlistData 全局对象在 vipWindow 中判断，或者修改 create-new-window IPC
-
-    // 这里我们稍微 hack 一下，将 canvip 信息暂存，供 new-window 事件使用
-    // 或者直接修改 ipcRenderer.send 的逻辑。
-    // 但由于 loadURL 只是 webview.loadURL，最终触发 new-window 是在页面内部跳转时？
-    // 不，点击按钮是直接加载 URL。
-
-    // 如果是点击下方按钮加载的页面，是在当前 webview 加载
-    // 只有 webview 内部点击链接导致的新窗口才走 create-new-window
-    // 所以我们需要通知 current webview 所在环境关于 VIP 按钮的状态？
-    // 描述说：屏幕上的 “VIP” 按钮，根据数据中的 canvip 来显示。
-    // 这通常是指新打开的独立 VIP 窗口中的按钮。
-
-    // 修改 loadURL 逻辑，传递 title 和 potential vip status?
-    // 当前架构下，首页是 webview，点击按钮直接在当前 webview 加载。
-    // VIP 按钮是在 vipWindow.js 注入的，那是针对“新窗口”的。
-    // 如果用户是在主界面 webview 浏览，是否有 VIP 按钮？
-    // 主界面 renderer.js 没有注入 VIP 按钮逻辑。
-    // 既然需求提到“屏幕上的 VIP 按钮”，可能是指 vipWindow 中的，或者主界面也要加？
-    // 假设是指 vipWindow (因为 vipWindow.js 中有注入 VIP UI 的逻辑)
-    // 那么只有当从 webview 打开新窗口时才涉及。
-
-    // 另一种可能是主界面 webview 也需要注入 VIP 按钮？
-    // 目前 index.html 没有 VIP 按钮，renderer.js 也没注入。
-    // 只有 vipWindow.js 有 injectVipUI。
-    // 如果用户意图是“在主界面点击平台，进入 webview 播放，此时要有 VIP 按钮”
-    // 那么我们需要在 renderer.js 中也实现类似的注入逻辑，或者在 webview preload 中处理。
-    // 但鉴于 vipWindow.js 的存在，通常是 popups 才有。
-
-    // 无论如何，我们先保持 loadURL 调用。
     loadURL(platform.url, platform.name);
 
     // 记录当前平台的 canvip 状态
@@ -947,6 +951,15 @@ ipcRenderer.on('load-url-from-history', (event, data) => {
   loadURL(url, title);
 });
 
+// 网页的 target="_blank" 与 window.open 请求统一在当前 WebView 中加载。
+ipcRenderer.on('load-url-in-current-window', (event, url) => {
+  if (typeof url === 'string' && /^https?:\/\//i.test(url)) {
+    loadURL(url);
+  } else {
+    console.warn('[renderer] 忽略不支持的新窗口 URL:', url);
+  }
+});
+
 // 监听返回按钮事件
 // 监听返回按钮事件
 ipcRenderer.on('go-back', () => {
@@ -994,21 +1007,11 @@ webview.addEventListener('dom-ready', () => {
 
 let urlStack = [];
 
-// 只添加 new-window 事件处理
+// 兼容旧版 Electron 的 new-window 事件：不再创建 BrowserWindow。
 webview.addEventListener('new-window', (event) => {
   console.log('[renderer] new-window:', event.url);
   event.preventDefault();
-
-  const newPageUrl = event.url; // 获取新窗口的跳链
-  console.log('New window URL:', newPageUrl);
-
-  // 获取当前平台的 canvip 状态
-  const canShowVipString = sessionStorage.getItem('current_platform_canvip');
-  // 转换为布尔值，'1' 或 'true' 为 true，其他为 false
-  const canShowVip = canShowVipString === '1' || canShowVipString === 'true';
-
-  // 通过 ipcRenderer 通知主进程创建新窗口
-  ipcRenderer.send('create-new-window', newPageUrl, canShowVip);
+  loadURL(event.url);
 });
 
 // 添加返回功能

@@ -42,6 +42,85 @@
 
 * 本软件仅供学习参考，切勿商业使用。接口数据均来源于互联网。如有侵权，请联系删除。
 
+## 开发、运行与打包
+
+当前可发布版本为 Electron 应用，源码位于 `VipVideo/VipVideo-electron/`。项目中的 Xcode 工程为早期 macOS 实现；日常开发、运行和发布应使用 Electron 工程。
+
+### 技术栈与目录说明
+
+| 位置 | 用途 |
+| --- | --- |
+| `VipVideo/VipVideo-electron/main.js` | Electron 主进程：创建窗口、系统托盘、IPC、历史记录和用户配置读写。 |
+| `VipVideo/VipVideo-electron/renderer.js` | 主窗口界面逻辑：平台按钮、筛选、编辑、历史记录及窗口置顶控制。 |
+| `VipVideo/VipVideo-electron/index.html`、`styles.css` | 主窗口结构与样式。 |
+| `VipVideo/VipVideo-electron/vipWindow.js` | 处理网页打开的新窗口，并注入返回和 VIP 解析入口。 |
+| `VipVideo/VipVideo-electron/vlist.json` | 随应用发布的默认平台与解析线路配置。 |
+| `VipVideo/VipVideo-electron/package.json` | npm 脚本以及 electron-builder 打包配置。 |
+
+Electron 版本使用 `webview` 加载各平台网页；主进程与界面进程通过 IPC 交换历史记录、配置和窗口状态。发布包会把默认 `vlist.json` 一并带上；用户通过“编辑”保存的配置会写入系统的应用数据目录，不会覆盖源码中的默认文件。
+
+### 准备环境
+
+建议使用 Node.js 20 或更高版本，以及 npm。macOS 打包请在 macOS 上执行；Windows 安装包建议在 Windows 上构建；Linux 包建议在 Linux 上构建，以避免跨平台工具链、签名或安装器兼容性问题。
+
+```bash
+git clone https://github.com/iodefog/VipVideo.git
+cd VipVideo/VipVideo-electron
+npm install
+```
+
+如果只是在已有源码中更新依赖，进入同一目录后执行 `npm install` 即可。项目已经提交 `yarn.lock`，也可以统一使用 Yarn，但不要在同一工作副本中混用包管理器并提交两套锁文件。
+
+### 本地运行与调试
+
+Electron 的 JavaScript 不需要单独编译；安装依赖后直接启动即可。
+
+```bash
+cd VipVideo/VipVideo-electron
+npm start
+```
+
+修改 `main.js`、`renderer.js`、HTML 或 CSS 后，关闭并重新执行 `npm start` 以加载主进程改动。仅修改网页界面时也可在应用窗口中刷新，但涉及 IPC、窗口和托盘逻辑时必须重启整个应用。
+
+提交前可做基础语法检查：
+
+```bash
+node --check main.js
+node --check renderer.js
+node --check vipWindow.js
+git diff --check
+```
+
+### 打包发布
+
+所有打包命令均在 `VipVideo/VipVideo-electron/` 目录执行。它们使用 electron-builder，且带有 `--publish never`，因此只生成本地安装包，不会自动上传或发布。
+
+```bash
+# 按当前操作系统默认目标打包
+npm run build
+
+# macOS：同时生成 Intel（x64）与 Apple Silicon（arm64）ZIP 包
+npm run build:mac
+
+# Windows：生成 NSIS 安装程序与 portable 免安装程序（x64、ia32）
+npm run build:win
+
+# Linux：生成 AppImage、deb、rpm（x64）
+npm run build:linux
+```
+
+打包产物统一输出到 `VipVideo/VipVideo-electron/dist/`。macOS 配置目前生成 ZIP，Windows 生成安装程序和免安装程序，Linux 生成 AppImage、deb 与 rpm。应用图标与打包目标在 `package.json` 的 `build` 字段中配置；修改版本号时同步更新其中的 `version` 字段，再重新运行打包命令。
+
+当前配置未包含正式的代码签名和公证发布流程。macOS 用户首次打开未签名开发包时，可能需要在“隐私与安全性”中确认打开；面向外部用户正式发布前，应补充 Apple Developer 签名与公证配置。Windows 正式分发同样建议配置代码签名证书，减少 SmartScreen 提示。
+
+### 配置与功能开发注意事项
+
+- 默认平台和 VIP 解析线路维护在 `vlist.json`。发布后优先读取用户数据目录中的配置；开发环境中若源码配置文件更新较新，会优先使用源码配置，便于调试。
+- 新增主窗口功能时，界面事件放在 `renderer.js`，涉及系统窗口、文件或托盘能力的操作通过 IPC 交给 `main.js`。不要直接在渲染进程中调用主进程 API。
+- 网页发起的 `target="_blank"` 或 `window.open` 请求会被拦截，并复用当前主播放窗口加载链接；新增网页入口时应保持这一行为，不要创建新的 `BrowserWindow`。
+- “置顶”和“半透明置顶”由主进程设置窗口属性；半透明模式仅在窗口失焦时生效，重新获得焦点会恢复不透明。
+- `build.sh` 只是旧的 Yarn 启动辅助脚本；`build-electron-optimized.sh` 会删除 `dist/`、`node_modules/` 以及部分 Electron 资源，不适合作为常规打包流程。除非明确测试精简包体，否则请使用上述 `npm run build*` 命令。
+
 **GitHub:** [https://github.com/iodefog/VipVideo](https://github.com/iodefog/VipVideo)
 
 ---
