@@ -213,6 +213,33 @@ ipcRenderer.on('window-display-mode', (event, mode) => {
 
 ipcRenderer.send('get-window-display-mode');
 
+// 底部工具栏闲置后收起；移到窗口底边或操作工具栏时重新显示。
+const buttonContainer = document.getElementById('button-container');
+if (buttonContainer) {
+  let bottomBarHideTimer = null;
+  const showBottomBar = () => {
+    buttonContainer.classList.remove('is-auto-hidden');
+    if (bottomBarHideTimer) clearTimeout(bottomBarHideTimer);
+    bottomBarHideTimer = null;
+  };
+  const scheduleBottomBarHide = (delay = 1400) => {
+    if (bottomBarHideTimer) clearTimeout(bottomBarHideTimer);
+    bottomBarHideTimer = setTimeout(() => {
+      buttonContainer.classList.add('is-auto-hidden');
+      bottomBarHideTimer = null;
+    }, delay);
+  };
+
+  buttonContainer.addEventListener('mouseenter', showBottomBar);
+  buttonContainer.addEventListener('mouseleave', () => scheduleBottomBarHide(500));
+  buttonContainer.addEventListener('focusin', showBottomBar);
+  buttonContainer.addEventListener('focusout', () => scheduleBottomBarHide(800));
+  document.addEventListener('mousemove', (event) => {
+    if (event.clientY >= window.innerHeight - 8) showBottomBar();
+  });
+  scheduleBottomBarHide();
+}
+
 // 配置 webview（关键参数已在 index.html 静态设置）
 if (webview) {
   try { webview.setAttribute('allow', 'autoplay; encrypted-media'); } catch (e) { }

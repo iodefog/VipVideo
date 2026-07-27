@@ -1,13 +1,13 @@
 body {
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
   height: 100vh;
+  overflow: hidden;
 }
 
 #webview-container {
-  flex-grow: 1;
+  width: 100%;
+  height: 100vh;
 }
 
 #webview {
@@ -22,6 +22,23 @@ body {
   background-color: #f0f0f0;
   border-top: 1px solid #ccc;
   gap: 10px;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3000;
+  box-sizing: border-box;
+  transition: transform 220ms ease-out;
+  will-change: transform;
+}
+
+#button-container.is-auto-hidden {
+  transform: translateY(calc(100% - 5px));
+}
+
+#button-container.is-auto-hidden:hover,
+#button-container:focus-within {
+  transform: translateY(0);
 }
 
 #before-button,
