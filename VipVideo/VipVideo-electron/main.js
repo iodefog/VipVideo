@@ -19,6 +19,7 @@ function getVlistPath() {
 const defaultVlistPath = path.join(__dirname, 'vlist.json');
 // 用户数据目录中的vlist.json路径（用于保存和优先读取）
 const userVlistPath = getVlistPath();
+
 const CURRENT_VLIST_CONFIG_VERSION = 4;
 
 // 迁移旧版用户配置。v1.1.6 的默认配置误把 bilibili 标记为不支持 VIP，
