@@ -8,21 +8,25 @@
 </head>
 
 <body>
-  <div id="webview-container">
-    <webview id="webview" src="about:blank" allowpopups="true" allow="autoplay; encrypted-media"
-      webpreferences="contextIsolation=yes, nodeIntegration=no, sandbox=yes" partition="persist:netease"
-      preload="webview-preload.js"></webview>
+  <!-- 远程视频网站由主进程的 WebContentsView 承载；这里只保留本地工具栏。 -->
+  <div id="content-view-placeholder">
+    <div class="startup-status">
+      <strong>VipVideo</strong>
+      <span id="startup-status-text">正在连接视频网站…</span>
+    </div>
   </div>
   <div id="button-container">
     <button id="before-button"></button>
     <div id="platform-buttons"></div>
     <button id="more-button"></button>
+    <span id="loading-status" role="status" aria-live="polite"></span>
     <button id="custom-button">编辑</button>
     <button id="history-button">历史</button>
     <button id="topmost-button" type="button" aria-pressed="false" title="让电视窗口始终显示在其他窗口上方">置顶</button>
     <button id="transparent-topmost-button" type="button" aria-pressed="false" title="失去焦点后半透明显示，同时保持置顶">半透明置顶</button>
+    <button id="vip-route-button" type="button" title="为当前视频选择解析路线">VIP路线</button>
+    <button id="devtools-button" type="button" title="打开性能日志控制台">性能日志</button>
     <button id="update-button">升级</button>
-    <!-- <button id="devtools-button" title="切换 WebView DevTools (Ctrl/Cmd+Shift+I 或 F12)">DevTools</button> -->
   </div>
   <script src="renderer.js"></script>
 </body>

@@ -5,14 +5,28 @@ body {
   overflow: hidden;
 }
 
-#webview-container {
+#content-view-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 50px);
+  color: #667085;
+  background: radial-gradient(circle at 50% 40%, #f4f8ff 0, #fff 48%);
 }
 
-#webview {
-  width: 100%;
-  height: 100%;
+.startup-status {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.startup-status strong {
+  color: #1d2939;
+  font-size: 22px;
+  letter-spacing: 0.04em;
 }
 
 #button-container {
@@ -28,12 +42,11 @@ body {
   left: 0;
   z-index: 3000;
   box-sizing: border-box;
-  transition: transform 220ms ease-out;
-  will-change: transform;
+  height: 50px;
 }
 
 #button-container.is-auto-hidden {
-  transform: translateY(calc(100% - 5px));
+  transform: none;
 }
 
 #button-container.is-auto-hidden:hover,
@@ -58,6 +71,7 @@ body {
 #history-button,
 #topmost-button,
 #transparent-topmost-button,
+#vip-route-button,
 #devtools-button {
   flex-shrink: 0;
 }
@@ -66,14 +80,53 @@ body {
   margin-right: 10px;
   padding: 5px 10px;
   white-space: nowrap;
+  transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+
+.platform-button.is-active {
+  color: #fff;
+  background-color: #1677ff;
+  border-color: #1677ff;
+}
+
+#loading-status {
+  flex: 0 0 132px;
+  overflow: hidden;
+  color: #1677ff;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  text-align: center;
+  text-overflow: ellipsis;
+  transition: opacity 120ms ease;
+  white-space: nowrap;
+}
+
+#loading-status.is-visible {
+  opacity: 1;
+}
+
+#loading-status[data-tone='success'] {
+  color: #138a46;
+}
+
+#loading-status[data-tone='error'] {
+  color: #cf1322;
 }
 
 #custom-button,
 #history-button,
 #topmost-button,
 #transparent-topmost-button,
+#vip-route-button,
 #devtools-button {
   padding: 5px 10px;
+}
+
+#vip-route-button {
+  color: #fff;
+  background: #ff4d4f;
+  border-color: #ff4d4f;
 }
 
 #topmost-button.is-active,

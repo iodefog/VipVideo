@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "start:direct": "VIPVIDEO_FORCE_DIRECT=1 electron .",
     "build": "electron-builder --publish never",
     "build:mac": "electron-builder --mac --x64 --arm64 --publish never",
     "build:win": "electron-builder --win --publish never",
