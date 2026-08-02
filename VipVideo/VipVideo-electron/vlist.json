@@ -1,4 +1,5 @@
 {
+    "configVersion": 4,
     "categorylist": [
         {
             "id": "all",
@@ -71,7 +72,7 @@
         },
         {
             "name": "bilibili",
-            "canvip": 0,
+            "canvip": 1,
             "url": "https://www.bilibili.com/",
             "category": "video"
         },

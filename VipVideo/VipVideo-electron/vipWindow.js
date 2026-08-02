@@ -8,7 +8,8 @@ function injectVipUI(child, vlistArray, canShowVip) {
   const css = `
     #back-button { position: fixed; top: 70px; left: 30px; z-index: 2147483647; width: 44px; height: 44px; border-radius: 22px; background: #1890ff; color: #fff; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: block; text-align: center; line-height: 44px; font-size: 18px; font-weight: bold; user-select: none; }
     #back-button:hover { background: #40a9ff; }
-    #vip-drag-btn { position: fixed; top: 70px; right: 30px; z-index: 2147483647; width: 44px; height: 44px; border-radius: 22px; background: #ff4d4f; color: #fff; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; user-select: none; }
+    #vip-drag-btn { position: fixed; top: 70px; right: 0; z-index: 2147483647; width: 44px; height: 44px; border-radius: 22px; background: #ff4d4f; color: #fff; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; user-select: none; transition: transform 220ms ease-out, background-color 150ms ease; }
+    #vip-drag-btn.vip-side-hidden { transform: translateX(34px); }
     #vip-drag-btn:hover { background: #f5222d; }
     #vip-popover { position: fixed; top: 120px; right: 30px; z-index: 2147483647; width: 160px; max-height: 360px; overflow: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.2); padding: 8px 0; display: none; }
     .vip-item { padding: 6px 10px; cursor: pointer; font-size: 12px; width: 150px; color: #333; white-space: normal; word-wrap: break-word; overflow: visible; border-bottom: 1px solid #eee; }
@@ -109,13 +110,13 @@ function injectVipUI(child, vlistArray, canShowVip) {
             el.className = 'vip-item';
             el.textContent = (it && it.name) ? it.name : ('解析' + (idx + 1));
             el.addEventListener('click', function() {
+              pop.style.display = 'none';
               var now = location.href || '';
               // 优先使用保留的原始 URL，确保多次解析仍基于原始内容地址
               var baseCandidate = window.__VIP_ORIGINAL__ || now;
               var base = isParser(baseCandidate) ? extract(baseCandidate) : baseCandidate;
               var target = (it && it.url) ? ('' + it.url + base) : base;
               location.href = target;
-              pop.style.display = 'none';
             });
             frag.appendChild(el);
           });
@@ -135,6 +136,43 @@ function injectVipUI(child, vlistArray, canShowVip) {
             pop.style.display = 'none';
           }
         });
+
+        var hidePopoverTimer = null;
+        function cancelPopoverHide() {
+          if (hidePopoverTimer) clearTimeout(hidePopoverTimer);
+          hidePopoverTimer = null;
+        }
+        function schedulePopoverHide() {
+          cancelPopoverHide();
+          hidePopoverTimer = setTimeout(function() {
+            pop.style.display = 'none';
+            hidePopoverTimer = null;
+          }, 500);
+        }
+        btn.addEventListener('mouseenter', cancelPopoverHide);
+        btn.addEventListener('mouseleave', schedulePopoverHide);
+        pop.addEventListener('mouseenter', cancelPopoverHide);
+        pop.addEventListener('mouseleave', schedulePopoverHide);
+
+        var vipPeekTimer = null;
+        function showVipButton() {
+          if (vipPeekTimer) clearTimeout(vipPeekTimer);
+          vipPeekTimer = null;
+          btn.classList.remove('vip-side-hidden');
+        }
+        function scheduleVipButtonHide(delay) {
+          if (vipPeekTimer) clearTimeout(vipPeekTimer);
+          vipPeekTimer = setTimeout(function() {
+            if (pop.style.display !== 'block') btn.classList.add('vip-side-hidden');
+            vipPeekTimer = null;
+          }, typeof delay === 'number' ? delay : 1200);
+        }
+        btn.addEventListener('mouseenter', showVipButton);
+        btn.addEventListener('mouseleave', function() { scheduleVipButtonHide(500); });
+        btn.addEventListener('click', showVipButton);
+        pop.addEventListener('mouseenter', showVipButton);
+        pop.addEventListener('mouseleave', function() { scheduleVipButtonHide(500); });
+        scheduleVipButtonHide(1200);
       }
     } catch (e) { console.warn('VIP inject failed:', e); }
   })();`;

@@ -12,7 +12,7 @@
     }
   }
 
-  // Try early and retry a few times as the site bootstraps
+  // 页面启动阶段做少量重试，避免旧播放器脚本初始化顺序不同。
   defineSafeTopPlayer();
   window.addEventListener('DOMContentLoaded', defineSafeTopPlayer);
   window.addEventListener('load', defineSafeTopPlayer);
@@ -20,8 +20,7 @@
   var timer = setInterval(function () {
     tries++;
     defineSafeTopPlayer();
-    if (tries > 20) clearInterval(timer);
+    if (tries > 6) clearInterval(timer);
   }, 500);
 })();
-
 

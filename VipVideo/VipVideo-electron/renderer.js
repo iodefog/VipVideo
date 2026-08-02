@@ -1,5 +1,4 @@
 const { ipcRenderer, shell } = require('electron');
-const path = require('path');
 const packageJson = require('./package.json');
 const appVersion = packageJson.version;
 const updateUrl = 'https://pan.baidu.com/s/1wcpReZs2-UG71g1idPyPmA?pwd=nkye';
@@ -8,97 +7,281 @@ console.log('[renderer] start');
 let vlistData = null;
 // 添加一个变量来控制是否允许显示返回按钮
 let allowShowBackButton = true;
-// 当前选中的分类
-// 当前选中的分类，从 localStorage 读取，默认为 'all'
-let currentCategory = localStorage.getItem('lastSelectedCategory') || 'all';
+let currentPlatformCanShowVip = sessionStorage.getItem('current_platform_canvip') === '1';
+let lastPlayableVideoUrl = sessionStorage.getItem('last_playable_video_url') || '';
+let contentState = { url: '', title: '', canGoBack: false, isLoading: false, loadFailed: false, platformKey: '', pendingPlatformKey: '', warmViews: 0 };
+let navigationSequence = 0;
+let loadingStatusTimer = null;
+let lastCacheSwitchAt = 0;
 
-// 分类列表，将从 vlistData 中加载
-let categoryList = [
-  { id: 'all', name: 'All' }
-];
+function platformSupportsVip(platform) {
+  return Boolean(platform && (platform.canvip === 1 || platform.canvip === true));
+}
+
+function isVisibleVideoPlatform(platform) {
+  return Boolean(platform && platform.category === 'video' && platformSupportsVip(platform));
+}
+
+function getVisibleVideoPlatforms() {
+  return vlistData && Array.isArray(vlistData.platformlist)
+    ? vlistData.platformlist.filter(isVisibleVideoPlatform)
+    : [];
+}
+
+function setCurrentPlatformVip(platform) {
+  currentPlatformCanShowVip = platformSupportsVip(platform);
+  sessionStorage.setItem('current_platform_canvip', currentPlatformCanShowVip ? '1' : '0');
+
+  const vipButton = document.getElementById('vip-route-button');
+  if (vipButton) {
+    vipButton.style.display = currentPlatformCanShowVip ? '' : 'none';
+  }
+}
+
+function baseDomain(hostname) {
+  const parts = String(hostname || '').toLowerCase().split('.').filter(Boolean);
+  return parts.length > 1 ? parts.slice(-2).join('.') : parts[0] || '';
+}
+
+function findPlatformByUrl(url) {
+  if (!url || !vlistData || !Array.isArray(vlistData.platformlist)) return null;
+  const candidates = [url];
+  try {
+    const parsed = new URL(url);
+    for (const value of parsed.searchParams.values()) {
+      try {
+        const decoded = decodeURIComponent(value || '');
+        if (/^https?:\/\//i.test(decoded)) candidates.push(decoded);
+      } catch (_) { }
+    }
+  } catch (_) { }
+
+  for (const candidate of candidates) {
+    try {
+      const targetDomain = baseDomain(new URL(candidate).hostname);
+      if (!targetDomain) continue;
+      const platform = vlistData.platformlist.find((item) => {
+        try {
+          return baseDomain(new URL(item.url).hostname) === targetDomain;
+        } catch (_) {
+          return false;
+        }
+      });
+      if (platform) return platform;
+    } catch (_) { }
+  }
+  return null;
+}
+
+function isLikelyPlayableVideoUrl(url) {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.toLowerCase();
+    const path = parsed.pathname;
+    if (host.endsWith('bilibili.com')) return /^\/(video|bangumi\/play)\//.test(path);
+    if (host.endsWith('qq.com')) return /^\/x\/(cover|page)\//.test(path);
+    if (host.endsWith('iqiyi.com')) return /^\/(v_|w_|a_)/.test(path);
+    if (host.endsWith('mgtv.com')) return /^\/(b|l)\//.test(path);
+    if (host.endsWith('youku.com')) return path.includes('/v_show/');
+  } catch (_) { }
+  return false;
+}
+
+function rememberPlayableVideoUrl(url) {
+  if (!isLikelyPlayableVideoUrl(url)) return;
+  lastPlayableVideoUrl = url;
+  sessionStorage.setItem('last_playable_video_url', url);
+}
+
+function clearRememberedVideoUrl() {
+  lastPlayableVideoUrl = '';
+  sessionStorage.removeItem('last_playable_video_url');
+}
+
+function isAllowedVideoWindowUrl(url) {
+  try {
+    const targetDomain = baseDomain(new URL(url).hostname);
+    return getVisibleVideoPlatforms().some((platform) => (
+      baseDomain(new URL(platform.url).hostname) === targetDomain
+    ));
+  } catch (_) {
+    return false;
+  }
+}
+
+function syncVipStateForUrl(url) {
+  const platform = findPlatformByUrl(url);
+  // 解析线路或站内外链通常无法匹配平台，此时保留用户当前选择的平台状态。
+  if (platform) setCurrentPlatformVip(platform);
+}
 
 // 通过IPC从主进程获取vlist数据
 ipcRenderer.on('vlist-data', (event, data) => {
   vlistData = data;
   console.log('vlistData received from main process:', vlistData);
-  // 暴露给新开的窗口通过 window.opener.vlistData 访问
-  try { window.vlistData = vlistData; } catch (_) { }
+  const visiblePlatforms = getVisibleVideoPlatforms();
 
-  // 更新分类列表
-  if (vlistData && vlistData.categorylist) {
-    categoryList = vlistData.categorylist;
-    // 确保有 all 选项，如果没有则添加
-    if (!categoryList.find(c => c.id === 'all')) {
-      categoryList.unshift({ id: 'all', name: 'All' });
-    }
-  } else {
-    // 默认分类
-    categoryList = [
-      { "id": "all", "name": "All" },
-      { "id": "tv", "name": "电视" },
-      { "id": "video", "name": "视频" },
-      { "id": "music", "name": "音乐" },
-      { "id": "novel", "name": "小说" },
-      { "id": "comic", "name": "漫画" },
-      { "id": "other", "name": "其他" }
-    ];
-  }
-
-  // 更新筛选按钮当前显示的文字
-  updateFilterButtonText();
+  const rememberedUrl = localStorage.getItem('lastUrl');
+  const rememberedPlatform = findPlatformByUrl(rememberedUrl);
+  const canRestoreRememberedUrl = isVisibleVideoPlatform(rememberedPlatform);
+  const initialPlatform = canRestoreRememberedUrl ? rememberedPlatform : visiblePlatforms[0];
+  if (initialPlatform) setCurrentPlatformVip(initialPlatform);
 
   // 如果已经加载了平台按钮容器，重新创建平台按钮
   // 如果已经加载了平台按钮容器，重新创建平台按钮
   renderPlatformButtons();
 
-  // 如果有平台数据且页面为空，加载上次访问的页面或第一个平台
-  if (vlistData && vlistData.platformlist && vlistData.platformlist.length > 0) {
-    const webview = document.getElementById('webview');
-    // 只有当 webview src 为空或者 about:blank 时才自动加载
-    if (webview && (!webview.src || webview.src === 'about:blank')) {
-      const lastUrl = localStorage.getItem('lastUrl');
-      if (lastUrl) {
-        console.log("Loading last visited URL:", lastUrl);
-        setTimeout(() => {
-          loadURL(lastUrl);
-        }, 100);
-      } else {
-        const firstPlatform = vlistData.platformlist[0];
-        console.log("Loading first platform:", firstPlatform);
-        setTimeout(() => {
-          loadURL(firstPlatform.url, firstPlatform.name);
-        }, 100);
-      }
+  // WebContentsView 为空时，恢复上次页面或打开第一个平台。
+  if (visiblePlatforms.length > 0 && !/^https?:\/\//i.test(contentState.url || '')) {
+    if (canRestoreRememberedUrl) {
+      console.log('Loading last visited URL:', rememberedUrl);
+      setTimeout(() => loadURL(rememberedUrl, rememberedPlatform && rememberedPlatform.name, 'startup-restore'), 100);
+    } else if (initialPlatform) {
+      console.log('Loading first visible video platform:', initialPlatform);
+      setTimeout(() => loadURL(initialPlatform.url, initialPlatform.name, 'startup-default'), 100);
     }
-  }
-
-  // 重新渲染VIP解析列表
-  try {
-    renderVipList();
-  } catch (e) {
-    console.error('Failed to render VIP list:', e);
   }
 });
 
 // 请求vlist数据
 ipcRenderer.send('get-vlist-data');
 
-const webview = document.getElementById('webview');
 const platformButtons = document.getElementById('platform-buttons');
 const customButton = document.getElementById('custom-button');
 const historyButton = document.getElementById('history-button');
 const devtoolsButton = document.getElementById('devtools-button');
+const topmostButton = document.getElementById('topmost-button');
+const transparentTopmostButton = document.getElementById('transparent-topmost-button');
+const vipRouteButton = document.getElementById('vip-route-button');
+const loadingStatus = document.getElementById('loading-status');
+const startupStatusText = document.getElementById('startup-status-text');
 
 // 检查元素是否存在
-if (!webview) console.error('Webview element not found');
 if (!platformButtons) console.error('Platform buttons container not found');
 if (!customButton) console.error('Custom button not found');
 if (!historyButton) console.error('History button not found');
 if (!devtoolsButton) console.error('DevTools button not found');
+if (!topmostButton) console.error('Topmost button not found');
+if (!transparentTopmostButton) console.error('Transparent topmost button not found');
+if (!vipRouteButton) console.error('VIP route button not found');
+if (!loadingStatus) console.error('Loading status element not found');
 
-// 配置 webview（关键参数已在 index.html 静态设置）
-if (webview) {
-  try { webview.setAttribute('allow', 'autoplay; encrypted-media'); } catch (e) { }
+function setLoadingStatus(text, tone = 'loading', autoHideMs = 0) {
+  if (!loadingStatus) return;
+  clearTimeout(loadingStatusTimer);
+  loadingStatusTimer = null;
+  loadingStatus.textContent = text;
+  loadingStatus.dataset.tone = tone;
+  loadingStatus.classList.toggle('is-visible', Boolean(text));
+  if (text && autoHideMs > 0) {
+    loadingStatusTimer = setTimeout(() => {
+      loadingStatus.textContent = '';
+      loadingStatus.classList.remove('is-visible');
+      loadingStatusTimer = null;
+    }, autoHideMs);
+  }
+}
+
+function updateActivePlatformButton(platformKey = contentState.platformKey) {
+  document.querySelectorAll('.platform-button').forEach((button) => {
+    const isActive = Boolean(platformKey) && button.dataset.platformKey === platformKey;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function updateLoadingFeedback(nextState = {}) {
+  updateActivePlatformButton(
+    nextState.pendingPlatformKey || contentState.pendingPlatformKey
+      || nextState.platformKey || contentState.platformKey
+  );
+  const warmViews = Number(nextState.warmViews ?? contentState.warmViews) || 0;
+  const cacheLabel = warmViews > 0 ? ` · ${warmViews}页` : '';
+  const retryAttempt = Number(nextState.retryAttempt ?? contentState.retryAttempt) || 0;
+  const maxRetryAttempts = Number(nextState.maxRetryAttempts ?? contentState.maxRetryAttempts) || 2;
+
+  if (nextState.isLoading === true && retryAttempt > 0) {
+    setLoadingStatus(`网络波动 · 自动重试 ${retryAttempt}/${maxRetryAttempts}`, 'loading');
+  } else if (nextState.pendingLoadFailed === true) {
+    setLoadingStatus('打开失败 · 已保留当前页', 'error', 4000);
+  } else if (nextState.loadFailed === true) {
+    setLoadingStatus('加载失败', 'error', 3000);
+  } else if (nextState.interactiveReady === true) {
+    setLoadingStatus('已打开', 'success', 1800);
+  } else if (nextState.cacheSwitch === true) {
+    lastCacheSwitchAt = Date.now();
+    setLoadingStatus(`已秒开${cacheLabel}`, 'success', 2000);
+  } else if (nextState.isLoading === true) {
+    // 冻结页恢复 active 时 Chromium 可能补发 did-start-loading；页面已经可见，
+    // 不应把刚显示的“已秒开”误覆盖为“加载中”。
+    const hasPendingPlatform = Boolean(nextState.pendingPlatformKey || contentState.pendingPlatformKey);
+    if (!hasPendingPlatform && Date.now() - lastCacheSwitchAt < 2000) return;
+    const slowLoading = nextState.slowLoading ?? contentState.slowLoading;
+    setLoadingStatus(slowLoading ? '网络较慢 · 继续加载…' : '正在打开…', 'loading');
+  } else if (nextState.isLoading === false) {
+    setLoadingStatus(`已就绪${cacheLabel}`, 'success', 1200);
+  }
+}
+
+function updateWindowDisplayModeButtons(mode) {
+  if (!topmostButton || !transparentTopmostButton) return;
+
+  const isTopmost = mode === 'topmost';
+  const isTransparentTopmost = mode === 'transparent-topmost';
+  topmostButton.classList.toggle('is-active', isTopmost);
+  transparentTopmostButton.classList.toggle('is-active', isTransparentTopmost);
+  topmostButton.setAttribute('aria-pressed', String(isTopmost));
+  transparentTopmostButton.setAttribute('aria-pressed', String(isTransparentTopmost));
+}
+
+function toggleWindowDisplayMode(mode, button) {
+  const nextMode = button.classList.contains('is-active') ? 'normal' : mode;
+  ipcRenderer.send('set-window-display-mode', nextMode);
+}
+
+if (topmostButton) {
+  topmostButton.addEventListener('click', () => {
+    toggleWindowDisplayMode('topmost', topmostButton);
+  });
+}
+
+if (transparentTopmostButton) {
+  transparentTopmostButton.addEventListener('click', () => {
+    toggleWindowDisplayMode('transparent-topmost', transparentTopmostButton);
+  });
+}
+
+ipcRenderer.on('window-display-mode', (event, mode) => {
+  updateWindowDisplayModeButtons(mode);
+});
+
+ipcRenderer.send('get-window-display-mode');
+
+// 底部工具栏闲置后收起；移到窗口底边或操作工具栏时重新显示。
+const buttonContainer = document.getElementById('button-container');
+if (buttonContainer) {
+  let bottomBarHideTimer = null;
+  const showBottomBar = () => {
+    buttonContainer.classList.remove('is-auto-hidden');
+    if (bottomBarHideTimer) clearTimeout(bottomBarHideTimer);
+    bottomBarHideTimer = null;
+  };
+  const scheduleBottomBarHide = (delay = 1400) => {
+    if (bottomBarHideTimer) clearTimeout(bottomBarHideTimer);
+    bottomBarHideTimer = setTimeout(() => {
+      buttonContainer.classList.add('is-auto-hidden');
+      bottomBarHideTimer = null;
+    }, delay);
+  };
+
+  buttonContainer.addEventListener('mouseenter', showBottomBar);
+  buttonContainer.addEventListener('mouseleave', () => scheduleBottomBarHide(500));
+  buttonContainer.addEventListener('focusin', showBottomBar);
+  buttonContainer.addEventListener('focusout', () => scheduleBottomBarHide(800));
+  document.addEventListener('mousemove', (event) => {
+    if (event.clientY >= window.innerHeight - 8) showBottomBar();
+  });
+  scheduleBottomBarHide();
 }
 
 // 创建回退按钮
@@ -106,38 +289,27 @@ const backButton = document.createElement('button');
 backButton.id = 'back-button';
 backButton.innerHTML = '←';
 backButton.style.display = 'none';
-document.body.appendChild(backButton);
+if (buttonContainer) {
+  buttonContainer.insertBefore(backButton, buttonContainer.firstChild);
+}
 
 // 添加回退按钮样式
 const style = document.createElement('style');
 style.textContent = `
   #back-button {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
+    flex-shrink: 0;
+    min-width: 34px;
+    height: 28px;
+    font-size: 18px;
     cursor: pointer;
-    transition: opacity 0.3s;
     display: none;
-  }
-  #back-button:hover {
-    background: rgba(0, 0, 0, 0.7);
   }
 `;
 document.head.appendChild(style);
 
 // 回退按钮功能
 backButton.addEventListener('click', () => {
-  if (webview.canGoBack()) {
-    webview.goBack();
-  }
+  ipcRenderer.invoke('content-go-back').catch((error) => console.error('[renderer] 返回失败:', error));
 });
 
 // 更新返回按钮显示状态
@@ -146,101 +318,87 @@ function updateBackButton() {
     backButton.style.display = 'none';
     return;
   }
-  const canGoBack = webview.canGoBack();
-  backButton.style.display = canGoBack ? 'block' : 'none';
+  backButton.style.display = contentState.canGoBack ? 'block' : 'none';
 }
 
-// 监听页面标题更新
-webview.addEventListener('page-title-updated', (event) => {
-  // 更新主窗口标题，带上版本号
-  document.title = `${event.title}`;
-});
+// 接收 WebContentsView 导航状态，同时记录历史记录
+let historySaveTimer = null;
+let lastSavedHistoryUrl = '';
 
-// 修改 webview 导航事件监听，同时记录历史记录
-webview.addEventListener('did-navigate', (event) => {
-  console.log('did-navigate', event.url);
-  allowShowBackButton = true;
-  updateBackButton();
-
-  // 记录内部导航到历史记录
-  const url = event.url;
-  // 忽略无效协议和 history.html 自身
-  if (url && (url.startsWith('http') || url.startsWith('https')) && !url.includes('history.html')) {
-    // 延迟获取标题，确保页面 title 已更新
-    setTimeout(() => {
-      const webviewTitle = webview.getTitle() || 'Unknown Page';
-      console.log('[renderer] did-navigate 保存历史记录:', { url, title: webviewTitle });
-      ipcRenderer.send('save-history', {
-        url,
-        title: webviewTitle
-      });
-    }, 500);
-  }
-});
-
-webview.addEventListener('did-navigate-in-page', (event) => {
-  console.log('did-navigate-in-page', event.url);
-  allowShowBackButton = true;
-  updateBackButton();
-
-  // 记录页面内导航到历史记录
-  const url = event.url;
-  if (url && (url.startsWith('http') || url.startsWith('https')) && !url.includes('history.html')) {
-    // 延迟获取标题
-    setTimeout(() => {
-      const webviewTitle = webview.getTitle() || 'Unknown Page';
-      console.log('[renderer] did-navigate-in-page 保存历史记录:', { url, title: webviewTitle });
-      ipcRenderer.send('save-history', {
-        url,
-        title: webviewTitle
-      });
-    }, 500);
-  }
-});
-
-// 添加手势支持
-let touchStartX = 0;
-let touchEndX = 0;
-
-webview.addEventListener('touchstart', (e) => {
-  console.log('touchstart');
-  touchStartX = e.touches[0].clientX;
-});
-
-webview.addEventListener('touchend', (e) => {
-  console.log('touchend');
-  touchEndX = e.changedTouches[0].clientX;
-  const swipeDistance = touchEndX - touchStartX;
-
-  if (swipeDistance > 50 && webview.canGoBack()) {
-    webview.goBack();
-  }
-});
-
-// 修改 loadURL 函数
-function loadURL(url, title) {
-  console.log("lihongli02, loadURL", url)
-
-  if (!webview) {
-    console.error('Webview not available');
-    return;
-  }
-  try {
-    // 保留allowShowBackButton的当前值，不总是重置为false
-    if (backButton) {
-      backButton.style.display = allowShowBackButton ? 'block' : 'none';
-    }
-
-    console.log('[renderer] 准备加载URL:', url);
-    console.log('[renderer] 当前allowShowBackButton状态:', allowShowBackButton);
-
-    // 加载URL并添加错误处理
-    webview.loadURL(url).then(() => {
-      console.log('[renderer] URL加载成功:', url);
-    }).catch(err => {
-      console.error('[renderer] Failed to load URL:', err);
-      console.error('[renderer] Error details:', err.code, err.errno);
+function scheduleHistorySave(url) {
+  if (!/^https?:\/\//i.test(url || '') || url.includes('history.html')) return;
+  clearTimeout(historySaveTimer);
+  historySaveTimer = setTimeout(() => {
+    if (url === lastSavedHistoryUrl) return;
+    lastSavedHistoryUrl = url;
+    ipcRenderer.send('save-history', {
+      url,
+      title: contentState.title || 'Unknown Page'
     });
+  }, 700);
+}
+
+function handleContentNavigation(url) {
+  allowShowBackButton = true;
+  updateBackButton();
+  syncVipStateForUrl(url);
+  rememberPlayableVideoUrl(url);
+  scheduleHistorySave(url);
+}
+
+ipcRenderer.on('content-state', (_event, nextState) => {
+  const previousUrl = contentState.url;
+  contentState = { ...contentState, ...nextState };
+  updateLoadingFeedback(nextState);
+  if (startupStatusText && (nextState.isLoading === true || nextState.pendingPlatformKey)) {
+    startupStatusText.textContent = nextState.slowLoading
+      ? '网络较慢，正在继续尝试…'
+      : '正在连接视频网站…';
+  }
+  if (contentState.title) document.title = contentState.title;
+  updateBackButton();
+  if (contentState.url && contentState.url !== previousUrl) {
+    handleContentNavigation(contentState.url);
+  }
+});
+
+ipcRenderer.on('content-load-error', (_event, error) => {
+  console.error('[renderer] 页面加载失败:', error);
+  setLoadingStatus('加载失败', 'error', 3000);
+  if (startupStatusText) startupStatusText.textContent = '连接失败，请切换平台重试';
+});
+
+ipcRenderer.on('performance-log', (_event, entry) => {
+  console.log(entry.line, entry.details || {});
+});
+
+ipcRenderer.invoke('content-get-state').then((state) => {
+  contentState = { ...contentState, ...state };
+  updateLoadingFeedback(state);
+  updateBackButton();
+}).catch((error) => console.error('[renderer] 获取内容状态失败:', error));
+
+// 请求主进程中的 WebContentsView 加载 URL，并记录点击到 IPC 往返耗时。
+function loadURL(url, title, source = 'toolbar') {
+  try {
+    const requestId = `ui-${Date.now()}-${++navigationSequence}`;
+    const rendererSentAt = Date.now();
+    const rendererStart = performance.now();
+    console.log(`[PERF][NAV ${requestId}] +0ms UI_NAVIGATE`, { source, url });
+    setLoadingStatus('切换中…', 'loading');
+
+    ipcRenderer.invoke('content-navigate', { url, title, source, requestId, rendererSentAt })
+      .then((result) => {
+        console.log(`[PERF][NAV ${requestId}] +${(performance.now() - rendererStart).toFixed(1)}ms IPC_ROUND_TRIP`, {
+          ok: result.ok,
+          mainQueueMs: result.mainReceivedAt - rendererSentAt,
+          finalUrl: result.state && result.state.url
+        });
+      })
+      .catch((error) => {
+        console.error(`[PERF][NAV ${requestId}] NAVIGATION_REJECTED`, error);
+        setLoadingStatus('切换失败', 'error', 3000);
+      });
 
     // 保存最后访问的 URL
     localStorage.setItem('lastUrl', url);
@@ -251,17 +409,6 @@ function loadURL(url, title) {
       document.title = `VipVideo`;
     }
 
-    // 只有当URL不是history.html时才保存历史记录，避免重复保存
-    // 注意：这里不再保存历史记录，改为在 page-title-updated 或 did-navigate 事件中保存
-    // 以确保记录的是最终加载的 URL 和标题
-    /*
-    if (!url.includes('history.html')) {
-      // 获取webview中页面的实际标题，如果参数中没有提供
-      const webviewTitle = title || webview.getWebContents().getTitle() || 'Unknown Page';
-      console.log('[renderer] 保存历史记录:', { url, title: webviewTitle });
-      ipcRenderer.send('save-history', { url, title: webviewTitle });
-    }
-    */
   } catch (error) {
     console.error('[renderer] Error loading URL:', error);
   }
@@ -276,27 +423,15 @@ function renderPlatformButtons() {
   // 清空现有按钮
   platformButtons.innerHTML = '';
 
-  // 获取有效的分类ID集合
-  const validCategoryIds = new Set(categoryList.map(c => c.id));
-
-  // 筛选列表
-  const list = vlistData.platformlist.filter(item => {
-    if (currentCategory === 'all') return true;
-
-    // 如果 item 没有 category 或者 category 不在定义的列表中，归为 'other'
-    let itemCategory = item.category;
-    if (!itemCategory || !validCategoryIds.has(itemCategory)) {
-      itemCategory = 'other';
-    }
-
-    return itemCategory === currentCategory;
-  });
+  const list = getVisibleVideoPlatforms();
 
   // 重新创建按钮
   list.forEach(platform => {
     const button = createButton(platform);
     platformButtons.appendChild(button);
   });
+
+  updateActivePlatformButton();
 
   // 更新滚动按钮状态
   updateScrollButtonVisibility();
@@ -307,66 +442,21 @@ function createButton(platform) {
   const button = document.createElement('button');
   button.textContent = platform.name;
   button.classList.add('platform-button');
+  button.dataset.platformKey = platformKeyForUrl(platform.url);
+  button.setAttribute('aria-pressed', 'false');
   button.addEventListener('click', () => {
     allowShowBackButton = false;
     backButton.style.display = 'none';
-    // 传递 canvip 参数
-    const canVip = platform.canvip === 1; // 确保是布尔值或数字1
-    // 需要通知主进程该窗口是否支持VIP功能，以便控制VIP按钮显示
-    // 目前 loadURL 函数尚未支持传递额外参数给 main process 
-    // 但我们可以通过 vlistData 全局对象在 vipWindow 中判断，或者修改 create-new-window IPC
-
-    // 这里我们稍微 hack 一下，将 canvip 信息暂存，供 new-window 事件使用
-    // 或者直接修改 ipcRenderer.send 的逻辑。
-    // 但由于 loadURL 只是 webview.loadURL，最终触发 new-window 是在页面内部跳转时？
-    // 不，点击按钮是直接加载 URL。
-
-    // 如果是点击下方按钮加载的页面，是在当前 webview 加载
-    // 只有 webview 内部点击链接导致的新窗口才走 create-new-window
-    // 所以我们需要通知 current webview 所在环境关于 VIP 按钮的状态？
-    // 描述说：屏幕上的 “VIP” 按钮，根据数据中的 canvip 来显示。
-    // 这通常是指新打开的独立 VIP 窗口中的按钮。
-
-    // 修改 loadURL 逻辑，传递 title 和 potential vip status?
-    // 当前架构下，首页是 webview，点击按钮直接在当前 webview 加载。
-    // VIP 按钮是在 vipWindow.js 注入的，那是针对“新窗口”的。
-    // 如果用户是在主界面 webview 浏览，是否有 VIP 按钮？
-    // 主界面 renderer.js 没有注入 VIP 按钮逻辑。
-    // 既然需求提到“屏幕上的 VIP 按钮”，可能是指 vipWindow 中的，或者主界面也要加？
-    // 假设是指 vipWindow (因为 vipWindow.js 中有注入 VIP UI 的逻辑)
-    // 那么只有当从 webview 打开新窗口时才涉及。
-
-    // 另一种可能是主界面 webview 也需要注入 VIP 按钮？
-    // 目前 index.html 没有 VIP 按钮，renderer.js 也没注入。
-    // 只有 vipWindow.js 有 injectVipUI。
-    // 如果用户意图是“在主界面点击平台，进入 webview 播放，此时要有 VIP 按钮”
-    // 那么我们需要在 renderer.js 中也实现类似的注入逻辑，或者在 webview preload 中处理。
-    // 但鉴于 vipWindow.js 的存在，通常是 popups 才有。
-
-    // 无论如何，我们先保持 loadURL 调用。
+    clearRememberedVideoUrl();
+    setCurrentPlatformVip(platform);
+    updateActivePlatformButton(button.dataset.platformKey);
     loadURL(platform.url, platform.name);
-
-    // 记录当前平台的 canvip 状态
-    const isVip = platform.canvip === 1;
-    sessionStorage.setItem('current_platform_canvip', isVip ? '1' : '0');
-
-    // 更新主界面 VIP 按钮显隐
-    const mainVipBtn = document.getElementById('vip-drag-btn');
-    if (mainVipBtn) {
-      mainVipBtn.style.display = isVip ? 'flex' : 'none';
-    }
   });
   return button;
 }
 
-// 更新 Filter 按钮文字
-function updateFilterButtonText() {
-  const filterButton = document.getElementById('filter-button');
-  if (filterButton) {
-    const category = categoryList.find(c => c.id === currentCategory);
-    const label = category ? category.name : 'All';
-    filterButton.textContent = `筛选: ${label}`;
-  }
+function platformKeyForUrl(url) {
+  try { return baseDomain(new URL(url).hostname); } catch (_) { return ''; }
 }
 
 // 创建可重用的滚动函数
@@ -533,29 +623,6 @@ const createEditDialogStyle = () => {
       margin-top: 10px;
       font-size: 12px;
     }
-    #filter-popover {
-      display: none;
-      position: absolute;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      z-index: 1000;
-      min-width: 100px;
-    }
-    .filter-option {
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 14px;
-      color: #333;
-    }
-    .filter-option:hover {
-      background: #f0f0f0;
-    }
-    .filter-option.active {
-      color: #1890ff;
-      background: #e6f7ff;
-    }
   `;
   document.head.appendChild(style);
 };
@@ -609,6 +676,7 @@ const createEditDialog = () => {
 
 // 打开编辑弹框
 const openEditDialog = () => {
+  ipcRenderer.send('set-content-view-visible', false);
   document.getElementById('dialog-overlay').style.display = 'block';
   document.getElementById('edit-dialog').style.display = 'flex';
   document.getElementById('error-message').textContent = '';
@@ -621,6 +689,7 @@ const openEditDialog = () => {
 const closeEditDialog = () => {
   document.getElementById('dialog-overlay').style.display = 'none';
   document.getElementById('edit-dialog').style.display = 'none';
+  ipcRenderer.send('set-content-view-visible', true);
 };
 
 // 保存 vlist.json 内容
@@ -804,68 +873,15 @@ async function verifyPassword() {
 
 // 自定义按钮事件
 customButton.addEventListener('click', async () => {
+  ipcRenderer.send('set-content-view-visible', false);
   // 验证密码，通过后才打开编辑对话框
   const isVerified = await verifyPassword();
   if (isVerified) {
     openEditDialog();
+  } else {
+    ipcRenderer.send('set-content-view-visible', true);
   }
 });
-
-// 筛选按钮事件
-const filterButton = document.getElementById('filter-button');
-if (filterButton) {
-  // 创建 Popover 元素
-  const popover = document.createElement('div');
-  popover.id = 'filter-popover';
-  document.body.appendChild(popover);
-
-  const renderFilterOptions = () => {
-    popover.innerHTML = '';
-    categoryList.forEach(category => {
-      const option = document.createElement('div');
-      option.className = `filter-option ${currentCategory === category.id ? 'active' : ''}`;
-      option.textContent = `[${category.name}]`;
-      option.addEventListener('click', () => {
-        currentCategory = category.id;
-        // 保存到 localStorage
-        localStorage.setItem('lastSelectedCategory', currentCategory);
-
-        renderPlatformButtons();
-        updateFilterButtonText();
-        popover.style.display = 'none';
-      });
-      popover.appendChild(option);
-    });
-  };
-
-  filterButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-
-    // 移除红点并标记为已点击
-    if (filterButton.classList.contains('red-dot')) {
-      filterButton.classList.remove('red-dot');
-      localStorage.setItem('hasClickedFilter', 'true');
-    }
-
-    if (popover.style.display === 'block') {
-      popover.style.display = 'none';
-      return;
-    } else {
-      renderFilterOptions();
-      const rect = filterButton.getBoundingClientRect();
-      popover.style.left = rect.left + 'px';
-      popover.style.bottom = (window.innerHeight - rect.top + 5) + 'px'; // 显示在按钮上方
-      popover.style.display = 'block';
-    }
-  });
-
-  // 点击外部关闭 Popover
-  document.addEventListener('click', (e) => {
-    if (popover.style.display === 'block' && e.target !== filterButton && !popover.contains(e.target)) {
-      popover.style.display = 'none';
-    }
-  });
-}
 
 // 监听 vlist 内容响应
 ipcRenderer.on('vlist-content', (event, content) => {
@@ -916,25 +932,23 @@ historyButton.addEventListener('click', () => {
   ipcRenderer.send('open-history-window');
 });
 
-// DevTools 按钮事件（切换 webview 的 DevTools）
+// DevTools 按钮事件（切换 WebContentsView 的 DevTools）
 if (devtoolsButton) {
   devtoolsButton.addEventListener('click', () => {
-    try {
-      if (webview.isDevToolsOpened()) webview.closeDevTools();
-      else webview.openDevTools();
-    } catch (e) { console.error('toggle devtools failed', e); }
+    ipcRenderer.invoke('content-toggle-devtools').catch((error) => {
+      console.error('toggle devtools failed', error);
+    });
   });
 }
 
-// 绑定快捷键：Cmd/Ctrl+Shift+I 或 F12 打开 webview DevTools
+// 绑定快捷键：Cmd/Ctrl+Shift+I 或 F12 打开 WebContentsView DevTools
 document.addEventListener('keydown', (e) => {
   const isToggle = ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'i') || e.key === 'F12';
   if (isToggle) {
     e.preventDefault();
-    try {
-      if (webview.isDevToolsOpened()) webview.closeDevTools();
-      else webview.openDevTools();
-    } catch (err) { console.error('hotkey toggle devtools failed', err); }
+    ipcRenderer.invoke('content-toggle-devtools').catch((error) => {
+      console.error('hotkey toggle devtools failed', error);
+    });
   }
 });
 // 历史记录按钮事件已在前面实现
@@ -944,15 +958,26 @@ document.addEventListener('keydown', (e) => {
 // 监听来自历史记录页面的URL加载请求
 ipcRenderer.on('load-url-from-history', (event, data) => {
   const { url, title } = data;
-  loadURL(url, title);
+  if (isAllowedVideoWindowUrl(url)) {
+    loadURL(url, title, 'history');
+  } else {
+    alert('该历史记录不属于当前启用的视频平台，已阻止加载。');
+  }
+});
+
+// 兼容旧通道：网页的 target="_blank" 与 window.open 请求仍复用当前内容区域。
+ipcRenderer.on('load-url-in-current-window', (event, url) => {
+  if (typeof url === 'string' && /^https?:\/\//i.test(url) && isAllowedVideoWindowUrl(url)) {
+    loadURL(url, '', 'legacy-window-open');
+  } else {
+    console.warn('[renderer] 已阻止第三方或广告新窗口:', url);
+  }
 });
 
 // 监听返回按钮事件
 // 监听返回按钮事件
 ipcRenderer.on('go-back', () => {
-  // 返回主页面
-  const indexFilePath = path.join(__dirname, 'index.html');
-  loadURL(`file://${indexFilePath}`, 'VipVideo');
+  ipcRenderer.invoke('content-go-back').catch((error) => console.error('[renderer] 返回失败:', error));
 });
 window.loadURL = loadURL;
 
@@ -966,314 +991,39 @@ if (updateButton) {
   });
 }
 
-// webview 事件监听
-webview.addEventListener('did-fail-load', (event) => {
-  console.log('Load failed:', event.errorCode, event.errorDescription);
-  // -3 是 ERR_ABORTED，通常是正常跳转中断，不要自动 reload 以免闪烁
-});
-
-webview.addEventListener('did-finish-load', () => {
-  console.log('Page loaded successfully');
-  updateBackButton();
-});
-
-webview.addEventListener('dom-ready', () => {
-  console.log('dom-ready');
-  // 可以在这里注入自定义样式或脚本
-  webview.insertCSS(`
-    * {
-      user-select: auto !important;
-      -webkit-user-select: auto !important;
-    }
-  `);
-  // 对网易云音乐启用媒体权限
-  try {
-    webview.setAudioMuted(false);
-  } catch (e) { }
-});
-
-let urlStack = [];
-
-// 只添加 new-window 事件处理
-webview.addEventListener('new-window', (event) => {
-  console.log('[renderer] new-window:', event.url);
-  event.preventDefault();
-
-  const newPageUrl = event.url; // 获取新窗口的跳链
-  console.log('New window URL:', newPageUrl);
-
-  // 获取当前平台的 canvip 状态
-  const canShowVipString = sessionStorage.getItem('current_platform_canvip');
-  // 转换为布尔值，'1' 或 'true' 为 true，其他为 false
-  const canShowVip = canShowVipString === '1' || canShowVipString === 'true';
-
-  // 通过 ipcRenderer 通知主进程创建新窗口
-  ipcRenderer.send('create-new-window', newPageUrl, canShowVip);
-});
-
-// 添加返回功能
-function goBack() {
-  if (urlStack.length > 0) {
-    const previousUrl = urlStack.pop();
-    webview.loadURL(previousUrl);
-  }
+function getParserPrefixes() {
+  return Array.isArray(vlistData && vlistData.list)
+    ? vlistData.list.map((item) => item.url).filter(Boolean)
+    : [];
 }
 
-// 在你的 UI 中添加一个返回按钮，点击时调用 goBack 函数
+function isParserUrl(url) {
+  return getParserPrefixes().some((prefix) => url && url.startsWith(prefix));
+}
 
-
-// ----------------------
-// 可拖动的解析按钮与弹出列表
-// ----------------------
-try {
-  // 记录原始内容页 URL，避免解析器之间相互嵌套导致地址错误
-  let lastOriginalUrl = '';
-  const parserPrefixes = Array.isArray(vlistData?.list)
-    ? vlistData.list.map(i => i.url).filter(Boolean)
-    : [];
-
-  function isParserUrl(u) {
-    if (!u) return false;
-    return parserPrefixes.some(prefix => typeof prefix === 'string' && prefix.length > 0 && u.startsWith(prefix));
-  }
-
-  function extractOriginalFromParsed(u) {
-    try {
-      const parsed = new URL(u);
-      // 优先返回看起来像 URL 的参数值
-      for (const [key, value] of parsed.searchParams.entries()) {
-        try {
-          const maybe = decodeURIComponent(value || '');
-          if (maybe.startsWith('http://') || maybe.startsWith('https://')) {
-            return maybe;
-          }
-        } catch (_) { }
-      }
-      // 兜底：取第一个参数值
-      const first = [...parsed.searchParams.values()][0];
-      if (first) {
-        try {
-          const dec = decodeURIComponent(first);
-          return dec;
-        } catch (_) {
-          return first;
-        }
-      }
-    } catch (_) { }
-    return u;
-  }
-
-  function updateLastOriginalFromWebview() {
-    try {
-      const current = typeof webview.getURL === 'function' ? webview.getURL() : webview?.src;
-      if (!current) return;
-      if (isParserUrl(current)) {
-        const orig = extractOriginalFromParsed(current);
-        if (orig) lastOriginalUrl = orig;
-      } else {
-        lastOriginalUrl = current;
-      }
-    } catch (e) {
-      // 忽略
+function extractOriginalFromParsed(url) {
+  try {
+    const parsed = new URL(url);
+    for (const value of parsed.searchParams.values()) {
+      const decoded = decodeURIComponent(value || '');
+      if (/^https?:\/\//i.test(decoded)) return decoded;
     }
-  }
+  } catch (_) { }
+  return url;
+}
 
-  // 初次与每次导航后更新原始 URL
-  if (webview) {
-    updateLastOriginalFromWebview();
-    webview.addEventListener('did-navigate', updateLastOriginalFromWebview);
-    webview.addEventListener('did-navigate-in-page', updateLastOriginalFromWebview);
-    webview.addEventListener('did-finish-load', updateLastOriginalFromWebview);
-  }
-
-  // 创建样式
-  const vipStyle = document.createElement('style');
-  vipStyle.textContent = `
-    #vip-drag-btn {
-      position: fixed;
-      top: 70px;
-      right: 30px;
-      z-index: 2000;
-      width: 44px;
-      height: 44px;
-      border-radius: 22px;
-      background: #ff4d4f;
-      color: #fff;
-      border: none;
-      cursor: move;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      user-select: none;
+if (vipRouteButton) {
+  vipRouteButton.style.display = currentPlatformCanShowVip ? '' : 'none';
+  vipRouteButton.addEventListener('click', () => {
+    const nowUrl = contentState.url || '';
+    const originalUrl = isParserUrl(nowUrl) ? extractOriginalFromParsed(nowUrl) : nowUrl;
+    const baseUrl = isLikelyPlayableVideoUrl(originalUrl) ? originalUrl : lastPlayableVideoUrl;
+    if (!baseUrl) {
+      alert('请先进入具体视频或剧集的播放页面，再选择 VIP 解析线路。');
+      return;
     }
-    #vip-drag-btn:hover {
-      background: #f5222d;
-    }
-    #vip-popover {
-      position: fixed;
-      top: 120px;
-      right: 20px;
-      z-index: 2000;
-      width: 160px;
-      max-height: 360px;
-      overflow: auto;
-      background: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-      padding: 8px 0;
-      display: none;
-    }
-    .vip-item {
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: 10px;
-      width: 150px;
-      color: #333;
-      white-space: normal; 
-      word-wrap: break-word; 
-      overflow: visible; 
-      border-bottom: 1px solid #eee;
-    }
-    .vip-item:hover {
-      background: #f5f5f5;
-    }
-    .vip-divider {
-      margin: 6px 0;
-      height: 1px;
-      background: #eee;
-    }
-  `;
-  document.head.appendChild(vipStyle);
-
-  // 创建可拖动按钮
-  const dragBtn = document.createElement('button');
-  dragBtn.id = 'vip-drag-btn';
-  dragBtn.title = '解析列表';
-  dragBtn.textContent = 'VIP';
-  dragBtn.style.display = 'none'; // 默认隐藏，点击支持VIP的平台后才显示
-  document.body.appendChild(dragBtn);
-
-  // 创建弹出层
-  const pop = document.createElement('div');
-  pop.id = 'vip-popover';
-  document.body.appendChild(pop);
-
-  // 渲染列表
-  function renderVipList() {
-    if (!vlistData || !Array.isArray(vlistData.list)) return;
-    const frag = document.createDocumentFragment();
-
-    vlistData.list.forEach((item, index) => {
-      const el = document.createElement('div');
-      el.className = 'vip-item';
-      el.textContent = item.name || `解析${index + 1}`;
-      el.addEventListener('click', () => {
-        try {
-          // 实时获取当前 webview 页地址；若当前已是解析页，则抽取其原始地址
-          const nowUrl = (typeof webview.getURL === 'function' ? webview.getURL() : webview.src) || '';
-          const baseUrl = isParserUrl(nowUrl) ? extractOriginalFromParsed(nowUrl) : nowUrl;
-          const parser = item.url || '';
-          const target = parser ? `${parser}${baseUrl}` : baseUrl;
-          allowShowBackButton = false;
-          backButton.style.display = 'none';
-          loadURL(target, item.name || '解析');
-        } catch (e) {
-          console.error('Compose/Load VIP URL failed:', e);
-        } finally {
-          pop.style.display = 'none';
-        }
-      });
-      frag.appendChild(el);
-      if (index === 0) {
-        const div = document.createElement('div');
-        div.className = 'vip-divider';
-        frag.appendChild(div);
-      }
-    });
-
-    pop.innerHTML = '';
-    pop.appendChild(frag);
-  }
-
-  renderVipList();
-
-  // 切换弹出层显示
-  dragBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const curr = (typeof getComputedStyle === 'function') ? getComputedStyle(pop).display : pop.style.display;
-    if (curr === 'none') {
-      renderVipList();
-      pop.style.display = 'block';
-    } else {
-      pop.style.display = 'none';
-    }
+    allowShowBackButton = false;
+    backButton.style.display = 'none';
+    ipcRenderer.send('show-vip-route-menu', { baseUrl });
   });
-
-  // 点击外部关闭
-  document.addEventListener('click', (e) => {
-    if (pop.style.display === 'block') {
-      if (e.target !== pop && e.target !== dragBtn && !pop.contains(e.target)) {
-        pop.style.display = 'none';
-      }
-    }
-  });
-
-  // 拖拽实现：需按住一定时间再拖动
-  let isDragging = false;
-  let dragHoldTimer = null;
-  const dragHoldDelayMs = 180; // 按住阈值
-  let startX = 0;
-  let startY = 0;
-  let startLeft = 0;
-  let startTop = 0;
-
-  function pxToNumber(value) {
-    const n = parseFloat(value || '0');
-    return Number.isNaN(n) ? 0 : n;
-  }
-
-  dragBtn.addEventListener('mousedown', (e) => {
-    // 延时触发拖动，避免误触
-    startX = e.clientX;
-    startY = e.clientY;
-    const rect = dragBtn.getBoundingClientRect();
-    startLeft = rect.left;
-    startTop = rect.top;
-    dragHoldTimer = setTimeout(() => {
-      isDragging = true;
-      dragBtn.style.cursor = 'grabbing';
-    }, dragHoldDelayMs);
-    e.preventDefault();
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    const nextLeft = Math.max(0, Math.min(window.innerWidth - dragBtn.offsetWidth, startLeft + dx));
-    const nextTop = Math.max(0, Math.min(window.innerHeight - dragBtn.offsetHeight, startTop + dy));
-    dragBtn.style.left = `${nextLeft}px`;
-    dragBtn.style.top = `${nextTop}px`;
-    dragBtn.style.right = 'auto';
-  });
-
-  window.addEventListener('mouseup', (e) => {
-    clearTimeout(dragHoldTimer);
-    dragHoldTimer = null;
-    if (isDragging) {
-      isDragging = false;
-      dragBtn.style.cursor = 'move';
-      // 同步弹出层位置到按钮旁边
-      const rect = dragBtn.getBoundingClientRect();
-      pop.style.top = `${rect.bottom + 6}px`;
-      pop.style.left = `${Math.max(0, rect.left - (pop.offsetWidth - rect.width))}px`;
-      pop.style.right = 'auto';
-    }
-  });
-
-  // 若按住延时未到且发生点击，则维持原有点击行为（打开/关闭 pop）
-} catch (e) {
-  console.error('Init draggable VIP button failed:', e);
 }

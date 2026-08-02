@@ -1,18 +1,32 @@
 body {
   margin: 0;
   padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#content-view-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(100vh - 50px);
+  color: #667085;
+  background: radial-gradient(circle at 50% 40%, #f4f8ff 0, #fff 48%);
+}
+
+.startup-status {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
 }
 
-#webview-container {
-  flex-grow: 1;
-}
-
-#webview {
-  width: 100%;
-  height: 100%;
+.startup-status strong {
+  color: #1d2939;
+  font-size: 22px;
+  letter-spacing: 0.04em;
 }
 
 #button-container {
@@ -22,6 +36,22 @@ body {
   background-color: #f0f0f0;
   border-top: 1px solid #ccc;
   gap: 10px;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3000;
+  box-sizing: border-box;
+  height: 50px;
+}
+
+#button-container.is-auto-hidden {
+  transform: none;
+}
+
+#button-container.is-auto-hidden:hover,
+#button-container:focus-within {
+  transform: translateY(0);
 }
 
 #before-button,
@@ -39,6 +69,9 @@ body {
 
 #custom-button,
 #history-button,
+#topmost-button,
+#transparent-topmost-button,
+#vip-route-button,
 #devtools-button {
   flex-shrink: 0;
 }
@@ -47,12 +80,60 @@ body {
   margin-right: 10px;
   padding: 5px 10px;
   white-space: nowrap;
+  transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+
+.platform-button.is-active {
+  color: #fff;
+  background-color: #1677ff;
+  border-color: #1677ff;
+}
+
+#loading-status {
+  flex: 0 0 132px;
+  overflow: hidden;
+  color: #1677ff;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  text-align: center;
+  text-overflow: ellipsis;
+  transition: opacity 120ms ease;
+  white-space: nowrap;
+}
+
+#loading-status.is-visible {
+  opacity: 1;
+}
+
+#loading-status[data-tone='success'] {
+  color: #138a46;
+}
+
+#loading-status[data-tone='error'] {
+  color: #cf1322;
 }
 
 #custom-button,
 #history-button,
+#topmost-button,
+#transparent-topmost-button,
+#vip-route-button,
 #devtools-button {
   padding: 5px 10px;
+}
+
+#vip-route-button {
+  color: #fff;
+  background: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+#topmost-button.is-active,
+#transparent-topmost-button.is-active {
+  color: #fff;
+  background-color: #1890ff;
+  border-color: #1890ff;
 }
 
 #update-button {

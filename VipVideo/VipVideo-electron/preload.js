@@ -14,7 +14,8 @@ window.__VIP_INJECTOR__ = {
 
       const style = document.createElement('style');
       style.textContent = `
-        #vip-drag-btn { position: fixed; top: 70px; right: 30px; z-index: 2000; width: 44px; height: 44px; border-radius: 22px; background: #ff4d4f; color: #fff; border: none; cursor: move; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; user-select: none; }
+        #vip-drag-btn { position: fixed; top: 70px; right: 0; z-index: 2000; width: 44px; height: 44px; border-radius: 22px; background: #ff4d4f; color: #fff; border: none; cursor: move; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; user-select: none; transition: transform 220ms ease-out, background-color 150ms ease; }
+        #vip-drag-btn.vip-side-hidden { transform: translateX(34px); }
         #vip-drag-btn:hover { background: #f5222d; }
         #vip-popover { position: fixed; top: 120px; right: 30px; z-index: 2000; width: 160px; max-height: 360px; overflow: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.2); padding: 8px 0; display: none; }
         .vip-item { padding: 6px 10px; cursor: pointer; font-size: 10px; width: 150px; color: #333; white-space: normal; word-wrap: break-word; overflow: visible; border-bottom: 1px solid #eee; }
@@ -53,11 +54,11 @@ window.__VIP_INJECTOR__ = {
           el.className = 'vip-item';
           el.textContent = it.name || `解析${idx+1}`;
           el.addEventListener('click', () => {
+            pop.style.display = 'none';
             const now = location.href || '';
             const base = isParser(now) ? extract(now) : now;
             const target = (it.url || '') ? `${it.url}${encodeURIComponent(base)}` : base;
             location.href = target;
-            pop.style.display = 'none';
           });
           frag.appendChild(el);
         });
@@ -78,6 +79,43 @@ window.__VIP_INJECTOR__ = {
           pop.style.display = 'none';
         }
       });
+
+      let hidePopoverTimer = null;
+      const cancelPopoverHide = () => {
+        if (hidePopoverTimer) clearTimeout(hidePopoverTimer);
+        hidePopoverTimer = null;
+      };
+      const schedulePopoverHide = () => {
+        cancelPopoverHide();
+        hidePopoverTimer = setTimeout(() => {
+          pop.style.display = 'none';
+          hidePopoverTimer = null;
+        }, 500);
+      };
+      btn.addEventListener('mouseenter', cancelPopoverHide);
+      btn.addEventListener('mouseleave', schedulePopoverHide);
+      pop.addEventListener('mouseenter', cancelPopoverHide);
+      pop.addEventListener('mouseleave', schedulePopoverHide);
+
+      let vipPeekTimer = null;
+      const showVipButton = () => {
+        if (vipPeekTimer) clearTimeout(vipPeekTimer);
+        vipPeekTimer = null;
+        btn.classList.remove('vip-side-hidden');
+      };
+      const scheduleVipButtonHide = (delay = 1200) => {
+        if (vipPeekTimer) clearTimeout(vipPeekTimer);
+        vipPeekTimer = setTimeout(() => {
+          if (pop.style.display !== 'block') btn.classList.add('vip-side-hidden');
+          vipPeekTimer = null;
+        }, delay);
+      };
+      btn.addEventListener('mouseenter', showVipButton);
+      btn.addEventListener('mouseleave', () => scheduleVipButtonHide(500));
+      btn.addEventListener('click', showVipButton);
+      pop.addEventListener('mouseenter', showVipButton);
+      pop.addEventListener('mouseleave', () => scheduleVipButtonHide(500));
+      scheduleVipButtonHide();
 
       // 简易拖拽（无长按）
       let dragging = false, sx = 0, sy = 0, sl = 0, st = 0;
