@@ -244,6 +244,19 @@ ipcMain.on('create-new-window', (event, newPageUrl, canShowVip) => {
   });
 });
 
+// 播放器窗口请求切换全屏（页面层全屏 API 在某些解析站会静默失败，这里直接驱动 BrowserWindow）
+ipcMain.on('vipv-toggle-fullscreen', (event) => {
+  try {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (win && !win.isDestroyed()) {
+      win.setFullScreen(!win.isFullScreen());
+      console.log('[main] toggle fullscreen ->', win.isFullScreen());
+    }
+  } catch (e) {
+    console.warn('[main] toggle-fullscreen failed:', e);
+  }
+});
+
 // 确保loadHistory()函数在应用启动时被调用
 function initializeApp() {
   console.log('[main] 初始化应用...');

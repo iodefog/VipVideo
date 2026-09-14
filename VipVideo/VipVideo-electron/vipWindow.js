@@ -1,4 +1,4 @@
-const { BrowserWindow } = require('electron');
+const { BrowserWindow, webFrameMain } = require('electron');
 const path = require('path');
 
 function injectVipUI(child, vlistArray, canShowVip) {
@@ -149,6 +149,8 @@ function openVipWindow(url, vlistArray, size = { width: 1200, height: 800 }, can
   const child = new BrowserWindow({
     width: size.width,
     height: size.height,
+    // 显式声明允许进入/退出全屏，避免某些 Electron 版本下 HTML5 requestFullscreen 静默失败
+    fullscreenable: true,
     webPreferences: {
       webviewTag: true,
       autoplayPolicy: 'no-user-gesture-required', // 允许自动播放
@@ -172,8 +174,8 @@ function openVipWindow(url, vlistArray, size = { width: 1200, height: 800 }, can
   child.webContents.session.setPermissionRequestHandler((webContents, permission, callback, details) => {
     const requestingUrl = details.requestingUrl || '';
     console.log(`[vipWindow] 权限请求: ${permission} 来自: ${requestingUrl}`);
-    // 允许媒体相关权限
-    if (permission === 'mediaKeySystem' || permission === 'autoplay' || permission === 'media') {
+    // 允许媒体相关权限 + 全屏权限（否则部分播放器的 HTML5 全屏会被静默拒绝）
+    if (permission === 'mediaKeySystem' || permission === 'autoplay' || permission === 'media' || permission === 'fullscreen') {
       return callback(true);
     }
     callback(false);
@@ -184,12 +186,320 @@ function openVipWindow(url, vlistArray, size = { width: 1200, height: 800 }, can
   });
 
   child.loadURL(url);
+
+  // 监听 HTML5 全屏事件，确保 Electron 窗口与页面全屏状态同步
+  child.webContents.on('enter-html-full-screen', () => {
+    if (!child.isFullScreen()) child.setFullScreen(true);
+  });
+  child.webContents.on('leave-html-full-screen', () => {
+    if (child.isFullScreen()) child.setFullScreen(false);
+  });
+
   child.webContents.on('did-finish-load', () => {
+    // 先注入全屏补丁（处理 iframe 嵌套播放器），再注入 VIP UI
+    injectFullscreenPatch(child);
     injectVipUI(child, vlistArray, canShowVip);
   });
+
+  // 播放器通常在子 frame(iframe) 内：did-finish-load 只覆盖主 frame，
+  // 因此对每个 frame 单独注入，保证 iframe 内的全屏按钮也能被拦截
+  child.webContents.on('did-frame-finish-load', (event, isMainFrame, frameProcessId, frameRoutingId) => {
+    try {
+      const frame = webFrameMain.fromId(frameProcessId, frameRoutingId);
+      if (frame && !frame.isDestroyed()) {
+        frame.executeJavaScript(getFullscreenPatch()).catch(() => {});
+      }
+    } catch (e) {
+      // 忽略：某些 frame 可能在事件触发时已销毁
+    }
+  });
+
   return child;
 }
 
-module.exports = { openVipWindow };
+// 注入全屏 API 补丁：
+//  1) 覆盖 Element.requestFullscreen / webkitRequestFullscreen，失败时回退到 documentElement
+//  2) 给所有 iframe 补上 allowfullscreen / allow="fullscreen"
+//  3) 覆盖 Document.fullscreenElement / fullscreenEnabled 让播放器 UI 状态正确
+//  4) 捕获阶段 click 拦截：识别全屏按钮，直接通过 IPC 驱动 BrowserWindow.setFullScreen()
+function getFullscreenPatch() {
+  const patch = `
+    (function patchFullscreen() {
+      if (window.__FULLSCREEN_PATCHED__) return;
+      window.__FULLSCREEN_PATCHED__ = true;
+
+      var IS_TOP = true;
+      try { IS_TOP = (window.top === window); } catch (_) { IS_TOP = true; }
+      console.log('[VIPVideo] patch installed, isTop=' + IS_TOP);
+
+      // 主 frame 才有 nodeIntegration，iframe 内需要靠 top frame 转发
+      var ELECTRON = null;
+      try { if (typeof require === 'function') ELECTRON = require('electron'); } catch (_) {}
+      if (!ELECTRON && window.require) { try { ELECTRON = window.require('electron'); } catch (_) {} }
+      if (!ELECTRON && window.electron) ELECTRON = window.electron;
+      console.log('[VIPVideo] ipcRenderer available=' + !!(ELECTRON && ELECTRON.ipcRenderer));
+
+      // 统一的"切换全屏"入口：优先 IPC；iframe 内退化到 postMessage 由 top 转发
+      function vipToggle() {
+        if (ELECTRON && ELECTRON.ipcRenderer) {
+          window.__VIP_FS__ = !window.__VIP_FS__;
+          ELECTRON.ipcRenderer.send('vipv-toggle-fullscreen');
+          notifyFsChange();
+          console.log('[VIPVideo] toggle via IPC, state=' + window.__VIP_FS__);
+          return true;
+        }
+        if (!IS_TOP) {
+          try { window.top.postMessage({ __VIP_FS_TOGGLE__: true }, '*'); console.log('[VIPVideo] toggle via postMessage'); return true; } catch (_) {}
+        }
+        console.warn('[VIPVideo] no IPC channel, fallback to page API');
+        return false;
+      }
+
+      // top frame 接收来自子 frame 的转发请求
+      if (IS_TOP) {
+        try {
+          window.addEventListener('message', function(e) {
+            if (e && e.data && e.data.__VIP_FS_TOGGLE__) {
+              console.log('[VIPVideo] got toggle request from sub frame');
+              vipToggle();
+            }
+          });
+        } catch (_) {}
+      }
+
+      // 维护一个"我们认为"的全屏状态，配合覆盖 fullscreenElement 让播放器 UI 同步
+      window.__VIP_FS__ = false;
+      try {
+        Object.defineProperty(Document.prototype, 'fullscreenElement', {
+          configurable: true,
+          get: function() { return window.__VIP_FS__ ? document.documentElement : null; }
+        });
+        Object.defineProperty(Document.prototype, 'webkitFullscreenElement', {
+          configurable: true,
+          get: function() { return window.__VIP_FS__ ? document.documentElement : null; }
+        });
+        Object.defineProperty(Document.prototype, 'fullscreenEnabled', {
+          configurable: true,
+          get: function() { return true; }
+        });
+        Object.defineProperty(Document.prototype, 'webkitFullscreenEnabled', {
+          configurable: true,
+          get: function() { return true; }
+        });
+      } catch (_) {}
+
+      function patchRequest(proto, name) {
+        var orig = proto[name];
+        if (typeof orig !== 'function') return;
+        proto[name] = function(opts) {
+          var p;
+          try { p = orig.call(this, opts); }
+          catch (e) { p = Promise.reject(e); }
+          if (p && typeof p.catch === 'function') {
+            return p.catch(function() {
+              try {
+                var doc = (this.ownerDocument) || document;
+                var root = doc.fullscreenElement || doc.documentElement;
+                if (root && root !== this) return orig.call(root, opts);
+              } catch (e2) {}
+              return Promise.reject(new Error('requestFullscreen failed'));
+            });
+          }
+          return p;
+        };
+      }
+      try { patchRequest(Element.prototype, 'requestFullscreen'); } catch(_){}
+      try { patchRequest(Element.prototype, 'webkitRequestFullscreen'); } catch(_){}
+
+      function patchExit(proto, name) {
+        var orig = proto[name];
+        if (typeof orig !== 'function') return;
+        proto[name] = function() {
+          var p;
+          try { p = orig.call(this); }
+          catch (e) { p = Promise.reject(e); }
+          if (p && typeof p.catch === 'function') {
+            return p.catch(function() { return Promise.reject(new Error('exitFullscreen failed')); });
+          }
+          return p;
+        };
+      }
+      try { patchExit(Document.prototype, 'exitFullscreen'); } catch(_){}
+      try { patchExit(Document.prototype, 'webkitExitFullscreen'); } catch(_){}
+
+      // 给所有 iframe 补上 allowfullscreen + allow="fullscreen"（含 SPA 后续动态插入）
+      function ensureAllowFS(node) {
+        if (!node || node.nodeType !== 1) return;
+        if (node.tagName === 'IFRAME') {
+          if (!node.hasAttribute('allowfullscreen')) node.setAttribute('allowfullscreen', '');
+          try {
+            var allow = node.getAttribute('allow') || '';
+            if (!/\\bfullscreen\\b/.test(allow)) {
+              node.setAttribute('allow', (allow ? allow + ' ' : '') + 'fullscreen');
+            }
+          } catch (_) {}
+        }
+        if (node.querySelectorAll) {
+          node.querySelectorAll('iframe').forEach(ensureAllowFS);
+        }
+      }
+      ensureAllowFS(document);
+      try {
+        var mo = new MutationObserver(function(muts) {
+          for (var i = 0; i < muts.length; i++) {
+            var added = muts[i].addedNodes;
+            for (var j = 0; j < added.length; j++) {
+              if (added[j] && added[j].nodeType === 1) ensureAllowFS(added[j]);
+            }
+          }
+        });
+        mo.observe(document.documentElement || document.body, { childList: true, subtree: true });
+      } catch (_) {}
+
+      // 兜底：捕获阶段 click 监听器识别"全屏按钮"，直接 IPC 驱动 BrowserWindow 全屏
+      function isFullscreenButton(el) {
+        if (!el || el.nodeType !== 1) return false;
+        try {
+          var cls = '';
+          if (typeof el.className === 'string') cls = el.className;
+          else if (el.className && el.className.baseVal !== undefined) cls = el.className.baseVal;
+          if (cls && /\\b(fullscreen|full-screen|full_screen|fullscreen-btn|fullscreen-btn-in|fullscreen-icon|fs-icon)\\b/i.test(cls)) return true;
+          // 兜底匹配：class 里包含 fullscreen（即便词边界不严）
+          if (cls && /fullscreen/i.test(cls)) return true;
+        } catch (_) {}
+        try {
+          var aria = (el.getAttribute && (el.getAttribute('aria-label') || '')) || '';
+          var title = (el.getAttribute && (el.getAttribute('title') || '')) || '';
+          var txt = aria + ' ' + title;
+          if (/full\\s*screen|全屏|fullscreen/i.test(txt)) return true;
+        } catch (_) {}
+        try {
+          if (el.dataset) {
+            for (var k in el.dataset) {
+              if (/fullscreen|全屏/i.test(k) || /fullscreen|全屏/i.test(String(el.dataset[k] || ''))) return true;
+            }
+          }
+        } catch (_) {}
+        return false;
+      }
+
+      function notifyFsChange() {
+        try {
+          document.dispatchEvent(new Event('fullscreenchange'));
+          document.dispatchEvent(new Event('webkitfullscreenchange'));
+        } catch (_) {}
+      }
+
+      function handleFsEvent(e) {
+        var el = e.target;
+        while (el && el !== document) {
+          if (isFullscreenButton(el)) {
+            try { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); } catch (_) {}
+            try {
+              if (vipToggle()) {
+                // 已通过 IPC / postMessage 处理，无需再走页面 API
+              } else {
+                // 退化路径：尝试用页面层 fullscreen API
+                try {
+                  if (window.__VIP_FS__) {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                  } else {
+                    if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+                    else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
+                  }
+                } catch (_) {}
+              }
+            } catch (err) { console.warn('[VIPVideo] fs ipc failed', err); }
+            return false;
+          }
+          el = el.parentElement;
+        }
+      }
+
+      // 给任意 document 挂监听（含 iframe 内部的 document）
+      var __vipSet = (typeof WeakSet !== 'undefined') ? new WeakSet() : null;
+      function vipAttachDoc(doc, tag) {
+        if (!doc) return;
+        if (__vipSet) {
+          if (__vipSet.has(doc)) return;
+          __vipSet.add(doc);
+        } else {
+          if (doc.__VIP_FS_ATTACHED__) return;
+          doc.__VIP_FS_ATTACHED__ = true;
+        }
+        try { doc.addEventListener('click', handleFsEvent, true); } catch (_) {}
+        try { doc.addEventListener('mousedown', handleFsEvent, true); } catch (_) {}
+        console.log('[VIPVideo] attached -> ' + tag);
+        // 递归处理该 document 内的 iframe
+        try {
+          var subs = doc.querySelectorAll('iframe');
+          for (var s = 0; s < subs.length; s++) vipHookIframe(subs[s]);
+        } catch (_) {}
+      }
+
+      function vipHookIframe(fr) {
+        if (!fr || fr.__VIP_FS_HOOKED__) return;
+        fr.__VIP_FS_HOOKED__ = true;
+        try { vipAttachDoc(fr.contentDocument, 'iframe'); } catch (_) {}
+        try {
+          fr.addEventListener('load', function() {
+            try { vipAttachDoc(fr.contentDocument, 'iframe(load)'); } catch (_) {}
+          });
+        } catch (_) {}
+      }
+
+      function vipScanFrames() {
+        try {
+          var frs = document.querySelectorAll('iframe');
+          for (var i = 0; i < frs.length; i++) {
+            vipHookIframe(frs[i]);
+            try {
+              var d = frs[i].contentDocument;
+              if (d) {
+                var inner = d.querySelectorAll('iframe');
+                for (var j = 0; j < inner.length; j++) vipHookIframe(inner[j]);
+              }
+            } catch (_) {}
+          }
+        } catch (_) {}
+      }
+
+      vipAttachDoc(document, (IS_TOP ? 'top' : 'frame'));
+      vipScanFrames();
+      setInterval(vipScanFrames, 800);
+
+      try {
+        var __vipMo = new MutationObserver(function(muts) {
+          for (var i = 0; i < muts.length; i++) {
+            var added = muts[i].addedNodes;
+            for (var j = 0; j < added.length; j++) {
+              var n = added[j];
+              if (n && n.nodeType === 1) {
+                if (n.tagName === 'IFRAME') vipHookIframe(n);
+                try {
+                  var sub2 = n.querySelectorAll ? n.querySelectorAll('iframe') : [];
+                  for (var k = 0; k < sub2.length; k++) vipHookIframe(sub2[k]);
+                } catch (_) {}
+              }
+            }
+          }
+        });
+        __vipMo.observe(document.documentElement || document.body, { childList: true, subtree: true });
+      } catch (_) {}
+    })();
+  `;
+  return patch;
+}
+
+function injectFullscreenPatch(child) {
+  return child.webContents.executeJavaScript(getFullscreenPatch())
+    .then(() => { console.log('[vipWindow] fullscreen patch injected -> main frame'); })
+    .catch(function(err) {
+      console.error('[vipWindow] Failed to inject fullscreen patch:', err);
+    });
+}
+
+module.exports = { openVipWindow, injectFullscreenPatch, getFullscreenPatch };
 
 
