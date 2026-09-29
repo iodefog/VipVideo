@@ -1,12 +1,13 @@
 {
   "name": "VipVideo",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "VipVideo",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder --publish never",
-    "build:mac": "electron-builder --mac --x64 --arm64 --publish never",
+    "build:mac": "electron-builder --mac --arm64 --publish never",
+    "build:mac:all": "electron-builder --mac --x64 --arm64 --publish never",
     "build:win": "electron-builder --win --publish never",
     "build:linux": "electron-builder --linux --publish never"
   },
@@ -35,21 +36,10 @@
     },
     "win": {
       "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
+        "nsis",
+        "portable"
       ],
+      "defaultArch": "x64",
       "icon": "build/icons/icon.ico",
       "publisherName": "lihongli",
       "compression": "maximum"
@@ -80,31 +70,25 @@
       "compression": "maximum"
     },
     "files": [
-      "**/*",
-      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
-      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
-      "!**/node_modules/*.d.ts",
-      "!**/node_modules/.bin",
-      "!**/node_modules/*/{docs,documentation,doc}",
-      "!**/node_modules/*/{coverage,.nyc_output}",
-      "!**/node_modules/*/{.eslintrc,.eslintignore,.prettierrc,.prettierignore}",
-      "!**/node_modules/*/{tsconfig.json,tsconfig.*.json}",
-      "!**/node_modules/*/{.babelrc,.babelrc.js,babel.config.js}",
-      "!**/node_modules/*/{webpack.config.js,rollup.config.js,vite.config.js}",
-      "!**/node_modules/*/{jest.config.js,mocha.opts,karma.conf.js}",
-      "!**/node_modules/*/{.gitignore,.npmignore}",
-      "!**/node_modules/*/{package-lock.json,yarn.lock,pnpm-lock.yaml}",
-      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
-      "!.editorconfig",
-      "!**/._*",
-      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
-      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
-      "!**/{appveyor.yml,.travis.yml,circle.yml}",
-      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
-      "!**/{.env,.env.local,.env.development,.env.test,.env.production}",
-      "!**/{.vscode,.idea}",
-      "!**/{dist,build,out}",
-      "!**/{.cache,.parcel-cache}"
+      "main.js",
+      "renderer.js",
+      "preload.js",
+      "child_preload.js",
+      "webview-preload.js",
+      "vipWindow.js",
+      "vipUI.js",
+      "speedTest.js",
+      "speedHistory.js",
+      "index.html",
+      "history.html",
+      "styles.css",
+      "vlist.json",
+      "images/**",
+      "package.json",
+      "!node_modules",
+      "!**/{dist,build,out,docs}",
+      "!**/{test-parsers.js,parser-test.log,parser-test-results.json,build.sh,build-electron-optimized.sh}",
+      "!**/{.DS_Store,.git,.gitignore,yarn.lock}"
     ],
     "npmRebuild": false,
     "nodeGypRebuild": false,
@@ -115,7 +99,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "42.0.0",
+    "electron": "44.4.5",
     "electron-builder": "^23.0.2"
   },
   "dependencies": {}

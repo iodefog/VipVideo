@@ -9,9 +9,10 @@
 
 <body>
   <div id="webview-container">
+    <!-- httpreferrer 不再给所有站点强加 music.163.com（网易云的 Referer 由 main.js 请求头过滤按域名补充）
+         useragent 由 renderer.js 按真实 Chromium 版本动态设置 -->
     <webview id="webview" src="about:blank" allowpopups="true" allow="autoplay; encrypted-media"
-      httpreferrer="https://music.163.com/"
-      useragent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+      useragent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
       webpreferences="contextIsolation=yes, nodeIntegration=no, sandbox=yes" partition="persist:netease"
       preload="webview-preload.js"></webview>
   </div>

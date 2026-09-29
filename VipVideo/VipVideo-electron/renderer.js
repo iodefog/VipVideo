@@ -75,6 +75,7 @@ ipcRenderer.on('vlist-data', (event, data) => {
   // 重新渲染VIP解析列表
   try {
     renderVipList();
+    loadSpeedHistory();
   } catch (e) {
     console.error('Failed to render VIP list:', e);
   }
@@ -85,6 +86,44 @@ ipcRenderer.send('get-vlist-data');
 
 const webview = document.getElementById('webview');
 const platformButtons = document.getElementById('platform-buttons');
+
+// UA 跟随真实 Chromium 版本：写死旧版本会和 Sec-CH-UA 客户端提示自相矛盾，
+// 被解析站风控识别成低版本浏览器 / Electron 壳，从而提示「版本太低」
+(function syncWebViewUA() {
+  try {
+    const chromeVer = (typeof process !== 'undefined' && process.versions && process.versions.chrome) || '152.0.0.0';
+    const ua = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36`;
+    try { webview.setAttribute('useragent', ua); } catch (_) { }
+    if (typeof webview.setUserAgent === 'function') webview.setUserAgent(ua);
+  } catch (e) {
+    console.warn('[renderer] sync webview UA failed:', e);
+  }
+})();
+
+// 上报当前 webview 地址，供主进程菜单「在浏览器中打开当前页」使用
+function reportActiveUrl() {
+  try {
+    const u = typeof webview.getURL === 'function' ? webview.getURL() : webview.src;
+    if (u && /^https?:/i.test(u)) ipcRenderer.send('active-url-changed', u);
+  } catch (_) { }
+}
+['did-navigate', 'did-navigate-in-page', 'did-finish-load', 'page-title-updated'].forEach((ev) => {
+  try { webview.addEventListener(ev, reportActiveUrl); } catch (_) { }
+});
+
+// 菜单 → 打开当前活动页的开发者工具（webview 只能由渲染进程开启）
+ipcRenderer.on('menu:open-devtools', () => {
+  try {
+    if (typeof webview.openDevTools === 'function') {
+      webview.openDevTools({ mode: 'detach' });
+      return;
+    }
+    const wc = webview.getWebContents && webview.getWebContents();
+    if (wc && typeof wc.openDevTools === 'function') wc.openDevTools({ mode: 'detach' });
+  } catch (e) {
+    console.warn('[renderer] open webview devtools failed:', e);
+  }
+});
 const customButton = document.getElementById('custom-button');
 const historyButton = document.getElementById('history-button');
 const devtoolsButton = document.getElementById('devtools-button');
@@ -1144,6 +1183,127 @@ try {
       height: 1px;
       background: #eee;
     }
+    .vip-speed-btn {
+      margin: 2px 6px 6px;
+      padding: 6px 10px;
+      text-align: center;
+      font-size: 12px;
+      color: #fff;
+      background: #1890ff;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .vip-speed-btn:hover { background: #40a9ff; }
+    .vip-speed-btn.running { background: #fa541c; }
+    .vip-speed-btn-row { display: flex; gap: 6px; margin: 2px 6px 6px; }
+    .vip-speed-btn-row .vip-speed-btn { flex: 1; margin: 0; }
+    .vip-history-btn {
+      padding: 6px 8px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.2;
+      color: #fff;
+      background: #722ed1;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .vip-history-btn:hover { background: #9254de; }
+    .vip-ext-btn {
+      padding: 6px 8px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.2;
+      color: #fff;
+      background: #13c2c2;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .vip-ext-btn:hover { background: #36cfc9; }
+    .speed-history-bar {
+      margin-bottom: 8px;
+      padding: 6px 8px;
+      background: #f9f0ff;
+      border: 1px solid #efdbff;
+      border-radius: 6px;
+      color: #531dab;
+      line-height: 1.6;
+    }
+    .speed-history-bar b { font-weight: 600; }
+    .speed-link { color: #1890ff; cursor: pointer; text-decoration: underline; }
+    #speed-panel {
+      position: fixed;
+      top: 40px;
+      right: 40px;
+      z-index: 3000;
+      width: 620px;
+      max-height: 72vh;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+      display: none;
+      flex-direction: column;
+      font-size: 12px;
+      color: #333;
+      overflow: hidden;
+    }
+    #speed-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #fafafa;
+      border-bottom: 1px solid #eee;
+    }
+    #speed-panel-title { font-weight: 600; font-size: 13px; }
+    #speed-panel-status { flex: 1; color: #666; }
+    #speed-panel-header button {
+      border: none;
+      background: #eee;
+      border-radius: 4px;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    #speed-panel-header button:hover { background: #e0e0e0; }
+    #speed-panel-body { flex: 1; overflow: auto; padding: 8px 10px; }
+    #speed-panel table { width: 100%; border-collapse: collapse; }
+    #speed-panel th, #speed-panel td { padding: 5px 6px; border-bottom: 1px solid #f0f0f0; text-align: center; white-space: nowrap; }
+    #speed-panel tr.speed-row { cursor: pointer; }
+    #speed-panel tr.speed-row:hover { background: #f5f5f5; }
+    #speed-panel .speed-name { text-align: left; max-width: 170px; overflow: hidden; text-overflow: ellipsis; }
+    #speed-panel .speed-score { font-weight: 600; }
+    .sp-pass { color: #52c41a; font-weight: 600; }
+    .sp-media { color: #fa8c16; }
+    .sp-fail { color: #bfbfbf; }
+    .sp-fake { color: #ff4d4f; font-weight: 600; }
+    #speed-panel .sp-pending { color: #c8c8c8; }
+    .vip-score { color: #1890ff; font-weight: 600; }
+    #speed-mini {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 3001;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: #1890ff;
+      color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    #speed-mini:hover { background: #40a9ff; }
+    #speed-mini .speed-mini-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #fff;
+      animation: speedmini 1s infinite ease-in-out;
+    }
+    @keyframes speedmini { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+    .speed-legend { margin-top: 8px; color: #888; line-height: 1.6; }
   `;
   document.head.appendChild(vipStyle);
 
@@ -1160,44 +1320,437 @@ try {
   pop.id = 'vip-popover';
   document.body.appendChild(pop);
 
+  // ---------------- 测速面板（后台跑，不跳转当前页面） ----------------
+  const speedPanel = document.createElement('div');
+  speedPanel.id = 'speed-panel';
+  speedPanel.innerHTML = `
+    <div id="speed-panel-header">
+      <span id="speed-panel-title">线路测速</span>
+      <span id="speed-panel-status">准备就绪</span>
+      <button id="speed-panel-cancel">停止</button>
+      <button id="speed-panel-close">×</button>
+    </div>
+    <div id="speed-panel-body"></div>
+  `;
+  document.body.appendChild(speedPanel);
+
+  // 面板关掉后仍能在后台继续测速，右下角保留一个「回到测速」入口
+  const speedMini = document.createElement('div');
+  speedMini.id = 'speed-mini';
+  speedMini.innerHTML = '<span class="speed-mini-dot"></span><span id="speed-mini-text">测速中…</span>';
+  document.body.appendChild(speedMini);
+  speedMini.addEventListener('click', () => { openSpeedPanel(); });
+
+  const speedMiniTextEl = document.getElementById('speed-mini-text');
+  const speedStatusEl = document.getElementById('speed-panel-status');
+  const speedBodyEl = document.getElementById('speed-panel-body');
+  const speedCancelBtn = document.getElementById('speed-panel-cancel');
+  document.getElementById('speed-panel-close').addEventListener('click', () => {
+    speedPanel.style.display = 'none';
+    syncSpeedMini();
+  });
+  speedCancelBtn.addEventListener('click', () => {
+    ipcRenderer.send('speed:cancel');
+    if (speedStatusEl) speedStatusEl.textContent = '正在停止…';
+  });
+
+  let speedRunning = false;
+  let speedMiniLabel = '';
+  let speedHasResult = false;
+
+  // 面板被关掉时，右下角保留入口：跑的过程中显示进度，跑完显示「查看结果」
+  function syncSpeedMini() {
+    if (!speedMini) return;
+    const hidden = speedPanel.style.display === 'none';
+    const shown = hidden && (speedRunning || speedHasResult);
+    speedMini.style.display = shown ? 'flex' : 'none';
+    if (!shown || !speedMiniTextEl) return;
+    speedMiniTextEl.textContent = speedRunning
+      ? (speedMiniLabel || '后台测速中…（点击查看进度）')
+      : '测速完成（查看结果）';
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  function statusIcon(s) {
+    if (s === 'PASS') return '<span class="sp-pass">✅</span>';
+    if (s === 'MEDIA') return '<span class="sp-media">⚠️</span>';
+    if (s === 'FAKE') return '<span class="sp-fake" title="试看/假视频，不算通过">🚫</span>';
+    return '<span class="sp-fail">❌</span>';
+  }
+
+  function openSpeedPanel() {
+    speedPanel.style.display = 'flex';
+    syncSpeedMini();
+  }
+
+  // ---------------- 本地缓存的上次测速结果（📚 查看） ----------------
+  let speedCachedAt = 0;
+
+  function pad2(n) { return String(n).length < 2 ? '0' + n : String(n); }
+
+  function formatCacheTime(ts) {
+    if (!ts) return '未知时间';
+    const d = new Date(ts);
+    const diff = Date.now() - ts;
+    let ago = '刚刚';
+    if (diff >= 86400000) ago = Math.floor(diff / 86400000) + ' 天前';
+    else if (diff >= 3600000) ago = Math.floor(diff / 3600000) + ' 小时前';
+    else if (diff >= 60000) ago = Math.floor(diff / 60000) + ' 分钟前';
+    return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}（${ago}）`;
+  }
+
+  function applySpeedHistory(h) {
+    if (!h || !Array.isArray(h.rows) || !h.rows.length) return false;
+    resetSpeedState();
+    (h.videos || []).forEach((v) => { if (speedState.videos.indexOf(v) === -1) speedState.videos.push(v); });
+    // 已删除的线路不再显示，避免缓存里残留脏数据
+    const known = new Set((vlistData && Array.isArray(vlistData.list) ? vlistData.list : []).map((i) => i && i.name));
+    h.rows.filter((r) => !known.size || known.has(r.name)).forEach((r) => {
+      const row = ensureSpeedRow(r.name, r.url || '');
+      row.detail = Object.assign({}, r.detail || {});
+      row.reasons = Object.assign({}, r.reasons || {});
+    });
+    speedCachedAt = h.updatedAt || 0;
+    return true;
+  }
+
+  function loadSpeedHistory() {
+    if (typeof ipcRenderer.invoke !== 'function') return Promise.resolve(false);
+    return ipcRenderer.invoke('speed:history:get')
+      .then((h) => {
+        if (!applySpeedHistory(h)) return false;
+        renderVipList();
+        return true;
+      })
+      .catch(() => false);
+  }
+
+  function showSpeedHistory() {
+    loadSpeedHistory().then((ok) => {
+      if (!ok) {
+        if (speedBodyEl) speedBodyEl.innerHTML = '<div class="speed-legend">还没有缓存的测速结果，先点「测速排序」跑一轮即可。</div>';
+        if (speedStatusEl) speedStatusEl.textContent = '无历史结果';
+        openSpeedPanel();
+        return;
+      }
+      renderSpeedTable();
+      if (speedBodyEl) {
+        const bar = `<div class="speed-history-bar">本地缓存的上次测速结果：<b>${escapeHtml(formatCacheTime(speedCachedAt))}</b>　<span class="speed-link" id="speed-history-rerun">重新测速</span>　<span class="speed-link" id="speed-history-clear">清除缓存</span></div>`;
+        speedBodyEl.insertAdjacentHTML('afterbegin', bar);
+        const rerun = document.getElementById('speed-history-rerun');
+        const clr = document.getElementById('speed-history-clear');
+        if (rerun) rerun.addEventListener('click', () => { if (!speedRunning) toggleSpeedTest(); });
+        if (clr) clr.addEventListener('click', () => {
+          ipcRenderer.send('speed:history:clear');
+          resetSpeedState();
+          speedCachedAt = 0;
+          renderVipList();
+          if (speedBodyEl) speedBodyEl.innerHTML = '<div class="speed-legend">本地缓存已清除</div>';
+          if (speedStatusEl) speedStatusEl.textContent = '缓存已清除';
+        });
+      }
+      if (speedStatusEl) speedStatusEl.textContent = `历史结果（${formatCacheTime(speedCachedAt)}）`;
+      openSpeedPanel();
+    });
+  }
+
+  function toggleSpeedTest() {
+    if (speedRunning) {
+      // 正在跑时该按钮只负责打开/收起面板，停止请在面板内点「停止」
+      if (speedPanel.style.display === 'flex') { speedPanel.style.display = 'none'; syncSpeedMini(); }
+      else openSpeedPanel();
+      return;
+    }
+    if (!vlistData || !Array.isArray(vlistData.list) || !vlistData.list.length) {
+      if (speedStatusEl) speedStatusEl.textContent = '没有可测的线路';
+      openSpeedPanel();
+      return;
+    }
+    speedRunning = true;
+    speedHasResult = false;
+    resetSpeedState();
+    updateVipSpeedButton();
+    renderVipList();
+    speedBodyEl.innerHTML = '<div class="speed-legend">正在后台测速（隐藏窗口），当前页面不受影响…</div>';
+    openSpeedPanel();
+    ipcRenderer.send('speed:start', { concurrency: 2, timeout: 18, wait: 10 });
+  };
+
+  // ---------------- 实时测速状态：表格与 VIP 列表共用同一份数据 ----------------
+  const speedState = { videos: [], rows: new Map() };
+  let speedRenderTimer = null;
+
+  function resetSpeedState() {
+    speedState.videos = [];
+    speedState.rows = new Map();
+  }
+
+  function ensureSpeedRow(name, url) {
+    let row = speedState.rows.get(name);
+    if (!row) {
+      row = { name, url: url || '', detail: {}, reasons: {} };
+      speedState.rows.set(name, row);
+    } else if (!row.url && url) row.url = url;
+    return row;
+  }
+
+  function scoreOfRow(row) {
+    let s = 0;
+    for (const k in row.detail) {
+      const st = row.detail[k];
+      if (st === 'PASS') s += 1;
+      else if (st === 'MEDIA') s += 0.5;
+    }
+    return s;
+  }
+
+  function testedCount(row) {
+    return Object.keys(row.detail).length;
+  }
+
+  function sortedSpeedRows() {
+    return Array.from(speedState.rows.values()).sort((a, b) => scoreOfRow(b) - scoreOfRow(a));
+  }
+
+  function collectSpeedResult(item) {
+    if (!item || !item.parser) return;
+    if (item.video && speedState.videos.indexOf(item.video) === -1) speedState.videos.push(item.video);
+    const row = ensureSpeedRow(item.parser, item.apiUrl || item.url || '');
+    if (item.video) {
+      row.detail[item.video] = item.status || 'FAIL';
+      if (item.reason) row.reasons[item.video] = item.reason;
+    }
+  }
+
+  // 表格按 400ms 节流重绘，避免高频消息刷爆 UI
+  function scheduleSpeedRender() {
+    if (speedRenderTimer) return;
+    speedRenderTimer = setTimeout(() => {
+      speedRenderTimer = null;
+      renderSpeedTable();
+      renderVipList();
+    }, 400);
+  }
+
+  function renderSpeedTable() {
+    const rows = sortedSpeedRows();
+    if (!rows.length) {
+      speedBodyEl.innerHTML = '<div class="speed-legend">等待第一批结果…</div>';
+      return;
+    }
+    const videos = speedState.videos;
+    const rowsHtml = rows.map((row) => {
+      const cells = videos.map((v) => {
+        const st = row.detail[v];
+        if (!st) return '<td class="sp-pending">·</td>';
+        const tip = `${row.name} / ${v} → ${row.reasons[v] || ''}`;
+        return `<td title="${escapeHtml(tip)}">${statusIcon(st)}</td>`;
+      }).join('');
+      const score = testedCount(row) ? scoreOfRow(row) : '·';
+      return `<tr class="speed-row" data-name="${escapeHtml(row.name)}"><td class="speed-name" title="${escapeHtml(row.url)}">${escapeHtml(row.name)}</td>${cells}<td class="speed-score">${score}</td></tr>`;
+    }).join('');
+    speedBodyEl.innerHTML = `
+      <table>
+        <thead><tr><th class="speed-name">线路（点击行可直接应用）</th>${videos.map((v) => `<th>${escapeHtml(v)}</th>`).join('')}<th>得分</th></tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+      <div class="speed-legend">
+        ${speedRunning ? '实时更新中…' : '测速完成'}　✅ 正片可播放(1分)　⚠️ 有流未起播(0.5分)　🚫 试看/假视频(0分)　❌ 无效(0分)　· 待测　满分 ${videos.length} 分<br>
+        说明：正片时长不足 10 分钟、或页面出现「试看/预告片」等字样，判为试看片，不给分。<br>
+        测速结果仅供参考：部分线路需登录/防盗链或存在临时限流，请实际点一次确认。
+      </div>
+    `;
+    speedBodyEl.querySelectorAll('tr.speed-row').forEach((tr) => {
+      tr.addEventListener('click', () => {
+        const row = speedState.rows.get(tr.getAttribute('data-name'));
+        if (!row) return;
+        const item = (vlistData && vlistData.list ? vlistData.list : []).find((i) => (row.url && i.url === row.url) || i.name === row.name)
+          || { name: row.name, url: row.url };
+        applyVipParser(item);
+      });
+    });
+  }
+
+  function renderSpeedSummary(summary, elapsedMs) {
+    // 结束后用完整汇总兜底补齐（结果已在 progress 中实时入库）
+    try {
+      (summary || []).forEach((row) => {
+        const r = ensureSpeedRow(row.name, row.url);
+        Object.keys(row.detail || {}).forEach((v) => {
+          if (speedState.videos.indexOf(v) === -1) speedState.videos.push(v);
+          if (!r.detail[v]) r.detail[v] = row.detail[v];
+        });
+      });
+    } catch (_) { }
+    renderSpeedTable();
+    if (!speedState.rows.size && speedBodyEl) {
+      speedBodyEl.innerHTML = '<div class="speed-legend">没有拿到结果</div>';
+    }
+  }
+
+  ipcRenderer.on('speed:progress', (_event, p) => {
+    if (speedStatusEl) speedStatusEl.textContent = `测速中 ${p.done}/${p.total}　最新：${p.current.parser} - ${p.current.video} ${p.current.status}`;
+    speedMiniLabel = `测速中 ${p.done}/${p.total}（点击查看）`;
+    syncSpeedMini();
+    try {
+      collectSpeedResult(p.current);
+      scheduleSpeedRender();
+    } catch (_) { }
+  });
+
+  ipcRenderer.on('speed:busy', () => {
+    if (speedStatusEl) speedStatusEl.textContent = '已有一轮测速在跑';
+  });
+
+  ipcRenderer.on('speed:done', (_event, payload) => {
+    speedRunning = false;
+    speedHasResult = true;
+    try { if (!payload || !payload.cancelled) speedCachedAt = Date.now(); } catch (_) { }
+    updateVipSpeedButton();
+    const sec = payload && payload.elapsedMs ? Math.round(payload.elapsedMs / 1000) : 0;
+    if (speedStatusEl) {
+      speedStatusEl.textContent = (payload && payload.cancelled ? '已停止' : '测速完成') + `，用时 ${sec}s`;
+    }
+    if (speedRenderTimer) { clearTimeout(speedRenderTimer); speedRenderTimer = null; }
+    renderSpeedSummary(payload && payload.summary, payload && payload.elapsedMs);
+    try { renderVipList(); } catch (_) { }
+    syncSpeedMini();
+  });
+
+  function applyVipParser(item) {
+    try {
+      // 实时获取当前 webview 页地址；若当前已是解析页，则抽取其原始地址
+      const nowUrl = (typeof webview.getURL === 'function' ? webview.getURL() : webview.src) || '';
+      const baseUrl = isParserUrl(nowUrl) ? extractOriginalFromParsed(nowUrl) : nowUrl;
+      const parser = item.url || '';
+      const target = parser ? `${parser}${baseUrl}` : baseUrl;
+      allowShowBackButton = false;
+      backButton.style.display = 'none';
+      loadURL(target, item.name || '解析');
+    } catch (e) {
+      console.error('Compose/Load VIP URL failed:', e);
+    } finally {
+      pop.style.display = 'none';
+      speedPanel.style.display = 'none';
+      try { syncSpeedMini(); } catch (_) { }
+    }
+  }
+
+  function updateVipSpeedButton() {
+    const btn = document.getElementById('vip-speed-btn');
+    if (btn) {
+      btn.textContent = speedRunning ? '查看进度' : '测速排序';
+      btn.classList.toggle('running', false);
+    }
+  }
+
+  // 有分数的按分数倒序在前，没测过的保持原始顺序排在后
+  // 测速过程中不重排，避免鼠标下方的行来回跳动
+  function vipItemScore(item) {
+    const row = item && speedState.rows.get(item.name);
+    return row && testedCount(row) ? scoreOfRow(row) : null;
+  }
+
+  // 「原地址-（提示：…）」这条只是不开解析的原地址，名字又长又永远排第一，
+  // 列表里简化成「原地址」并挪到最后，完整提示放在 title 里
+  const ORIGIN_ENTRY_RE = /^原地址/;
+  function vipDisplayName(name) {
+    return ORIGIN_ENTRY_RE.test(name || '') ? '原地址' : (name || '');
+  }
+
+  function sortVipItems(list) {
+    const items = Array.isArray(list) ? list.slice() : [];
+    if (speedRunning) return items;
+    const originIndex = new Map();
+    (Array.isArray(vlistData.list) ? vlistData.list : []).forEach((it, i) => originIndex.set(it, i));
+    return items.sort((a, b) => {
+      // 原地址永远垫底
+      const oa = ORIGIN_ENTRY_RE.test((a && a.name) || '') ? 1 : 0;
+      const ob = ORIGIN_ENTRY_RE.test((b && b.name) || '') ? 1 : 0;
+      if (oa !== ob) return oa - ob;
+      const sa = vipItemScore(a);
+      const sb = vipItemScore(b);
+      if (sa === null && sb === null) return (originIndex.get(a) || 0) - (originIndex.get(b) || 0);
+      if (sa === null) return 1;
+      if (sb === null) return -1;
+      return sb - sa;
+    });
+  }
+
   // 渲染列表
   function renderVipList() {
-    if (!vlistData || !Array.isArray(vlistData.list)) return;
-    const frag = document.createDocumentFragment();
+    if (!vlistData) return;
+    pop.innerHTML = '';
 
-    vlistData.list.forEach((item, index) => {
+    const btnRow = document.createElement('div');
+    btnRow.className = 'vip-speed-btn-row';
+
+    const speedBtn = document.createElement('div');
+    speedBtn.className = 'vip-speed-btn';
+    speedBtn.id = 'vip-speed-btn';
+    speedBtn.textContent = speedRunning ? '查看进度' : '测速排序';
+    speedBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleSpeedTest();
+    });
+    btnRow.appendChild(speedBtn);
+
+    const histBtn = document.createElement('div');
+    histBtn.className = 'vip-history-btn';
+    histBtn.id = 'vip-history-btn';
+    histBtn.textContent = '📚';
+    histBtn.title = '查看上次测速结果（本地缓存）';
+    histBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showSpeedHistory();
+    });
+    btnRow.appendChild(histBtn);
+
+    const extBtn = document.createElement('div');
+    extBtn.className = 'vip-ext-btn';
+    extBtn.id = 'vip-ext-btn';
+    extBtn.textContent = '🌐';
+    extBtn.title = '用系统浏览器打开当前页面';
+    extBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      let u = '';
+      try { u = typeof webview.getURL === 'function' ? webview.getURL() : (webview.src || ''); } catch (_) { }
+      if (!u && lastOriginalUrl) u = lastOriginalUrl;
+      if (u) ipcRenderer.send('open-external', u);
+    });
+    btnRow.appendChild(extBtn);
+    pop.appendChild(btnRow);
+
+    const divider0 = document.createElement('div');
+    divider0.className = 'vip-divider';
+    pop.appendChild(divider0);
+
+    const items = sortVipItems(vlistData.list);
+    items.forEach((item, index) => {
       const el = document.createElement('div');
       el.className = 'vip-item';
-      el.textContent = item.name || `解析${index + 1}`;
-      el.addEventListener('click', () => {
-        try {
-          // 实时获取当前 webview 页地址；若当前已是解析页，则抽取其原始地址
-          const nowUrl = (typeof webview.getURL === 'function' ? webview.getURL() : webview.src) || '';
-          const baseUrl = isParserUrl(nowUrl) ? extractOriginalFromParsed(nowUrl) : nowUrl;
-          const parser = item.url || '';
-          const target = parser ? `${parser}${baseUrl}` : baseUrl;
-          allowShowBackButton = false;
-          backButton.style.display = 'none';
-          loadURL(target, item.name || '解析');
-        } catch (e) {
-          console.error('Compose/Load VIP URL failed:', e);
-        } finally {
-          pop.style.display = 'none';
-        }
-      });
-      frag.appendChild(el);
-      if (index === 0) {
-        const div = document.createElement('div');
-        div.className = 'vip-divider';
-        frag.appendChild(div);
-      }
+      const baseName = vipDisplayName(item.name) || `解析${index + 1}`;
+      el.title = item.name || '';
+      const row = speedState.rows.get(item.name);
+      el.innerHTML = escapeHtml(baseName) + (row && testedCount(row) ? `<span class="vip-score">--${scoreOfRow(row)}分</span>` : '');
+      el.addEventListener('click', () => applyVipParser(item));
+      pop.appendChild(el);
     });
 
-    pop.innerHTML = '';
-    pop.appendChild(frag);
+    if (!items.length) {
+      const empty = document.createElement('div');
+      empty.className = 'vip-item';
+      empty.style.color = '#999';
+      empty.textContent = '暂无线路数据';
+      pop.appendChild(empty);
+    }
   }
 
   renderVipList();
+  // 启动时读回本地缓存的上次结果，列表里直接带分
+  loadSpeedHistory();
 
   // 切换弹出层显示
   dragBtn.addEventListener('click', (e) => {

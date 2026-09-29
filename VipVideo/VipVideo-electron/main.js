@@ -1,7 +1,9 @@
-const { app, BrowserWindow, ipcMain, Menu, Tray, screen, session, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray, screen, session, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs'); // 引入 fs 模块，用于读取 vlist.json 文件
 const { openVipWindow } = require('./vipWindow');
+const { startSpeedTest, cancelSpeedTest, isSpeedTestRunning, DEFAULT_SAMPLES } = require('./speedTest');
+const speedHistory = require('./speedHistory');
 
 // 简单的历史记录存储
 const historyFile = path.join(app.getPath('userData'), 'history.json');
@@ -58,6 +60,57 @@ function saveHistory() {
 
 let mainWindow;
 let tray;
+
+// 当前正在看的页面地址（由主窗口 webview 上报），供菜单「开发者工具 / 用浏览器打开」使用
+let activePageUrl = '';
+
+function currentActiveUrl() {
+  const focused = BrowserWindow.getFocusedWindow();
+  if (focused && focused !== mainWindow && !focused.isDestroyed()) {
+    try {
+      const u = focused.webContents.getURL();
+      if (u && /^https?:/i.test(u)) return u;
+    } catch (_) { }
+  }
+  return activePageUrl;
+}
+
+function openActiveDevTools() {
+  const focused = BrowserWindow.getFocusedWindow();
+  // 子窗口（VIP 解析窗口）：直接开它自己的 DevTools
+  if (focused && focused !== mainWindow && !focused.isDestroyed()) {
+    focused.webContents.openDevTools({ mode: 'detach' });
+    return;
+  }
+  // 主窗口：webview 的 DevTools 得由渲染进程调用
+  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('menu:open-devtools');
+}
+
+function openActiveInBrowser() {
+  const url = currentActiveUrl();
+  if (!url) {
+    try { dialog.showMessageBox({ type: 'info', message: '当前没有可打开的页面地址', buttons: ['好'] }); } catch (_) { }
+    return;
+  }
+  shell.openExternal(url);
+}
+
+// 应用菜单：保留各平台默认菜单，追加「工具」
+function buildApplicationMenu() {
+  const tools = {
+    label: '工具',
+    submenu: [
+      { label: '打开当前页面开发者工具', accelerator: 'CmdOrCtrl+Shift+I', click: openActiveDevTools },
+      { label: '打开主界面开发者工具', accelerator: 'CmdOrCtrl+Alt+I', click: () => { if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.openDevTools({ mode: 'detach' }); } },
+      { type: 'separator' },
+      { label: '在浏览器中打开当前页', accelerator: 'CmdOrCtrl+Shift+O', click: openActiveInBrowser },
+    ]
+  };
+  const template = process.platform === 'darwin'
+    ? [{ role: 'appMenu' }, { role: 'editMenu' }, { role: 'viewMenu' }, tools, { role: 'windowMenu' }]
+    : [{ role: 'fileMenu' }, { role: 'editMenu' }, { role: 'viewMenu' }, tools, { role: 'windowMenu' }];
+  try { Menu.setApplicationMenu(Menu.buildFromTemplate(template)); } catch (e) { console.warn('[main] build menu failed:', e); }
+}
 
 // 放宽自动播放策略（命令行级别，尽量贴近 Chrome 行为）
 try {
@@ -175,6 +228,15 @@ function createTray() {
   // 创建任务栏菜单（移除自动拼接相关逻辑）
   const contextMenu = Menu.buildFromTemplate([
     {
+      label: '打开当前页面开发者工具',
+      click: openActiveDevTools
+    },
+    {
+      label: '在浏览器中打开当前页',
+      click: openActiveInBrowser
+    },
+    { type: 'separator' },
+    {
       label: '退出',
       click: () => {
         app.isQuitting = true;
@@ -257,7 +319,7 @@ function initializeApp() {
   try {
     const s = session.fromPartition('persist:netease');
     const preflightHeadersMap = new Map();
-    const SAFARI_UA = '"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36';
+    const SAFARI_UA = '"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36';
     s.webRequest.onBeforeSendHeaders((details, callback) => {
       const url = details.url || '';
       const headers = details.requestHeaders || {};
@@ -334,7 +396,7 @@ function initializeApp() {
         contents.setWindowOpenHandler(({ url }) => {
           try {
             console.log('[main] setWindowOpenHandler URL:', url);
-            openVipWindow(url, vlistData, { width: 1200, height: 800 });
+            openVipWindow(url, (vlistData && vlistData.list) || [], { width: 1200, height: 800 });
           } catch (e) {
             console.error('[main] create child window failed:', e);
           }
@@ -349,7 +411,13 @@ function initializeApp() {
 
 // 合并app.whenReady()调用，确保只执行一次
 app.whenReady().then(() => {
+  buildApplicationMenu();
   initializeApp();
+});
+
+// 主窗口 webview 每次导航后上报当前地址
+ipcMain.on('active-url-changed', (event, url) => {
+  try { if (typeof url === 'string') activePageUrl = url; } catch (_) { }
 });
 
 app.on('window-all-closed', () => {
@@ -485,6 +553,59 @@ ipcMain.on('get-default-vlist-content', (event) => {
   } catch (error) {
     console.error('Failed to read default vlist.json:', error);
     event.sender.send('vlist-save-error', '无法读取默认配置: ' + error.message);
+  }
+});
+
+// ---------------- 解析线路测速 ----------------
+// 在后台隐藏窗口中跑，不影响用户当前页面
+ipcMain.on('speed:start', (event, opts = {}) => {
+  try {
+    if (isSpeedTestRunning()) {
+      try { event.sender.send('speed:busy', {}); } catch (_) { }
+      return;
+    }
+    const data = readVlistData();
+    const list = (data && Array.isArray(data.list)) ? data.list : [];
+    const state = startSpeedTest({
+      list,
+      videos: opts.videos || DEFAULT_SAMPLES,
+      concurrency: opts.concurrency || 2,
+      timeout: opts.timeout || 20,
+      wait: opts.wait || 12,
+      onProgress: (p) => {
+        try { event.sender.send('speed:progress', p); } catch (_) { }
+      },
+      onDone: (payload) => {
+        // 完整跑完（非中断）才写入本地缓存
+        try { if (!payload || !payload.cancelled) speedHistory.save(app, payload); } catch (_) { }
+        try { event.sender.send('speed:done', payload); } catch (_) { }
+      },
+    });
+  } catch (error) {
+    console.error('[main] speed test failed:', error);
+    try { event.sender.send('speed:done', { summary: [], results: [], elapsedMs: 0, error: error.message }); } catch (_) { }
+  }
+});
+
+ipcMain.on('speed:cancel', () => {
+  try { cancelSpeedTest(); } catch (_) { /* ignore */ }
+});
+
+// 读取/清除本地测速结果缓存
+ipcMain.handle('speed:history:get', () => {
+  try { return speedHistory.read(app); } catch (_) { return null; }
+});
+
+ipcMain.on('speed:history:clear', () => {
+  try { speedHistory.clear(app); } catch (_) { /* ignore */ }
+});
+
+// 用系统默认浏览器打开指定地址（VIP 浮层的 🌐 按钮）
+ipcMain.on('open-external', (_event, url) => {
+  try {
+    if (typeof url === 'string' && /^https?:/i.test(url)) shell.openExternal(url);
+  } catch (e) {
+    console.warn('[main] openExternal failed:', e);
   }
 });
 

@@ -1,0 +1,1935 @@
+{
+  "time": "2026-09-23T09:13:53.382Z",
+  "caseCount": 235,
+  "results": [
+    {
+      "parser": "邦宁",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(132字节)"
+    },
+    {
+      "parser": "邦宁",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(132字节)"
+    },
+    {
+      "parser": "邦宁",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(132字节)"
+    },
+    {
+      "parser": "邦宁",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(132字节)"
+    },
+    {
+      "parser": "邦宁",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(132字节)"
+    },
+    {
+      "parser": "默认A",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛页面无播放资源，且含失败提示: 解析失败"
+    },
+    {
+      "parser": "默认A",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛页面无播放资源，且含失败提示: 解析失败"
+    },
+    {
+      "parser": "默认A",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛页面无播放资源，且含失败提示: 解析失败"
+    },
+    {
+      "parser": "默认A",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛页面无播放资源，且含失败提示: 解析失败"
+    },
+    {
+      "parser": "默认A",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛页面无播放资源，且含失败提示: 解析失败"
+    },
+    {
+      "parser": "极速",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "极速",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "极速",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "花旗",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ECONNREFUSED)"
+    },
+    {
+      "parser": "花旗",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ECONNREFUSED)"
+    },
+    {
+      "parser": "花旗",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ECONNREFUSED)"
+    },
+    {
+      "parser": "花旗",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ECONNREFUSED)"
+    },
+    {
+      "parser": "花旗",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ECONNREFUSED)"
+    },
+    {
+      "parser": "剖云",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(160字节)"
+    },
+    {
+      "parser": "剖云",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(160字节)"
+    },
+    {
+      "parser": "剖云",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(160字节)"
+    },
+    {
+      "parser": "剖云",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(160字节)"
+    },
+    {
+      "parser": "剖云",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(160字节)"
+    },
+    {
+      "parser": "七哥",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(160字节)"
+    },
+    {
+      "parser": "七哥",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(160字节)"
+    },
+    {
+      "parser": "七哥",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(160字节)"
+    },
+    {
+      "parser": "七哥",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(160字节)"
+    },
+    {
+      "parser": "七哥",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(160字节)"
+    },
+    {
+      "parser": "极速",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "极速",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "盘古",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "盘古",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "盘古",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "盘古",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "盘古",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "神哥",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "神哥",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "神哥",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "维多",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "维多",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "维多",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "维多",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "维多",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "神哥",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "神哥",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "听乐",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "听乐",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "听乐",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "云析",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(CERT_HAS_EXPIRED)"
+    },
+    {
+      "parser": "云析",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(CERT_HAS_EXPIRED)"
+    },
+    {
+      "parser": "云析",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(CERT_HAS_EXPIRED)"
+    },
+    {
+      "parser": "云析",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(CERT_HAS_EXPIRED)"
+    },
+    {
+      "parser": "云析",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(CERT_HAS_EXPIRED)"
+    },
+    {
+      "parser": "180",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "180",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "180",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "180",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "180",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "2ys",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(DEPTH_ZERO_SELF_SIGNED_CERT)"
+    },
+    {
+      "parser": "2ys",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(DEPTH_ZERO_SELF_SIGNED_CERT)"
+    },
+    {
+      "parser": "2ys",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(DEPTH_ZERO_SELF_SIGNED_CERT)"
+    },
+    {
+      "parser": "2ys",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(DEPTH_ZERO_SELF_SIGNED_CERT)"
+    },
+    {
+      "parser": "2ys",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(DEPTH_ZERO_SELF_SIGNED_CERT)"
+    },
+    {
+      "parser": "无名小站",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛响应为空/过短(11字节)"
+    },
+    {
+      "parser": "听乐",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "听乐",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "OK",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(UNABLE_TO_GET_ISSUER_CERT_LOCALLY)"
+    },
+    {
+      "parser": "OK",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(UNABLE_TO_GET_ISSUER_CERT_LOCALLY)"
+    },
+    {
+      "parser": "OK",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(UNABLE_TO_GET_ISSUER_CERT_LOCALLY)"
+    },
+    {
+      "parser": "OK",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(UNABLE_TO_GET_ISSUER_CERT_LOCALLY)"
+    },
+    {
+      "parser": "OK",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(UNABLE_TO_GET_ISSUER_CERT_LOCALLY)"
+    },
+    {
+      "parser": "api-3",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(UNABLE_TO_GET_ISSUER_CERT_LOCALLY)"
+    },
+    {
+      "parser": "api-3",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(UNABLE_TO_GET_ISSUER_CERT_LOCALLY)"
+    },
+    {
+      "parser": "api-3",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(UNABLE_TO_GET_ISSUER_CERT_LOCALLY)"
+    },
+    {
+      "parser": "api-3",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(UNABLE_TO_GET_ISSUER_CERT_LOCALLY)"
+    },
+    {
+      "parser": "api-5",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "api-5",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "api-5",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "api-5",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "api-5",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "api-3",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(UNABLE_TO_GET_ISSUER_CERT_LOCALLY)"
+    },
+    {
+      "parser": "api-7",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(EPROTO)"
+    },
+    {
+      "parser": "api-7",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(EPROTO)"
+    },
+    {
+      "parser": "api-7",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(EPROTO)"
+    },
+    {
+      "parser": "api-7",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(EPROTO)"
+    },
+    {
+      "parser": "api-7",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(EPROTO)"
+    },
+    {
+      "parser": "api-9",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ECONNREFUSED)"
+    },
+    {
+      "parser": "17云",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "17云",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "17云",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "17云",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "17云",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(timeout)"
+    },
+    {
+      "parser": "api-9",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ECONNREFUSED)"
+    },
+    {
+      "parser": "api-9",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ECONNREFUSED)"
+    },
+    {
+      "parser": "api-11",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "api-11",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "api-11",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "api-11",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "api-11",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "api-9",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ECONNREFUSED)"
+    },
+    {
+      "parser": "api-9",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ECONNREFUSED)"
+    },
+    {
+      "parser": "Fongmi",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛HTTP 403"
+    },
+    {
+      "parser": "Fongmi",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛HTTP 403"
+    },
+    {
+      "parser": "Fongmi",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛HTTP 403"
+    },
+    {
+      "parser": "Fongmi",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛HTTP 403"
+    },
+    {
+      "parser": "Fongmi",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛HTTP 403"
+    },
+    {
+      "parser": "RDHK",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "RDHK",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "RDHK",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "RDHK",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "RDHK",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "人人迷",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "人人迷",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "人人迷",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "人人迷",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "人人迷",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "预筛网络不可达(ENOTFOUND)"
+    },
+    {
+      "parser": "纯净1",
+      "video": "腾讯视频",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "纯净1",
+      "video": "爱奇艺",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "纯净1",
+      "video": "芒果TV",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "纯净1",
+      "video": "优酷",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "纯净1",
+      "video": "bilibili",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "冰豆",
+      "video": "腾讯视频",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=1, readyState=0）"
+    },
+    {
+      "parser": "冰豆",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "冰豆",
+      "video": "优酷",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "CK",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "CK",
+      "video": "腾讯视频",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "冰豆",
+      "video": "bilibili",
+      "status": "MEDIA",
+      "reason": "有 video 元素但未起播（readyState=0, currentTime=0）"
+    },
+    {
+      "parser": "CK",
+      "video": "优酷",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "CK",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "CK",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "冰豆",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "IK9",
+      "video": "爱奇艺",
+      "status": "MEDIA",
+      "reason": "有 video 元素但未起播（readyState=0, currentTime=0）"
+    },
+    {
+      "parser": "IK9",
+      "video": "腾讯视频",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "IK9",
+      "video": "优酷",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "IK9",
+      "video": "bilibili",
+      "status": "MEDIA",
+      "reason": "有 video 元素但未起播（readyState=0, currentTime=0）"
+    },
+    {
+      "parser": "IK9",
+      "video": "芒果TV",
+      "status": "MEDIA",
+      "reason": "有 video 元素但未起播（readyState=0, currentTime=0）"
+    },
+    {
+      "parser": "JX",
+      "video": "爱奇艺",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "JY",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "加载失败: page.goto: Timeout 20000ms exceeded."
+    },
+    {
+      "parser": "JX",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "JX",
+      "video": "腾讯视频",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "JX",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "JX",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 不能播?点我"
+    },
+    {
+      "parser": "JY",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "JY",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "JY",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "M3U8",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "JY",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "M3U8",
+      "video": "优酷",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "M3U8",
+      "video": "腾讯视频",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "M3U8",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "PM",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "PM",
+      "video": "优酷",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "PM",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "PM",
+      "video": "腾讯视频",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "PM",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "M3U8",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "盘古2",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "盘古2",
+      "video": "腾讯视频",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "盘古2",
+      "video": "优酷",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "盘古2",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "盘古2",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "七哥2",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 立即播放"
+    },
+    {
+      "parser": "七哥2",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 立即播放"
+    },
+    {
+      "parser": "七哥2",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 立即播放"
+    },
+    {
+      "parser": "七哥2",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 立即播放"
+    },
+    {
+      "parser": "七哥2",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 立即播放"
+    },
+    {
+      "parser": "七七云",
+      "video": "腾讯视频",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "七七云",
+      "video": "芒果TV",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "七七云",
+      "video": "优酷",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "七七云",
+      "video": "bilibili",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "虾米",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "七七云",
+      "video": "爱奇艺",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "虾米",
+      "video": "腾讯视频",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "虾米",
+      "video": "优酷",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "虾米",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 未获取到VID---"
+    },
+    {
+      "parser": "虾米",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面提示疑似: 解析失败"
+    },
+    {
+      "parser": "虾米2",
+      "video": "腾讯视频",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "虾米2",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "虾米2",
+      "video": "优酷",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "虾米2",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面提示疑似: 解析失败"
+    },
+    {
+      "parser": "闲鱼",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "虾米2",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 未获取到VID---"
+    },
+    {
+      "parser": "闲鱼",
+      "video": "腾讯视频",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "闲鱼",
+      "video": "芒果TV",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "夜幕",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 首页 苹果CMS WEB播放器 建站开发 Zblog 资源分享 留言 注册 登录 精选导读 苹果CMS插件 2024-05-19 苹果cms插件之整合超强划屏H5播放器Artplayer，投屏、自动下一集、记忆播放、弹幕、画中画 苹果cms"
+    },
+    {
+      "parser": "闲鱼",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "夜幕",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 首页 苹果CMS WEB播放器 建站开发 Zblog 资源分享 留言 注册 登录 精选导读 苹果CMS插件 2024-05-19 苹果cms插件之整合超强划屏H5播放器Artplayer，投屏、自动下一集、记忆播放、弹幕、画中画 苹果cms"
+    },
+    {
+      "parser": "闲鱼",
+      "video": "优酷",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "夜幕",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 首页 苹果CMS WEB播放器 建站开发 Zblog 资源分享 留言 注册 登录 精选导读 苹果CMS插件 2024-05-19 苹果cms插件之整合超强划屏H5播放器Artplayer，投屏、自动下一集、记忆播放、弹幕、画中画 苹果cms"
+    },
+    {
+      "parser": "夜幕",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 首页 苹果CMS WEB播放器 建站开发 Zblog 资源分享 留言 注册 登录 精选导读 苹果CMS插件 2024-05-19 苹果cms插件之整合超强划屏H5播放器Artplayer，投屏、自动下一集、记忆播放、弹幕、画中画 苹果cms"
+    },
+    {
+      "parser": "8090",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "夜幕",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 首页 苹果CMS WEB播放器 建站开发 Zblog 资源分享 留言 注册 登录 精选导读 苹果CMS插件 2024-05-19 苹果cms插件之整合超强划屏H5播放器Artplayer，投屏、自动下一集、记忆播放、弹幕、画中画 苹果cms"
+    },
+    {
+      "parser": "8090",
+      "video": "腾讯视频",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "8090",
+      "video": "优酷",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "8090",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "8090",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "4.21-6",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "4.21-6",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "4.21-6",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "4.21-6",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "4.21-6",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "无名小站",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: {\"success\":true,\"msg\":\"Missing Backfil URL\"}"
+    },
+    {
+      "parser": "无名小站",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 首页 关注 导航 加入VIP 视频 BT下载 原创 小说 电台 美图 院线 聊天室 吃瓜 短视频 片商 更多 网红黑料事件 Influencer Video 全网门事件，会员免费看！ 广东惠州水东街 马路牙子草逼 湖州西山漾公园 抓奸现场"
+    },
+    {
+      "parser": "无名小站",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: {\"success\":true,\"msg\":\"Missing Backfil URL\"}"
+    },
+    {
+      "parser": "无名小站",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "加载失败: page.goto: Timeout 20000ms exceeded."
+    },
+    {
+      "parser": "api-2",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "api-2",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "api-2",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "api-2",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "api-2",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "api-6",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "api-6",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "api-6",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "api-6",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "api-6",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求"
+    },
+    {
+      "parser": "HLS",
+      "video": "腾讯视频",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "HLS",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "HLS",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 未获取到VID---"
+    },
+    {
+      "parser": "HLS",
+      "video": "优酷",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "爱豆",
+      "video": "腾讯视频",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "爱豆",
+      "video": "芒果TV",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "HLS",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面提示疑似: 解析失败"
+    },
+    {
+      "parser": "爱豆",
+      "video": "爱奇艺",
+      "status": "PASS",
+      "reason": "video 实际播放（currentTime 前进）"
+    },
+    {
+      "parser": "CHok",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 首页 关注 导航 加入VIP 视频 BT下载 原创 小说 电台 美图 院线 聊天室 吃瓜 短视频 片商 更多 网红黑料事件 Influencer Video 全网门事件，会员免费看！ 广东惠州水东街 马路牙子草逼 湖州西山漾公园 抓奸现场"
+    },
+    {
+      "parser": "CHok",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 首页 关注 导航 加入VIP 视频 BT下载 原创 小说 电台 美图 院线 聊天室 吃瓜 短视频 片商 更多 网红黑料事件 Influencer Video 全网门事件，会员免费看！ 广东惠州水东街 马路牙子草逼 湖州西山漾公园 抓奸现场"
+    },
+    {
+      "parser": "爱豆",
+      "video": "bilibili",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "CHok",
+      "video": "芒果TV",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 首页 关注 导航 加入VIP 视频 BT下载 原创 小说 电台 美图 院线 聊天室 吃瓜 短视频 片商 更多 网红黑料事件 Influencer Video 全网门事件，会员免费看！ 广东惠州水东街 马路牙子草逼 湖州西山漾公园 抓奸现场"
+    },
+    {
+      "parser": "CHok",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "加载失败: page.goto: net::ERR_CONNECTION_RESET at https://www.gai4.com/?url=https://www.bilibili.com/bangumi/play/ep291708"
+    },
+    {
+      "parser": "CHok",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "加载失败: page.goto: Timeout 20000ms exceeded."
+    },
+    {
+      "parser": "爱豆",
+      "video": "优酷",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "思古3",
+      "video": "芒果TV",
+      "status": "MEDIA",
+      "reason": "抓到视频流请求但未见播放（video=0, readyState=0）"
+    },
+    {
+      "parser": "思古3",
+      "video": "腾讯视频",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: attakids.com may be for sale, click to inquire"
+    },
+    {
+      "parser": "思古3",
+      "video": "优酷",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: 首页 关注 导航 加入VIP 视频 BT下载 原创 小说 电台 美图 院线 聊天室 吃瓜 短视频 片商 更多 K国女星「金兑姸」三级片，谎言1999高能片段！化身训狗大师，三点全露真实插入 #金兑姸 #谎言1999 乌鲁木齐健身博主「雨轩」"
+    },
+    {
+      "parser": "思古3",
+      "video": "爱奇艺",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: Software & Applications Air Travel Entertainment Television Movies Animation & Anime MORE EDITOR'S PICKS The Quran: A Hi"
+    },
+    {
+      "parser": "思古3",
+      "video": "bilibili",
+      "status": "FAIL",
+      "reason": "未发现 video 元素/视频流请求 | 页面文本: Software & Applications Air Travel Entertainment Television Movies Animation & Anime MORE EDITOR'S PICKS The Quran: A Hi"
+    }
+  ],
+  "summary": [
+    {
+      "name": "IK9",
+      "score": 3.5,
+      "detail": {
+        "爱奇艺": "MEDIA",
+        "腾讯视频": "PASS",
+        "芒果TV": "MEDIA",
+        "优酷": "PASS",
+        "bilibili": "MEDIA"
+      }
+    },
+    {
+      "name": "七七云",
+      "score": 3.5,
+      "detail": {
+        "爱奇艺": "MEDIA",
+        "腾讯视频": "MEDIA",
+        "芒果TV": "PASS",
+        "优酷": "MEDIA",
+        "bilibili": "PASS"
+      }
+    },
+    {
+      "name": "爱豆",
+      "score": 3.5,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "MEDIA",
+        "芒果TV": "PASS",
+        "优酷": "MEDIA",
+        "bilibili": "MEDIA"
+      }
+    },
+    {
+      "name": "冰豆",
+      "score": 3,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "MEDIA",
+        "芒果TV": "FAIL",
+        "优酷": "PASS",
+        "bilibili": "MEDIA"
+      }
+    },
+    {
+      "name": "CK",
+      "score": 3,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "PASS",
+        "芒果TV": "FAIL",
+        "优酷": "PASS",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "M3U8",
+      "score": 3,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "PASS",
+        "芒果TV": "FAIL",
+        "优酷": "PASS",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "PM",
+      "score": 3,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "PASS",
+        "芒果TV": "FAIL",
+        "优酷": "PASS",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "盘古2",
+      "score": 3,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "PASS",
+        "芒果TV": "FAIL",
+        "优酷": "PASS",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "虾米",
+      "score": 3,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "PASS",
+        "芒果TV": "FAIL",
+        "优酷": "PASS",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "虾米2",
+      "score": 3,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "PASS",
+        "芒果TV": "FAIL",
+        "优酷": "PASS",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "闲鱼",
+      "score": 3,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "PASS",
+        "芒果TV": "MEDIA",
+        "优酷": "MEDIA",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "8090",
+      "score": 3,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "PASS",
+        "芒果TV": "FAIL",
+        "优酷": "PASS",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "HLS",
+      "score": 3,
+      "detail": {
+        "爱奇艺": "PASS",
+        "腾讯视频": "PASS",
+        "芒果TV": "FAIL",
+        "优酷": "PASS",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "纯净1",
+      "score": 2.5,
+      "detail": {
+        "爱奇艺": "MEDIA",
+        "腾讯视频": "MEDIA",
+        "芒果TV": "MEDIA",
+        "优酷": "MEDIA",
+        "bilibili": "MEDIA"
+      }
+    },
+    {
+      "name": "JX",
+      "score": 1,
+      "detail": {
+        "爱奇艺": "MEDIA",
+        "腾讯视频": "MEDIA",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "思古3",
+      "score": 0.5,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "MEDIA",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "邦宁",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "默认A",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "极速",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "花旗",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "剖云",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "七哥",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "盘古",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "神哥",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "维多",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "听乐",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "云析",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "180",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "2ys",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "无名小站",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "OK",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "api-3",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "api-5",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "api-7",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "api-9",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "17云",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "api-11",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "Fongmi",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "RDHK",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "人人迷",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "JY",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "七哥2",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "夜幕",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "4.21-6",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "api-2",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "api-6",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    },
+    {
+      "name": "CHok",
+      "score": 0,
+      "detail": {
+        "爱奇艺": "FAIL",
+        "腾讯视频": "FAIL",
+        "芒果TV": "FAIL",
+        "优酷": "FAIL",
+        "bilibili": "FAIL"
+      }
+    }
+  ]
+}

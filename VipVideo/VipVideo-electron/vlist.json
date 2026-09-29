@@ -202,6 +202,18 @@
             "url": ""
         },
         {
+            "name": "默认A",
+            "url": "https://bfq.txnp.cn/player?url="
+        },
+        {
+            "name": "邦宁",
+            "url": "https://video.isyour.love/player/getplayer?url="
+        },
+        {
+            "name": "极速",
+            "url": "https://jx.2s0.cn/player/?url="
+        },
+        {
             "name": "纯净1",
             "url": "https://im1907.top/?jx="
         },
@@ -242,12 +254,24 @@
             "url": "https://www.pangujiexi.com/jiexi/?url="
         },
         {
+            "name": "花旗",
+            "url": "https://www.huaqi.live/?url="
+        },
+        {
             "name": "剖云",
             "url": "https://www.pouyun.com/?url="
         },
         {
             "name": "七哥",
             "url": "https://jx.nnxv.cn/tv.php?url="
+        },
+        {
+            "name": "七哥2",
+            "url": "https://jx.202617.xyz/tv.php?url="
+        },
+        {
+            "name": "七七云",
+            "url": "https://jx.77flv.cc/?url="
         },
         {
             "name": "神哥",
@@ -268,6 +292,10 @@
         {
             "name": "虾米2",
             "url": "https://jx.xmflv.cc/?url="
+        },
+        {
+            "name": "闲鱼",
+            "url": "https://jx.xymp4.cc/?url="
         },
         {
             "name": "夜幕",
@@ -334,24 +362,20 @@
             "url": "https://jx.qqwtt.com/?url="
         },
         {
+            "name": "Fongmi",
+            "url": "https://json.fongmi.cc/web?url="
+        },
+        {
+            "name": "HLS",
+            "url": "https://jx.hls.one/?url="
+        },
+        {
             "name": "爱豆",
             "url": "https://jx.aidouer.net/?url="
         },
         {
             "name": "CHok",
             "url": "https://www.gai4.com/?url="
-        },
-        {
-            "name": "RDHK",
-            "url": "https://jx.rdhk.net/?v="
-        },
-        {
-            "name": "人人迷",
-            "url": "https://jx.blbo.cc:4433/?url="
-        },
-        {
-            "name": "思古3",
-            "url": "https://jsap.attakids.com/?url="
         }
     ]
 }
